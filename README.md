@@ -44,7 +44,7 @@ cd ~/mrk1
 Run restore script to move Preferences to the Mac
 
 ```
-source .zshenv
+source ~/.zshenv
 restore
 ```
 

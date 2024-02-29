@@ -1,0 +1,5477 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Effects version="1.1">
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/Tape MELLO-FI.vst3</Path>
+		<FileTime>2022-06-09 03:55</FileTime>
+		<Name>Tape MELLO-FI</Name>
+		<ID>417274754156495354614D6550726F63</ID>
+		<Categories>Fx|Distortion</Categories>
+		<CategoryMask>8388608</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Arturia</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>CLA-76 Mono</Name>
+		<ID>5653543736434D636C612D3736206D6F</ID>
+		<Categories>Fx|Dynamics</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>CLA-76 Stereo</Name>
+		<ID>56535437364353636C612D3736207374</ID>
+		<Categories>Fx|Dynamics</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Scheps Omni Channel Mono</Name>
+		<ID>5653544143534D736368657073206F6D</ID>
+		<Categories>Fx|Channel Strip</Categories>
+		<CategoryMask>2</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Scheps Omni Channel Stereo</Name>
+		<ID>56535441435353736368657073206F6D</ID>
+		<Categories>Fx|Channel Strip</Categories>
+		<CategoryMask>2</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Reel ADT2V Stereo</Name>
+		<ID>565354414432537265656C2061647432</ID>
+		<Categories>Fx|Modulation</Categories>
+		<CategoryMask>2048</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Reel ADT2V Mono/Stereo</Name>
+		<ID>565354414432587265656C2061647432</ID>
+		<Categories>Fx|Modulation</Categories>
+		<CategoryMask>2048</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Reel ADT Live Mono</Name>
+		<ID>56535441444C4D7265656C2061647420</ID>
+		<Categories>Fx|Modulation</Categories>
+		<CategoryMask>2048</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Reel ADT Live Stereo</Name>
+		<ID>56535441444C537265656C2061647420</ID>
+		<Categories>Fx|Modulation</Categories>
+		<CategoryMask>2048</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Reel ADT Live Mono/Stereo</Name>
+		<ID>56535441444C587265656C2061647420</ID>
+		<Categories>Fx|Modulation</Categories>
+		<CategoryMask>2048</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Reel ADT Mono</Name>
+		<ID>5653544144544D7265656C2061647420</ID>
+		<Categories>Fx|Modulation</Categories>
+		<CategoryMask>2048</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Reel ADT Stereo</Name>
+		<ID>565354414454537265656C2061647420</ID>
+		<Categories>Fx|Modulation</Categories>
+		<CategoryMask>2048</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Reel ADT Mono/Stereo</Name>
+		<ID>565354414454587265656C2061647420</ID>
+		<Categories>Fx|Modulation</Categories>
+		<CategoryMask>2048</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Reel ADT2V Live Stereo</Name>
+		<ID>565354414C32537265656C2061647432</ID>
+		<Categories>Fx|Modulation</Categories>
+		<CategoryMask>2048</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Reel ADT2V Live Mono/Stereo</Name>
+		<ID>565354414C32587265656C2061647432</ID>
+		<Categories>Fx|Modulation</Categories>
+		<CategoryMask>2048</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>NS1 Mono</Name>
+		<ID>565354414E534D6E7331206D6F6E6F00</ID>
+		<Categories>Fx|Restoration</Categories>
+		<CategoryMask>4096</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>NS1 Stereo</Name>
+		<ID>565354414E53536E7331207374657265</ID>
+		<Categories>Fx|Restoration</Categories>
+		<CategoryMask>4096</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Aphex Vintage Exciter Mono</Name>
+		<ID>5653544150484D61706865782076696E</ID>
+		<Categories>Fx|Other</Categories>
+		<CategoryMask>131072</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Aphex Vintage Exciter Stereo</Name>
+		<ID>5653544150485361706865782076696E</ID>
+		<Categories>Fx|Other</Categories>
+		<CategoryMask>131072</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>DeBreath Mono</Name>
+		<ID>5653544252544D646562726561746820</ID>
+		<Categories>Fx|Vocals</Categories>
+		<CategoryMask>524288</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Bass Rider Mono</Name>
+		<ID>56535442534C4D626173732072696465</ID>
+		<Categories>Fx|Bass</Categories>
+		<CategoryMask>1048576</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Bass Rider Stereo</Name>
+		<ID>56535442534C53626173732072696465</ID>
+		<Categories>Fx|Bass</Categories>
+		<CategoryMask>1048576</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Bass Rider Live Mono</Name>
+		<ID>5653544253564D626173732072696465</ID>
+		<Categories>Fx|Bass</Categories>
+		<CategoryMask>1048576</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Bass Rider Live Stereo</Name>
+		<ID>56535442535653626173732072696465</ID>
+		<Categories>Fx|Bass</Categories>
+		<CategoryMask>1048576</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>IR-L Mono</Name>
+		<ID>5653544330454D69722D6C206D6F6E6F</ID>
+		<Categories>Fx|Reverb</Categories>
+		<CategoryMask>16384</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>IR-L efficient Stereo</Name>
+		<ID>5653544330455369722D6C2065666669</ID>
+		<Categories>Fx|Reverb</Categories>
+		<CategoryMask>16384</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>IR-L Mono/Stereo</Name>
+		<ID>5653544330455869722D6C206D6F6E6F</ID>
+		<Categories>Fx|Reverb</Categories>
+		<CategoryMask>16384</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>IR-L full Stereo</Name>
+		<ID>5653544330465369722D6C2066756C6C</ID>
+		<Categories>Fx|Reverb</Categories>
+		<CategoryMask>16384</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>C1 comp-sc Mono</Name>
+		<ID>5653544331434D633120636F6D702D73</ID>
+		<Categories>Fx|Dynamics</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>C1 comp-sc Stereo</Name>
+		<ID>56535443314353633120636F6D702D73</ID>
+		<Categories>Fx|Dynamics</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>CLA Effects Stereo</Name>
+		<ID>56535443454653636C61206566666563</ID>
+		<Categories>Fx|Multi Effect</Categories>
+		<CategoryMask>1024</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>CLA Effects Mono/Stereo</Name>
+		<ID>56535443454658636C61206566666563</ID>
+		<Categories>Fx|Multi Effect</Categories>
+		<CategoryMask>1024</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>EMO-F2 Mono</Name>
+		<ID>56535443464C4D656D6F2D6632206D6F</ID>
+		<Categories>Fx|EQ</Categories>
+		<CategoryMask>16</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>EMO-F2 Stereo</Name>
+		<ID>56535443464C53656D6F2D6632207374</ID>
+		<Categories>Fx|EQ</Categories>
+		<CategoryMask>16</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>H-Comp Mono</Name>
+		<ID>565354434C414D682D636F6D70206D6F</ID>
+		<Categories>Fx|Dynamics</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>H-Comp Stereo</Name>
+		<ID>565354434C4153682D636F6D70207374</ID>
+		<Categories>Fx|Dynamics</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>CLA MixDown Mono</Name>
+		<ID>565354434D424D636C61206D6978646F</ID>
+		<Categories>Fx|Mastering</Categories>
+		<CategoryMask>256</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>CLA MixDown Stereo</Name>
+		<ID>565354434D4253636C61206D6978646F</ID>
+		<Categories>Fx|Mastering</Categories>
+		<CategoryMask>256</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>C1 comp Mono</Name>
+		<ID>565354434D504D633120636F6D70206D</ID>
+		<Categories>Fx|Dynamics</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>C1 comp Stereo</Name>
+		<ID>565354434D5053633120636F6D702073</ID>
+		<Categories>Fx|Dynamics</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Center Stereo</Name>
+		<ID>565354434E545363656E746572207374</ID>
+		<Categories>Fx|Spatial + Panner</Categories>
+		<CategoryMask>64</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>C1 comp-gate Mono</Name>
+		<ID>565354434F4D4D633120636F6D702D67</ID>
+		<Categories>Fx|Dynamics</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>C1 comp-gate Stereo</Name>
+		<ID>565354434F4D53633120636F6D702D67</ID>
+		<Categories>Fx|Dynamics</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>CLA Unplugged Stereo</Name>
+		<ID>56535443554E53636C6120756E706C75</ID>
+		<Categories>Fx|Other</Categories>
+		<CategoryMask>131072</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>CLA Unplugged Mono/Stereo</Name>
+		<ID>56535443554E58636C6120756E706C75</ID>
+		<Categories>Fx|Other</Categories>
+		<CategoryMask>131072</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>CLA Vocals Stereo</Name>
+		<ID>56535443564F53636C6120766F63616C</ID>
+		<Categories>Fx|Vocals</Categories>
+		<CategoryMask>524288</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>CLA Vocals Mono/Stereo</Name>
+		<ID>56535443564F58636C6120766F63616C</ID>
+		<Categories>Fx|Vocals</Categories>
+		<CategoryMask>524288</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>C4 Mono</Name>
+		<ID>5653544445514D6334206D6F6E6F0000</ID>
+		<Categories>Fx|Dynamics - Multiband</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>C4 Stereo</Name>
+		<ID>5653544445515363342073746572656F</ID>
+		<Categories>Fx|Dynamics - Multiband</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/Acon Digital/DeFilter.vst3</Path>
+		<FileTime>2021-06-21 08:27</FileTime>
+		<Name>Acon Digital DeFilter</Name>
+		<ID>5653544446494C61636F6E2064696769</ID>
+		<Categories>Fx|EQ|Restoration</Categories>
+		<CategoryMask>4112</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Acon Digital</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Doppler Stereo</Name>
+		<ID>56535444504153646F70706C65722073</ID>
+		<Categories>Fx|Spatial + Panner</Categories>
+		<CategoryMask>64</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Doppler Mono/Stereo</Name>
+		<ID>56535444504158646F70706C6572206D</ID>
+		<Categories>Fx|Spatial + Panner</Categories>
+		<CategoryMask>64</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>DeEsser Mono</Name>
+		<ID>5653544453414D64656573736572206D</ID>
+		<Categories>Fx|Dynamics</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>DeEsser Stereo</Name>
+		<ID>56535444534153646565737365722073</ID>
+		<Categories>Fx|Dynamics</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Berzerk Distortion Mono</Name>
+		<ID>5653544458314D6265727A65726B2064</ID>
+		<Categories>Fx|Distortion</Categories>
+		<CategoryMask>8388608</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Berzerk Distortion Stereo</Name>
+		<ID>565354445831536265727A65726B2064</ID>
+		<Categories>Fx|Distortion</Categories>
+		<CategoryMask>8388608</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>EKramer DR Mono</Name>
+		<ID>565354454B444D656B72616D65722064</ID>
+		<Categories>Fx|Drums</Categories>
+		<CategoryMask>4194304</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>EKramer DR Stereo</Name>
+		<ID>565354454B4453656B72616D65722064</ID>
+		<Categories>Fx|Drums</Categories>
+		<CategoryMask>4194304</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Enigma Stereo</Name>
+		<ID>565354454E4753656E69676D61207374</ID>
+		<Categories>Fx|Modulation</Categories>
+		<CategoryMask>2048</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Enigma Mono/Stereo</Name>
+		<ID>565354454E4758656E69676D61206D6F</ID>
+		<Categories>Fx|Modulation</Categories>
+		<CategoryMask>2048</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Q1 Mono</Name>
+		<ID>5653544551314D7131206D6F6E6F0000</ID>
+		<Categories>Fx|EQ</Categories>
+		<CategoryMask>16</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Q1 Stereo</Name>
+		<ID>5653544551315371312073746572656F</ID>
+		<Categories>Fx|EQ</Categories>
+		<CategoryMask>16</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Q2 Mono</Name>
+		<ID>5653544551324D7132206D6F6E6F0000</ID>
+		<Categories>Fx|EQ</Categories>
+		<CategoryMask>16</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Q2 Stereo</Name>
+		<ID>5653544551325371322073746572656F</ID>
+		<Categories>Fx|EQ</Categories>
+		<CategoryMask>16</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Q3 Mono</Name>
+		<ID>5653544551334D7133206D6F6E6F0000</ID>
+		<Categories>Fx|EQ</Categories>
+		<CategoryMask>16</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Q3 Stereo</Name>
+		<ID>5653544551335371332073746572656F</ID>
+		<Categories>Fx|EQ</Categories>
+		<CategoryMask>16</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Q4 Mono</Name>
+		<ID>5653544551344D7134206D6F6E6F0000</ID>
+		<Categories>Fx|EQ</Categories>
+		<CategoryMask>16</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Q4 Stereo</Name>
+		<ID>5653544551345371342073746572656F</ID>
+		<Categories>Fx|EQ</Categories>
+		<CategoryMask>16</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Q6 Mono</Name>
+		<ID>5653544551364D7136206D6F6E6F0000</ID>
+		<Categories>Fx|EQ</Categories>
+		<CategoryMask>16</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Q6 Stereo</Name>
+		<ID>5653544551365371362073746572656F</ID>
+		<Categories>Fx|EQ</Categories>
+		<CategoryMask>16</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Q8 Mono</Name>
+		<ID>5653544551384D7138206D6F6E6F0000</ID>
+		<Categories>Fx|EQ</Categories>
+		<CategoryMask>16</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Q8 Stereo</Name>
+		<ID>5653544551385371382073746572656F</ID>
+		<Categories>Fx|EQ</Categories>
+		<CategoryMask>16</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Q10 Mono</Name>
+		<ID>5653544551414D713130206D6F6E6F00</ID>
+		<Categories>Fx|EQ</Categories>
+		<CategoryMask>16</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Q10 Stereo</Name>
+		<ID>56535445514153713130207374657265</ID>
+		<Categories>Fx|EQ</Categories>
+		<CategoryMask>16</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>CLA EchoSphere Stereo</Name>
+		<ID>56535445535053636C61206563686F73</ID>
+		<Categories>Fx|Multi Effect</Categories>
+		<CategoryMask>1024</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>CLA EchoSphere Mono/Stereo</Name>
+		<ID>56535445535058636C61206563686F73</ID>
+		<Categories>Fx|Multi Effect</Categories>
+		<CategoryMask>1024</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>PuigChild 660 Mono</Name>
+		<ID>5653544643484D707569676368696C64</ID>
+		<Categories>Fx|Dynamics</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>PuigChild 670 Stereo</Name>
+		<ID>56535446434853707569676368696C64</ID>
+		<Categories>Fx|Dynamics</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>MetaFlanger Mono</Name>
+		<ID>565354464C4E4D6D657461666C616E67</ID>
+		<Categories>Fx|Modulation</Categories>
+		<CategoryMask>2048</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>MetaFlanger Stereo</Name>
+		<ID>565354464C4E536D657461666C616E67</ID>
+		<Categories>Fx|Modulation</Categories>
+		<CategoryMask>2048</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>MetaFlanger Mono/Stereo</Name>
+		<ID>565354464C4E586D657461666C616E67</ID>
+		<Categories>Fx|Modulation</Categories>
+		<CategoryMask>2048</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>GTR Amp 2Cab Mono</Name>
+		<ID>5653544741324D67747220616D702032</ID>
+		<Categories>Fx|Guitar</Categories>
+		<CategoryMask>2097152</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>GTR Amp Mono</Name>
+		<ID>56535447414D4D67747220616D70206D</ID>
+		<Categories>Fx|Guitar</Categories>
+		<CategoryMask>2097152</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>GTR Amp Stereo</Name>
+		<ID>56535447414D5367747220616D702073</ID>
+		<Categories>Fx|Guitar</Categories>
+		<CategoryMask>2097152</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>GTR Amp Mono/Stereo</Name>
+		<ID>56535447414D5867747220616D70206D</ID>
+		<Categories>Fx|Guitar</Categories>
+		<CategoryMask>2097152</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>C1 gate Mono</Name>
+		<ID>5653544741544D63312067617465206D</ID>
+		<Categories>Fx|Dynamics</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>C1 gate Stereo</Name>
+		<ID>56535447415453633120676174652073</ID>
+		<Categories>Fx|Dynamics</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>GTR Stomp 2 Mono</Name>
+		<ID>5653544743324D6774722073746F6D70</ID>
+		<Categories>Fx|Guitar</Categories>
+		<CategoryMask>2097152</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>GTR Stomp 2 Stereo</Name>
+		<ID>565354474332536774722073746F6D70</ID>
+		<Categories>Fx|Guitar</Categories>
+		<CategoryMask>2097152</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>GTR Stomp 2 Mono/Stereo</Name>
+		<ID>565354474332586774722073746F6D70</ID>
+		<Categories>Fx|Guitar</Categories>
+		<CategoryMask>2097152</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>GTR Stomp 4 Mono</Name>
+		<ID>5653544743344D6774722073746F6D70</ID>
+		<Categories>Fx|Guitar</Categories>
+		<CategoryMask>2097152</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>GTR Stomp 4 Stereo</Name>
+		<ID>565354474334536774722073746F6D70</ID>
+		<Categories>Fx|Guitar</Categories>
+		<CategoryMask>2097152</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>GTR Stomp 4 Mono/Stereo</Name>
+		<ID>565354474334586774722073746F6D70</ID>
+		<Categories>Fx|Guitar</Categories>
+		<CategoryMask>2097152</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>GTR Stomp 6 Mono</Name>
+		<ID>56535447434E4D6774722073746F6D70</ID>
+		<Categories>Fx|Guitar</Categories>
+		<CategoryMask>2097152</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>GTR Stomp 6 Stereo</Name>
+		<ID>56535447434E536774722073746F6D70</ID>
+		<Categories>Fx|Guitar</Categories>
+		<CategoryMask>2097152</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>GTR Stomp 6 Mono/Stereo</Name>
+		<ID>56535447434E586774722073746F6D70</ID>
+		<Categories>Fx|Guitar</Categories>
+		<CategoryMask>2097152</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Electric Grand 80 Stereo</Name>
+		<ID>56535447523853656C65637472696320</ID>
+		<Categories>Instrument|Waves</Categories>
+		<CategoryMask>128</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>0</Inputs>
+		<Outputs>0</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>GW ToneCentric Mono</Name>
+		<ID>56535447524D4D677720746F6E656365</ID>
+		<Categories>Fx|Distortion</Categories>
+		<CategoryMask>8388608</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>GW ToneCentric Stereo</Name>
+		<ID>56535447524D53677720746F6E656365</ID>
+		<Categories>Fx|Distortion</Categories>
+		<CategoryMask>8388608</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>GTR Tool Rack Stereo</Name>
+		<ID>56535447564D5367747220746F6F6C20</ID>
+		<Categories>Fx|Guitar</Categories>
+		<CategoryMask>2097152</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>GTR Tool Rack Mono/Stereo</Name>
+		<ID>56535447564D5867747220746F6F6C20</ID>
+		<Categories>Fx|Guitar</Categories>
+		<CategoryMask>2097152</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>H-Delay Mono</Name>
+		<ID>5653544842444D682D64656C6179206D</ID>
+		<Categories>Fx|Delay</Categories>
+		<CategoryMask>4</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>H-Delay Stereo</Name>
+		<ID>56535448424453682D64656C61792073</ID>
+		<Categories>Fx|Delay</Categories>
+		<CategoryMask>4</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>H-Delay Mono/Stereo</Name>
+		<ID>56535448424458682D64656C6179206D</ID>
+		<Categories>Fx|Delay</Categories>
+		<CategoryMask>4</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Kramer HLS Mono</Name>
+		<ID>56535448454C4D6B72616D657220686C</ID>
+		<Categories>Fx|EQ</Categories>
+		<CategoryMask>16</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Kramer HLS Stereo</Name>
+		<ID>56535448454C536B72616D657220686C</ID>
+		<Categories>Fx|EQ</Categories>
+		<CategoryMask>16</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>MaxxVolume Mono</Name>
+		<ID>56535449564C4D6D617878766F6C756D</ID>
+		<Categories>Fx|Dynamics</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>MaxxVolume Stereo</Name>
+		<ID>56535449564C536D617878766F6C756D</ID>
+		<Categories>Fx|Dynamics</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>L1 limiter Mono</Name>
+		<ID>5653544C31434D6C31206C696D697465</ID>
+		<Categories>Fx|Dynamics</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>L1 limiter Stereo</Name>
+		<ID>5653544C3143536C31206C696D697465</ID>
+		<Categories>Fx|Dynamics</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>L2 Mono</Name>
+		<ID>5653544C324D4D6C32206D6F6E6F0000</ID>
+		<Categories>Fx|Dynamics</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>L2 Stereo</Name>
+		<ID>5653544C324D536C322073746572656F</ID>
+		<Categories>Fx|Dynamics</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>L3 UltraMaximizer Mono</Name>
+		<ID>5653544C33474D6C3320756C7472616D</ID>
+		<Categories>Fx|Dynamics - Multiband</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>L3 UltraMaximizer Stereo</Name>
+		<ID>5653544C3347536C3320756C7472616D</ID>
+		<Categories>Fx|Dynamics - Multiband</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>L3 MultiMaximizer Mono</Name>
+		<ID>5653544C33504D6C33206D756C74696D</ID>
+		<Categories>Fx|Dynamics - Multiband</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>L3 MultiMaximizer Stereo</Name>
+		<ID>5653544C3350536C33206D756C74696D</ID>
+		<Categories>Fx|Dynamics - Multiband</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>L316 Mono</Name>
+		<ID>5653544C33514D6C333136206D6F6E6F</ID>
+		<Categories>Fx|Dynamics - Multiband</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>L316 Stereo</Name>
+		<ID>5653544C3351536C3331362073746572</ID>
+		<Categories>Fx|Dynamics - Multiband</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>LinMB Mono</Name>
+		<ID>5653544C43354D6C696E6D62206D6F6E</ID>
+		<Categories>Fx|Dynamics - Multiband</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>LinMB Stereo</Name>
+		<ID>5653544C4335536C696E6D6220737465</ID>
+		<Categories>Fx|Dynamics - Multiband</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Lofi Space Mono</Name>
+		<ID>5653544C46534D6C6F66692073706163</ID>
+		<Categories>Fx|Multi Effect</Categories>
+		<CategoryMask>1024</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Lofi Space Stereo</Name>
+		<ID>5653544C4653536C6F66692073706163</ID>
+		<Categories>Fx|Multi Effect</Categories>
+		<CategoryMask>1024</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Lofi Space Mono/Stereo</Name>
+		<ID>5653544C4653586C6F66692073706163</ID>
+		<Categories>Fx|Multi Effect</Categories>
+		<CategoryMask>1024</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>L1+ Ultramaximizer Stereo</Name>
+		<ID>5653544C494D316C312B20756C747261</ID>
+		<Categories>Fx|Dynamics</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>LoAir 5.1</Name>
+		<ID>5653544C4F41366C6F61697220352E31</ID>
+		<Categories>Fx|Surround</Categories>
+		<CategoryMask>32768</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>6</Inputs>
+		<Outputs>6</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>LoAir 5.0/5.1</Name>
+		<ID>5653544C4F41426C6F61697220352E30</ID>
+		<Categories>Fx|Surround</Categories>
+		<CategoryMask>32768</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>5</Inputs>
+		<Outputs>5</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>LoAir Mono</Name>
+		<ID>5653544C4F414D6C6F616972206D6F6E</ID>
+		<Categories>Fx|Multi Effect</Categories>
+		<CategoryMask>1024</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>LoAir Stereo</Name>
+		<ID>5653544C4F41536C6F61697220737465</ID>
+		<Categories>Fx|Multi Effect</Categories>
+		<CategoryMask>1024</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>LinEQ Broadband Mono</Name>
+		<ID>5653544C51414D6C696E65712062726F</ID>
+		<Categories>Fx|EQ</Categories>
+		<CategoryMask>16</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>LinEQ Broadband Stereo</Name>
+		<ID>5653544C5141536C696E65712062726F</ID>
+		<Categories>Fx|EQ</Categories>
+		<CategoryMask>16</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>LinEQ Lowband Mono</Name>
+		<ID>5653544C51534D6C696E6571206C6F77</ID>
+		<Categories>Fx|EQ</Categories>
+		<CategoryMask>16</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>LinEQ Lowband Stereo</Name>
+		<ID>5653544C5153536C696E6571206C6F77</ID>
+		<Categories>Fx|EQ</Categories>
+		<CategoryMask>16</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Vocal Rider Live Mono</Name>
+		<ID>5653544C52444D766F63616C20726964</ID>
+		<Categories>Fx|Vocals</Categories>
+		<CategoryMask>524288</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Vocal Rider Live Stereo</Name>
+		<ID>5653544C524453766F63616C20726964</ID>
+		<Categories>Fx|Vocals</Categories>
+		<CategoryMask>524288</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>MannyM TripleD Mono</Name>
+		<ID>5653544D4D534D6D616E6E796D207472</ID>
+		<Categories>Fx|Dynamics - Multiband</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>MannyM TripleD Stereo</Name>
+		<ID>5653544D4D53536D616E6E796D207472</ID>
+		<Categories>Fx|Dynamics - Multiband</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>MondoMod Mono</Name>
+		<ID>5653544D4F444D6D6F6E646F6D6F6420</ID>
+		<Categories>Fx|Modulation</Categories>
+		<CategoryMask>2048</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>MondoMod Stereo</Name>
+		<ID>5653544D4F44536D6F6E646F6D6F6420</ID>
+		<Categories>Fx|Modulation</Categories>
+		<CategoryMask>2048</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>MondoMod Mono/Stereo</Name>
+		<ID>5653544D4F44586D6F6E646F6D6F6420</ID>
+		<Categories>Fx|Modulation</Categories>
+		<CategoryMask>2048</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>EMO-Q4 Mono</Name>
+		<ID>5653544D51344D656D6F2D7134206D6F</ID>
+		<Categories>Fx|EQ</Categories>
+		<CategoryMask>16</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>EMO-Q4 Stereo</Name>
+		<ID>5653544D513453656D6F2D7134207374</ID>
+		<Categories>Fx|EQ</Categories>
+		<CategoryMask>16</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>S1 MS Matrix Stereo</Name>
+		<ID>5653544D5358537331206D73206D6174</ID>
+		<Categories>Fx|Spatial + Panner</Categories>
+		<CategoryMask>64</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>SuperTap 2-Taps Mono</Name>
+		<ID>5653544D54324D737570657274617020</ID>
+		<Categories>Fx|Delay</Categories>
+		<CategoryMask>4</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>SuperTap 2-Taps Stereo</Name>
+		<ID>5653544D543253737570657274617020</ID>
+		<Categories>Fx|Delay</Categories>
+		<CategoryMask>4</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>SuperTap 2-Taps Mono/Stereo</Name>
+		<ID>5653544D543258737570657274617020</ID>
+		<Categories>Fx|Delay</Categories>
+		<CategoryMask>4</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>SuperTap 6-Taps Mono</Name>
+		<ID>5653544D54364D737570657274617020</ID>
+		<Categories>Fx|Delay</Categories>
+		<CategoryMask>4</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>SuperTap 6-Taps Stereo</Name>
+		<ID>5653544D543653737570657274617020</ID>
+		<Categories>Fx|Delay</Categories>
+		<CategoryMask>4</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>SuperTap 6-Taps Mono/Stereo</Name>
+		<ID>5653544D543658737570657274617020</ID>
+		<Categories>Fx|Delay</Categories>
+		<CategoryMask>4</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>MV2 Mono</Name>
+		<ID>5653544D56324D6D7632206D6F6E6F00</ID>
+		<Categories>Fx|Dynamics</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>MV2 Stereo</Name>
+		<ID>5653544D5632536D7632207374657265</ID>
+		<Categories>Fx|Dynamics</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>MaxxBass Mono</Name>
+		<ID>5653544D58424D6D6178786261737320</ID>
+		<Categories>Fx|Bass</Categories>
+		<CategoryMask>1048576</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>MaxxBass Stereo</Name>
+		<ID>5653544D5842536D6178786261737320</ID>
+		<Categories>Fx|Bass</Categories>
+		<CategoryMask>1048576</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>RVox Mono</Name>
+		<ID>5653544D58564D72766F78206D6F6E6F</ID>
+		<Categories>Fx|Dynamics</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>RVox Stereo</Name>
+		<ID>5653544D58565372766F782073746572</ID>
+		<Categories>Fx|Dynamics</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Scheps 73 Mono</Name>
+		<ID>5653544E37334D736368657073203733</ID>
+		<Categories>Fx|EQ</Categories>
+		<CategoryMask>16</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Scheps 73 Stereo</Name>
+		<ID>5653544E373353736368657073203733</ID>
+		<Categories>Fx|EQ</Categories>
+		<CategoryMask>16</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.7.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Abbey Road Studio 3 5.1/Stereo</Name>
+		<ID>5653544E415245616262657920726F61</ID>
+		<Categories>Fx|Spatial + Panner</Categories>
+		<CategoryMask>64</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>6</Inputs>
+		<Outputs>6</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.7.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Abbey Road Studio 3 7.1/Stereo</Name>
+		<ID>5653544E415247616262657920726F61</ID>
+		<Categories>Fx|Spatial + Panner</Categories>
+		<CategoryMask>64</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>8</Inputs>
+		<Outputs>8</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.7.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Abbey Road Studio 3 Stereo</Name>
+		<ID>5653544E415253616262657920726F61</ID>
+		<Categories>Fx|Spatial + Panner</Categories>
+		<CategoryMask>64</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>VEQ3 Mono</Name>
+		<ID>5653544E45514D76657133206D6F6E6F</ID>
+		<Categories>Fx|EQ</Categories>
+		<CategoryMask>16</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>VEQ3 Stereo</Name>
+		<ID>5653544E455153766571332073746572</ID>
+		<Categories>Fx|EQ</Categories>
+		<CategoryMask>16</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>S1 Shuffler Stereo</Name>
+		<ID>5653544E49445373312073687566666C</ID>
+		<Categories>Fx|Spatial + Panner</Categories>
+		<CategoryMask>64</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell3-VST3 13.0.vst3</Path>
+		<FileTime>2022-07-27 16:05</FileTime>
+		<Name>Nx Ocean Way Nashville Stereo</Name>
+		<ID>5653544E4F57536E78206F6365616E20</ID>
+		<Categories>Fx|Spatial + Panner</Categories>
+		<CategoryMask>64</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>S1 Imager Stereo</Name>
+		<ID>5653544E534853733120696D61676572</ID>
+		<Categories>Fx|Spatial + Panner</Categories>
+		<CategoryMask>64</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>VComp Mono</Name>
+		<ID>5653544E56434D76636F6D70206D6F6E</ID>
+		<Categories>Fx|Dynamics</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>VComp Stereo</Name>
+		<ID>5653544E56435376636F6D7020737465</ID>
+		<Categories>Fx|Dynamics</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>OneKnob Driver Mono</Name>
+		<ID>5653544F4B444D6F6E656B6E6F622064</ID>
+		<Categories>Fx|Other</Categories>
+		<CategoryMask>131072</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>OneKnob Driver Stereo</Name>
+		<ID>5653544F4B44536F6E656B6E6F622064</ID>
+		<Categories>Fx|Other</Categories>
+		<CategoryMask>131072</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>PuigTec EQP1A Mono</Name>
+		<ID>5653545031414D707569677465632065</ID>
+		<Categories>Fx|EQ</Categories>
+		<CategoryMask>16</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>PuigTec EQP1A Stereo</Name>
+		<ID>56535450314153707569677465632065</ID>
+		<Categories>Fx|EQ</Categories>
+		<CategoryMask>16</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>InPhase LT Mono</Name>
+		<ID>5653545048414D696E7068617365206C</ID>
+		<Categories>Fx|Tools</Categories>
+		<CategoryMask>65536</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>InPhase LT Stereo</Name>
+		<ID>56535450484153696E7068617365206C</ID>
+		<Categories>Fx|Tools</Categories>
+		<CategoryMask>65536</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>InPhase LT Live Mono</Name>
+		<ID>5653545048424D696E7068617365206C</ID>
+		<Categories>Fx|Tools</Categories>
+		<CategoryMask>65536</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>InPhase LT Live Stereo</Name>
+		<ID>56535450484253696E7068617365206C</ID>
+		<Categories>Fx|Tools</Categories>
+		<CategoryMask>65536</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>InPhase Live Mono</Name>
+		<ID>56535450484C4D696E7068617365206C</ID>
+		<Categories>Fx|Tools</Categories>
+		<CategoryMask>65536</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>InPhase Live Stereo</Name>
+		<ID>56535450484C53696E7068617365206C</ID>
+		<Categories>Fx|Tools</Categories>
+		<CategoryMask>65536</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>InPhase Mono</Name>
+		<ID>56535450485A4D696E7068617365206D</ID>
+		<Categories>Fx|Tools</Categories>
+		<CategoryMask>65536</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>InPhase Stereo</Name>
+		<ID>56535450485A53696E70686173652073</ID>
+		<Categories>Fx|Tools</Categories>
+		<CategoryMask>65536</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Abbey Road Plates Mono</Name>
+		<ID>565354504C544D616262657920726F61</ID>
+		<Categories>Fx|Reverb</Categories>
+		<CategoryMask>16384</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Abbey Road Plates Stereo</Name>
+		<ID>565354504C5453616262657920726F61</ID>
+		<Categories>Fx|Reverb</Categories>
+		<CategoryMask>16384</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Abbey Road Plates Mono/Stereo</Name>
+		<ID>565354504C5458616262657920726F61</ID>
+		<Categories>Fx|Reverb</Categories>
+		<CategoryMask>16384</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>PuigTec MEQ5 Mono</Name>
+		<ID>565354504D354D70756967746563206D</ID>
+		<Categories>Fx|EQ</Categories>
+		<CategoryMask>16</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>PuigTec MEQ5 Stereo</Name>
+		<ID>565354504D355370756967746563206D</ID>
+		<Categories>Fx|EQ</Categories>
+		<CategoryMask>16</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>AR TG Meter Bridge Mono</Name>
+		<ID>56535450504D4D6172207467206D6574</ID>
+		<Categories>Fx|Mastering</Categories>
+		<CategoryMask>256</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>AR TG Meter Bridge Stereo</Name>
+		<ID>56535450504D536172207467206D6574</ID>
+		<Categories>Fx|Mastering</Categories>
+		<CategoryMask>256</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>PlaylistRider Mono</Name>
+		<ID>56535450524C4D706C61796C69737472</ID>
+		<Categories>Fx|Dynamics</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>PlaylistRider Stereo</Name>
+		<ID>56535450524C53706C61796C69737472</ID>
+		<Categories>Fx|Dynamics</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Saphira Mono</Name>
+		<ID>5653545052534D73617068697261206D</ID>
+		<Categories>Fx|Mastering</Categories>
+		<CategoryMask>256</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Saphira Stereo</Name>
+		<ID>56535450525353736170686972612073</ID>
+		<Categories>Fx|Mastering</Categories>
+		<CategoryMask>256</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>PS22 Spread(10) Mono/Stereo</Name>
+		<ID>5653545053384D707332322073707265</ID>
+		<Categories>Fx|Spatial + Panner</Categories>
+		<CategoryMask>64</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>PS22 Spread(10) Stereo</Name>
+		<ID>56535450533853707332322073707265</ID>
+		<Categories>Fx|Spatial + Panner</Categories>
+		<CategoryMask>64</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>PS22 Spread Mono/Stereo</Name>
+		<ID>5653545053454D707332322073707265</ID>
+		<Categories>Fx|Spatial + Panner</Categories>
+		<CategoryMask>64</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>PS22 Spread Stereo</Name>
+		<ID>56535450534553707332322073707265</ID>
+		<Categories>Fx|Spatial + Panner</Categories>
+		<CategoryMask>64</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>PS22 Split Mono/Stereo</Name>
+		<ID>5653545053534D707332322073706C69</ID>
+		<Categories>Fx|Spatial + Panner</Categories>
+		<CategoryMask>64</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>PS22 Split Stereo</Name>
+		<ID>56535450535353707332322073706C69</ID>
+		<Categories>Fx|Spatial + Panner</Categories>
+		<CategoryMask>64</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>PS22 XSplit Mono/Stereo</Name>
+		<ID>5653545053584D70733232207873706C</ID>
+		<Categories>Fx|Spatial + Panner</Categories>
+		<CategoryMask>64</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>PS22 XSplit Stereo</Name>
+		<ID>5653545053585370733232207873706C</ID>
+		<Categories>Fx|Spatial + Panner</Categories>
+		<CategoryMask>64</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Kramer PIE Mono</Name>
+		<ID>5653545059454D6B72616D6572207069</ID>
+		<Categories>Fx|Dynamics</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Kramer PIE Stereo</Name>
+		<ID>565354505945536B72616D6572207069</ID>
+		<Categories>Fx|Dynamics</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>F6 Mono</Name>
+		<ID>5653545144354D6636206D6F6E6F0000</ID>
+		<Categories>Fx|EQ</Categories>
+		<CategoryMask>16</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>F6 Stereo</Name>
+		<ID>5653545144355366362073746572656F</ID>
+		<Categories>Fx|EQ</Categories>
+		<CategoryMask>16</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>F6-RTA Mono</Name>
+		<ID>56535451445A4D66362D727461206D6F</ID>
+		<Categories>Fx|EQ</Categories>
+		<CategoryMask>16</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>F6-RTA Stereo</Name>
+		<ID>56535451445A5366362D727461207374</ID>
+		<Categories>Fx|EQ</Categories>
+		<CategoryMask>16</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>L3-LL Ultra Mono</Name>
+		<ID>5653545233474D6C332D6C6C20756C74</ID>
+		<Categories>Fx|Dynamics - Multiband</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>L3-LL Ultra Stereo</Name>
+		<ID>565354523347536C332D6C6C20756C74</ID>
+		<Categories>Fx|Dynamics - Multiband</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>L3-LL Multi Mono</Name>
+		<ID>5653545233504D6C332D6C6C206D756C</ID>
+		<Categories>Fx|Dynamics - Multiband</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>L3-LL Multi Stereo</Name>
+		<ID>565354523350536C332D6C6C206D756C</ID>
+		<Categories>Fx|Dynamics - Multiband</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Renaissance Axx Mono</Name>
+		<ID>5653545241584D72656E61697373616E</ID>
+		<Categories>Fx|Dynamics</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Renaissance Axx Stereo</Name>
+		<ID>5653545241585372656E61697373616E</ID>
+		<Categories>Fx|Dynamics</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Vocal Rider Mono</Name>
+		<ID>5653545244524D766F63616C20726964</ID>
+		<Categories>Fx|Vocals</Categories>
+		<CategoryMask>524288</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Vocal Rider Stereo</Name>
+		<ID>56535452445253766F63616C20726964</ID>
+		<Categories>Fx|Vocals</Categories>
+		<CategoryMask>524288</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>RDeEsser Mono</Name>
+		<ID>5653545244534D726465657373657220</ID>
+		<Categories>Fx|Dynamics</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>RDeEsser Stereo</Name>
+		<ID>56535452445353726465657373657220</ID>
+		<Categories>Fx|Dynamics</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>RBass Mono</Name>
+		<ID>565354524E424D7262617373206D6F6E</ID>
+		<Categories>Fx|Bass</Categories>
+		<CategoryMask>1048576</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>RBass Stereo</Name>
+		<ID>565354524E4253726261737320737465</ID>
+		<Categories>Fx|Bass</Categories>
+		<CategoryMask>1048576</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>RChannel Mono</Name>
+		<ID>565354524E544D726368616E6E656C20</ID>
+		<Categories>Fx|Channel Strip</Categories>
+		<CategoryMask>2</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>RChannel Stereo</Name>
+		<ID>565354524E5453726368616E6E656C20</ID>
+		<Categories>Fx|Channel Strip</Categories>
+		<CategoryMask>2</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>RChannel Mono/Stereo</Name>
+		<ID>565354524E5458726368616E6E656C20</ID>
+		<Categories>Fx|Channel Strip</Categories>
+		<CategoryMask>2</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>REQ 2 Mono</Name>
+		<ID>5653545251324D7265712032206D6F6E</ID>
+		<Categories>Fx|EQ</Categories>
+		<CategoryMask>16</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>REQ 2 Stereo</Name>
+		<ID>56535452513253726571203220737465</ID>
+		<Categories>Fx|EQ</Categories>
+		<CategoryMask>16</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>REQ 4 Mono</Name>
+		<ID>5653545251344D7265712034206D6F6E</ID>
+		<Categories>Fx|EQ</Categories>
+		<CategoryMask>16</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>REQ 4 Stereo</Name>
+		<ID>56535452513453726571203420737465</ID>
+		<Categories>Fx|EQ</Categories>
+		<CategoryMask>16</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>REQ 6 Mono</Name>
+		<ID>5653545251364D7265712036206D6F6E</ID>
+		<Categories>Fx|EQ</Categories>
+		<CategoryMask>16</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>REQ 6 Stereo</Name>
+		<ID>56535452513653726571203620737465</ID>
+		<Categories>Fx|EQ</Categories>
+		<CategoryMask>16</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>RVerb Stereo</Name>
+		<ID>56535452524653727665726220737465</ID>
+		<Categories>Fx|Reverb</Categories>
+		<CategoryMask>16384</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>RVerb Mono/Stereo</Name>
+		<ID>565354525246587276657262206D6F6E</ID>
+		<Categories>Fx|Reverb</Categories>
+		<CategoryMask>16384</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>OneKnob Filter Mono</Name>
+		<ID>5653545253464D6F6E656B6E6F622066</ID>
+		<Categories>Fx|Other</Categories>
+		<CategoryMask>131072</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>OneKnob Filter Stereo</Name>
+		<ID>565354525346536F6E656B6E6F622066</ID>
+		<Categories>Fx|Other</Categories>
+		<CategoryMask>131072</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Submarine Mono</Name>
+		<ID>56535453424D4D7375626D6172696E65</ID>
+		<Categories>Fx|Multi Effect</Categories>
+		<CategoryMask>1024</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Submarine Stereo</Name>
+		<ID>56535453424D537375626D6172696E65</ID>
+		<Categories>Fx|Multi Effect</Categories>
+		<CategoryMask>1024</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>SSLGChannel Mono</Name>
+		<ID>5653545343474D73736C676368616E6E</ID>
+		<Categories>Fx|Channel Strip</Categories>
+		<CategoryMask>2</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>SSLGChannel Stereo</Name>
+		<ID>5653545343475373736C676368616E6E</ID>
+		<Categories>Fx|Channel Strip</Categories>
+		<CategoryMask>2</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>SSLChannel Mono</Name>
+		<ID>5653545343484D73736C6368616E6E65</ID>
+		<Categories>Fx|Channel Strip</Categories>
+		<CategoryMask>2</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>SSLChannel Stereo</Name>
+		<ID>5653545343485373736C6368616E6E65</ID>
+		<Categories>Fx|Channel Strip</Categories>
+		<CategoryMask>2</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>MetaFilter Mono</Name>
+		<ID>5653545346544D6D65746166696C7465</ID>
+		<Categories>Fx|Modulation</Categories>
+		<CategoryMask>2048</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>MetaFilter Stereo</Name>
+		<ID>565354534654536D65746166696C7465</ID>
+		<Categories>Fx|Modulation</Categories>
+		<CategoryMask>2048</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>MetaFilter Mono/Stereo</Name>
+		<ID>565354534654586D65746166696C7465</ID>
+		<Categories>Fx|Modulation</Categories>
+		<CategoryMask>2048</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>UltraPitch 3 Voices Mono</Name>
+		<ID>5653545348334D756C74726170697463</ID>
+		<Categories>Fx|Pitch Shift</Categories>
+		<CategoryMask>8192</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>UltraPitch 3 Voices Mono/Stereo</Name>
+		<ID>56535453483358756C74726170697463</ID>
+		<Categories>Fx|Pitch Shift</Categories>
+		<CategoryMask>8192</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>UltraPitch 6 Voices Mono</Name>
+		<ID>5653545348364D756C74726170697463</ID>
+		<Categories>Fx|Pitch Shift</Categories>
+		<CategoryMask>8192</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>UltraPitch 6 Voices Mono/Stereo</Name>
+		<ID>56535453483658756C74726170697463</ID>
+		<Categories>Fx|Pitch Shift</Categories>
+		<CategoryMask>8192</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>UltraPitch Shift Mono</Name>
+		<ID>5653545348544D756C74726170697463</ID>
+		<Categories>Fx|Pitch Shift</Categories>
+		<CategoryMask>8192</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>UltraPitch Shift Mono/Stereo</Name>
+		<ID>56535453485458756C74726170697463</ID>
+		<Categories>Fx|Pitch Shift</Categories>
+		<CategoryMask>8192</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Sibilance Mono</Name>
+		<ID>5653545349424D736962696C616E6365</ID>
+		<Categories>Fx|Dynamics</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Sibilance Stereo</Name>
+		<ID>56535453494253736962696C616E6365</ID>
+		<Categories>Fx|Dynamics</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>EMO-Generator Mono</Name>
+		<ID>5653545349474D656D6F2D67656E6572</ID>
+		<Categories>Fx|Tools</Categories>
+		<CategoryMask>65536</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>EMO-Generator Stereo</Name>
+		<ID>56535453494753656D6F2D67656E6572</ID>
+		<Categories>Fx|Tools</Categories>
+		<CategoryMask>65536</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Sibilance-Live Mono</Name>
+		<ID>56535453494C4D736962696C616E6365</ID>
+		<Categories>Fx|Dynamics</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Sibilance-Live Stereo</Name>
+		<ID>56535453494C53736962696C616E6365</ID>
+		<Categories>Fx|Dynamics</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>SSLComp Mono</Name>
+		<ID>565354534C434D73736C636F6D70206D</ID>
+		<Categories>Fx|Dynamics</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>SSLComp Stereo</Name>
+		<ID>565354534C435373736C636F6D702073</ID>
+		<Categories>Fx|Dynamics</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>SSLEQ Mono</Name>
+		<ID>565354534C514D73736C6571206D6F6E</ID>
+		<Categories>Fx|EQ</Categories>
+		<CategoryMask>16</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>SSLEQ Stereo</Name>
+		<ID>565354534C515373736C657120737465</ID>
+		<Categories>Fx|EQ</Categories>
+		<CategoryMask>16</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>NLS Buss Mono</Name>
+		<ID>565354534D534D6E6C73206275737320</ID>
+		<Categories>Fx|Distortion</Categories>
+		<CategoryMask>8388608</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>NLS Buss Stereo</Name>
+		<ID>565354534D53536E6C73206275737320</ID>
+		<Categories>Fx|Distortion</Categories>
+		<CategoryMask>8388608</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>OneKnob Pumper Mono</Name>
+		<ID>5653545350314D6F6E656B6E6F622070</ID>
+		<Categories>Fx|Dynamics</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>OneKnob Pumper Stereo</Name>
+		<ID>565354535031536F6E656B6E6F622070</ID>
+		<Categories>Fx|Dynamics</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Q-Clone Mono</Name>
+		<ID>5653545351314D712D636C6F6E65206D</ID>
+		<Categories>Fx|EQ</Categories>
+		<CategoryMask>16</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Q-Clone Stereo</Name>
+		<ID>56535453513153712D636C6F6E652073</ID>
+		<Categories>Fx|EQ</Categories>
+		<CategoryMask>16</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Q-Capture Mono</Name>
+		<ID>5653545351544D712D63617074757265</ID>
+		<Categories>Fx|EQ</Categories>
+		<CategoryMask>16</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>SSL EV2 Channel Mono</Name>
+		<ID>5653545353324D73736C206576322063</ID>
+		<Categories>Fx|Channel Strip</Categories>
+		<CategoryMask>2</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>SSL EV2 Channel Stereo</Name>
+		<ID>5653545353325373736C206576322063</ID>
+		<Categories>Fx|Channel Strip</Categories>
+		<CategoryMask>2</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>NLS Channel Mono</Name>
+		<ID>5653545353434D6E6C73206368616E6E</ID>
+		<Categories>Fx|Distortion</Categories>
+		<CategoryMask>8388608</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>NLS Channel Stereo</Name>
+		<ID>565354535343536E6C73206368616E6E</ID>
+		<Categories>Fx|Distortion</Categories>
+		<CategoryMask>8388608</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>AudioTrack Mono</Name>
+		<ID>5653545354414D617564696F74726163</ID>
+		<Categories>Fx|Channel Strip</Categories>
+		<CategoryMask>2</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>AudioTrack Stereo</Name>
+		<ID>56535453544153617564696F74726163</ID>
+		<Categories>Fx|Channel Strip</Categories>
+		<CategoryMask>2</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Abbey Road Chambers Mono</Name>
+		<ID>5653545354454D616262657920726F61</ID>
+		<Categories>Fx|Reverb</Categories>
+		<CategoryMask>16384</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Abbey Road Chambers Stereo</Name>
+		<ID>56535453544553616262657920726F61</ID>
+		<Categories>Fx|Reverb</Categories>
+		<CategoryMask>16384</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Abbey Road Chambers Mono/Stereo</Name>
+		<ID>56535453544558616262657920726F61</ID>
+		<Categories>Fx|Reverb</Categories>
+		<CategoryMask>16384</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>J37 Mono</Name>
+		<ID>5653545433374D6A3337206D6F6E6F00</ID>
+		<Categories>Fx|Distortion</Categories>
+		<CategoryMask>8388608</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>J37 Stereo</Name>
+		<ID>565354543337536A3337207374657265</ID>
+		<Categories>Fx|Distortion</Categories>
+		<CategoryMask>8388608</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Kramer Tape Mono</Name>
+		<ID>5653545441504D6B72616D6572207461</ID>
+		<Categories>Fx|Distortion</Categories>
+		<CategoryMask>8388608</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Kramer Tape Stereo</Name>
+		<ID>565354544150536B72616D6572207461</ID>
+		<Categories>Fx|Distortion</Categories>
+		<CategoryMask>8388608</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>TG12345 Mono</Name>
+		<ID>5653545447354D74673132333435206D</ID>
+		<Categories>Fx|Channel Strip</Categories>
+		<CategoryMask>2</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>TG12345 Stereo</Name>
+		<ID>56535454473553746731323334352073</ID>
+		<Categories>Fx|Channel Strip</Categories>
+		<CategoryMask>2</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>AR TG Mastering Live Mono</Name>
+		<ID>56535454474C4D6172207467206D6173</ID>
+		<Categories>Fx|Mastering</Categories>
+		<CategoryMask>256</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>AR TG Mastering Live Stereo</Name>
+		<ID>56535454474C536172207467206D6173</ID>
+		<Categories>Fx|Mastering</Categories>
+		<CategoryMask>256</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>AR TG Mastering Mono</Name>
+		<ID>5653545447544D6172207467206D6173</ID>
+		<Categories>Fx|Mastering</Categories>
+		<CategoryMask>256</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>AR TG Mastering Stereo</Name>
+		<ID>565354544754536172207467206D6173</ID>
+		<Categories>Fx|Mastering</Categories>
+		<CategoryMask>256</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>The Kings Microphones Mono</Name>
+		<ID>565354544B4D4D746865206B696E6773</ID>
+		<Categories>Fx|EQ</Categories>
+		<CategoryMask>16</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>The Kings Microphones Stereo</Name>
+		<ID>565354544B4D53746865206B696E6773</ID>
+		<Categories>Fx|EQ</Categories>
+		<CategoryMask>16</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>GTR Tuner Mono</Name>
+		<ID>565354544E334D6774722074756E6572</ID>
+		<Categories>Fx|Guitar</Categories>
+		<CategoryMask>2097152</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Maserati HMX Stereo</Name>
+		<ID>565354544E48536D6173657261746920</ID>
+		<Categories>Fx|Multi Effect</Categories>
+		<CategoryMask>1024</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Maserati HMX Mono/Stereo</Name>
+		<ID>565354544E48586D6173657261746920</ID>
+		<Categories>Fx|Multi Effect</Categories>
+		<CategoryMask>1024</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Waves Tune LT Mono</Name>
+		<ID>565354544E4C4D77617665732074756E</ID>
+		<Categories>Fx|Pitch Shift</Categories>
+		<CategoryMask>8192</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Waves Tune LT Stereo</Name>
+		<ID>565354544E4C5377617665732074756E</ID>
+		<Categories>Fx|Pitch Shift</Categories>
+		<CategoryMask>8192</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Smack Attack Mono</Name>
+		<ID>5653545453504D736D61636B20617474</ID>
+		<Categories>Fx|Dynamics</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Smack Attack Stereo</Name>
+		<ID>56535454535053736D61636B20617474</ID>
+		<Categories>Fx|Dynamics</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>SoundShifter Pitch Mono</Name>
+		<ID>5653545453524D736F756E6473686966</ID>
+		<Categories>Fx|Pitch Shift</Categories>
+		<CategoryMask>8192</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>SoundShifter Pitch Stereo</Name>
+		<ID>56535454535253736F756E6473686966</ID>
+		<Categories>Fx|Pitch Shift</Categories>
+		<CategoryMask>8192</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>TrueVerb Stereo</Name>
+		<ID>56535454563453747275657665726220</ID>
+		<Categories>Fx|Reverb</Categories>
+		<CategoryMask>16384</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>TrueVerb Mono/Stereo</Name>
+		<ID>56535454564D58747275657665726220</ID>
+		<Categories>Fx|Reverb</Categories>
+		<CategoryMask>16384</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>TrueVerb Mono</Name>
+		<ID>5653545456534D747275657665726220</ID>
+		<Categories>Fx|Reverb</Categories>
+		<CategoryMask>16384</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>TransX Multi Mono</Name>
+		<ID>5653545458344D7472616E7378206D75</ID>
+		<Categories>Fx|Dynamics - Multiband</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>TransX Multi Stereo</Name>
+		<ID>565354545834537472616E7378206D75</ID>
+		<Categories>Fx|Dynamics - Multiband</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>TransX Wide Mono</Name>
+		<ID>5653545458574D7472616E7378207769</ID>
+		<Categories>Fx|Dynamics</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>TransX Wide Stereo</Name>
+		<ID>565354545857537472616E7378207769</ID>
+		<Categories>Fx|Dynamics</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>RCompressor Mono</Name>
+		<ID>5653545552434D72636F6D7072657373</ID>
+		<Categories>Fx|Dynamics</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>RCompressor Stereo</Name>
+		<ID>5653545552435372636F6D7072657373</ID>
+		<Categories>Fx|Dynamics</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Morphoder Mono</Name>
+		<ID>5653545643574D6D6F7270686F646572</ID>
+		<Categories>Fx|Modulation</Categories>
+		<CategoryMask>2048</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Morphoder Stereo</Name>
+		<ID>565354564357536D6F7270686F646572</ID>
+		<Categories>Fx|Modulation</Categories>
+		<CategoryMask>2048</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Morphoder Mono/Stereo</Name>
+		<ID>565354564357586D6F7270686F646572</ID>
+		<Categories>Fx|Modulation</Categories>
+		<CategoryMask>2048</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>VEQ4 Mono</Name>
+		<ID>5653545645514D76657134206D6F6E6F</ID>
+		<Categories>Fx|EQ</Categories>
+		<CategoryMask>16</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>VEQ4 Stereo</Name>
+		<ID>56535456455153766571342073746572</ID>
+		<Categories>Fx|EQ</Categories>
+		<CategoryMask>16</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 13.0.vst3</Path>
+		<FileTime>2022-07-27 16:05</FileTime>
+		<Name>dbx-160 Mono</Name>
+		<ID>565354564E354D6462782D313630206D</ID>
+		<Categories>Fx|Dynamics</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 13.0.vst3</Path>
+		<FileTime>2022-07-27 16:05</FileTime>
+		<Name>dbx-160 Stereo</Name>
+		<ID>565354564E35536462782D3136302073</ID>
+		<Categories>Fx|Dynamics</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Abbey Road Vinyl Mono</Name>
+		<ID>565354564E4C4D616262657920726F61</ID>
+		<Categories>Fx|Modulation</Categories>
+		<CategoryMask>2048</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Abbey Road Vinyl Stereo</Name>
+		<ID>565354564E4C53616262657920726F61</ID>
+		<Categories>Fx|Modulation</Categories>
+		<CategoryMask>2048</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Abbey Road Vinyl Light Mono</Name>
+		<ID>565354564E4F4D616262657920726F61</ID>
+		<Categories>Fx|Modulation</Categories>
+		<CategoryMask>2048</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Abbey Road Vinyl Light Stereo</Name>
+		<ID>565354564E4F53616262657920726F61</ID>
+		<Categories>Fx|Modulation</Categories>
+		<CategoryMask>2048</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Vitamin Mono</Name>
+		<ID>56535456544D4D766974616D696E206D</ID>
+		<Categories>Fx|Dynamics - Multiband</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Vitamin Stereo</Name>
+		<ID>56535456544D53766974616D696E2073</ID>
+		<Categories>Fx|Dynamics - Multiband</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>VU Meter Mono</Name>
+		<ID>56535456554D4D7675206D6574657220</ID>
+		<Categories>Fx|Metering</Categories>
+		<CategoryMask>512</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>VU Meter Stereo</Name>
+		<ID>56535456554D537675206D6574657220</ID>
+		<Categories>Fx|Metering</Categories>
+		<CategoryMask>512</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>W43 Mono</Name>
+		<ID>5653545734334D773433206D6F6E6F00</ID>
+		<Categories>Fx|Restoration</Categories>
+		<CategoryMask>4096</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>W43 Stereo</Name>
+		<ID>56535457343353773433207374657265</ID>
+		<Categories>Fx|Restoration</Categories>
+		<CategoryMask>4096</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>PAZ- Frequency Stereo</Name>
+		<ID>5653545741415370617A2D2066726571</ID>
+		<Categories>Fx|Metering</Categories>
+		<CategoryMask>512</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>PAZ- Frequency Mono</Name>
+		<ID>5653545741454D70617A2D2066726571</ID>
+		<Categories>Fx|Metering</Categories>
+		<CategoryMask>512</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>PAZ- Analyzer Stereo</Name>
+		<ID>5653545741455370617A2D20616E616C</ID>
+		<Categories>Fx|Metering</Categories>
+		<CategoryMask>512</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>PAZ- Position Stereo</Name>
+		<ID>5653545741505370617A2D20706F7369</ID>
+		<Categories>Fx|Metering</Categories>
+		<CategoryMask>512</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Doubler2 Mono</Name>
+		<ID>5653545744324D646F75626C65723220</ID>
+		<Categories>Fx|Modulation</Categories>
+		<CategoryMask>2048</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Doubler2 Stereo</Name>
+		<ID>56535457443253646F75626C65723220</ID>
+		<Categories>Fx|Modulation</Categories>
+		<CategoryMask>2048</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Doubler2 Mono/Stereo</Name>
+		<ID>56535457443258646F75626C65723220</ID>
+		<Categories>Fx|Modulation</Categories>
+		<CategoryMask>2048</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Doubler4 Mono</Name>
+		<ID>5653545744344D646F75626C65723420</ID>
+		<Categories>Fx|Modulation</Categories>
+		<CategoryMask>2048</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Doubler4 Stereo</Name>
+		<ID>56535457443453646F75626C65723420</ID>
+		<Categories>Fx|Modulation</Categories>
+		<CategoryMask>2048</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Doubler4 Mono/Stereo</Name>
+		<ID>56535457443458646F75626C65723420</ID>
+		<Categories>Fx|Modulation</Categories>
+		<CategoryMask>2048</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>WLM Meter 5.0</Name>
+		<ID>565354574C4D35776C6D206D65746572</ID>
+		<Categories>Fx|Surround</Categories>
+		<CategoryMask>32768</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>5</Inputs>
+		<Outputs>5</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>WLM Meter 5.1</Name>
+		<ID>565354574C4D36776C6D206D65746572</ID>
+		<Categories>Fx|Surround</Categories>
+		<CategoryMask>32768</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>6</Inputs>
+		<Outputs>6</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>WLM Meter Mono</Name>
+		<ID>565354574C4D4D776C6D206D65746572</ID>
+		<Categories>Fx|Metering</Categories>
+		<CategoryMask>512</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>WLM Meter Stereo</Name>
+		<ID>565354574C4D53776C6D206D65746572</ID>
+		<Categories>Fx|Metering</Categories>
+		<CategoryMask>512</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Z-Noise Mono</Name>
+		<ID>565354574E534D7A2D6E6F697365206D</ID>
+		<Categories>Fx|Restoration</Categories>
+		<CategoryMask>4096</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>Z-Noise Stereo</Name>
+		<ID>565354574E53537A2D6E6F6973652073</ID>
+		<Categories>Fx|Restoration</Categories>
+		<CategoryMask>4096</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>GW VoiceCentric Mono</Name>
+		<ID>5653545756424D677720766F69636563</ID>
+		<Categories>Fx|Vocals</Categories>
+		<CategoryMask>524288</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>GW VoiceCentric Stereo</Name>
+		<ID>56535457564253677720766F69636563</ID>
+		<Categories>Fx|Vocals</Categories>
+		<CategoryMask>524288</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>GW VoiceCentric Mono/Stereo</Name>
+		<ID>56535457564258677720766F69636563</ID>
+		<Categories>Fx|Vocals</Categories>
+		<CategoryMask>524288</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>PAZ- Meters Mono</Name>
+		<ID>5653545756554D70617A2D206D657465</ID>
+		<Categories>Fx|Metering</Categories>
+		<CategoryMask>512</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>PAZ- Meters Stereo</Name>
+		<ID>5653545756555370617A2D206D657465</ID>
+		<Categories>Fx|Metering</Categories>
+		<CategoryMask>512</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>WLM Plus 5.0</Name>
+		<ID>56535457574C35776C6D20706C757320</ID>
+		<Categories>Fx|Surround</Categories>
+		<CategoryMask>32768</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>5</Inputs>
+		<Outputs>5</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>WLM Plus 5.1</Name>
+		<ID>56535457574C36776C6D20706C757320</ID>
+		<Categories>Fx|Surround</Categories>
+		<CategoryMask>32768</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>6</Inputs>
+		<Outputs>6</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>WLM Plus Mono</Name>
+		<ID>56535457574C4D776C6D20706C757320</ID>
+		<Categories>Fx|Metering</Categories>
+		<CategoryMask>512</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>WLM Plus Stereo</Name>
+		<ID>56535457574C53776C6D20706C757320</ID>
+		<Categories>Fx|Metering</Categories>
+		<CategoryMask>512</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>X-Click Mono</Name>
+		<ID>56535458434C4D782D636C69636B206D</ID>
+		<Categories>Fx|Restoration</Categories>
+		<CategoryMask>4096</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>X-Click Stereo</Name>
+		<ID>56535458434C53782D636C69636B2073</ID>
+		<Categories>Fx|Restoration</Categories>
+		<CategoryMask>4096</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>X-Crackle Mono</Name>
+		<ID>5653545843524D782D637261636B6C65</ID>
+		<Categories>Fx|Restoration</Categories>
+		<CategoryMask>4096</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>X-Crackle Stereo</Name>
+		<ID>56535458435253782D637261636B6C65</ID>
+		<Categories>Fx|Restoration</Categories>
+		<CategoryMask>4096</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>X-Hum Mono</Name>
+		<ID>56535458484D4D782D68756D206D6F6E</ID>
+		<Categories>Fx|Restoration</Categories>
+		<CategoryMask>4096</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>X-Hum Stereo</Name>
+		<ID>56535458484D53782D68756D20737465</ID>
+		<Categories>Fx|Restoration</Categories>
+		<CategoryMask>4096</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>X-Noise Mono</Name>
+		<ID>565354584E534D782D6E6F697365206D</ID>
+		<Categories>Fx|Restoration</Categories>
+		<CategoryMask>4096</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>1</Inputs>
+		<Outputs>1</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/WaveShell1-VST3 14.0.vst3</Path>
+		<FileTime>2023-02-06 16:20</FileTime>
+		<Name>X-Noise Stereo</Name>
+		<ID>565354584E5353782D6E6F6973652073</ID>
+		<Categories>Fx|Restoration</Categories>
+		<CategoryMask>4096</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>Waves</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/Tonal Balance Control 2.vst3</Path>
+		<FileTime>2022-06-26 20:29</FileTime>
+		<Name>Tonal Balance Control 2</Name>
+		<ID>5653545A424D32546F6E616C2042616C</ID>
+		<Categories>Fx|EQ</Categories>
+		<CategoryMask>16</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>iZotope</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/Neutron 3 Compressor.vst3</Path>
+		<FileTime>2022-06-26 20:29</FileTime>
+		<Name>Neutron 3 Compressor</Name>
+		<ID>5653545A4E44334E657574726F6E2033</ID>
+		<Categories>Fx|Dynamics</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>iZotope</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/Neutron 3 Equalizer.vst3</Path>
+		<FileTime>2022-06-26 20:28</FileTime>
+		<Name>Neutron 3 Equalizer</Name>
+		<ID>5653545A4E45334E657574726F6E2033</ID>
+		<Categories>Fx|EQ</Categories>
+		<CategoryMask>16</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>iZotope</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/Neutron 3 Gate.vst3</Path>
+		<FileTime>2022-06-26 20:29</FileTime>
+		<Name>Neutron 3 Gate</Name>
+		<ID>5653545A4E47334E657574726F6E2033</ID>
+		<Categories>Fx|Dynamics</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>iZotope</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/Neutron 3.vst3</Path>
+		<FileTime>2022-06-26 20:28</FileTime>
+		<Name>Neutron 3</Name>
+		<ID>5653545A4E4E334E657574726F6E2033</ID>
+		<Categories>Fx|EQ</Categories>
+		<CategoryMask>16</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>iZotope</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/Neutron 3 Sculptor.vst3</Path>
+		<FileTime>2022-06-26 20:29</FileTime>
+		<Name>Neutron 3 Sculptor</Name>
+		<ID>5653545A4E53334E657574726F6E2033</ID>
+		<Categories>Fx|EQ</Categories>
+		<CategoryMask>16</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>iZotope</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/Neutron 3 Transient Shaper.vst3</Path>
+		<FileTime>2022-06-26 20:29</FileTime>
+		<Name>Neutron 3 Transient Shaper</Name>
+		<ID>5653545A4E54334E657574726F6E2033</ID>
+		<Categories>Fx|Dynamics</Categories>
+		<CategoryMask>8</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>iZotope</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/Neutron 3 Visual Mixer.vst3</Path>
+		<FileTime>2022-06-26 20:29</FileTime>
+		<Name>Neutron 3 Visual Mixer</Name>
+		<ID>5653545A4E56334E657574726F6E2033</ID>
+		<Categories>Fx|EQ</Categories>
+		<CategoryMask>16</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>iZotope</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/Neutron 3 Exciter.vst3</Path>
+		<FileTime>2022-06-26 20:28</FileTime>
+		<Name>Neutron 3 Exciter</Name>
+		<ID>5653545A4E58334E657574726F6E2033</ID>
+		<Categories>Fx|Distortion</Categories>
+		<CategoryMask>8388608</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>iZotope</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/Relay.vst3</Path>
+		<FileTime>2022-06-26 20:30</FileTime>
+		<Name>Relay</Name>
+		<ID>5653545A524C3152656C617900000000</ID>
+		<Categories>Fx|Spatial</Categories>
+		<CategoryMask>64</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>iZotope</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/RX 9 De-plosive.vst3</Path>
+		<FileTime>2022-09-01 18:02</FileTime>
+		<Name>RX 9 De-plosive</Name>
+		<ID>56535472394230525820392044652D70</ID>
+		<Categories>Fx|Restoration</Categories>
+		<CategoryMask>4096</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>iZotope</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/RX 9 De-crackle.vst3</Path>
+		<FileTime>2022-09-01 18:02</FileTime>
+		<Name>RX 9 De-crackle</Name>
+		<ID>56535472394330525820392044652D63</ID>
+		<Categories>Fx|Restoration</Categories>
+		<CategoryMask>4096</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>iZotope</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/RX 9 Voice De-noise.vst3</Path>
+		<FileTime>2022-09-01 18:03</FileTime>
+		<Name>RX 9 Voice De-noise</Name>
+		<ID>565354723944305258203920566F6963</ID>
+		<Categories>Fx|Restoration</Categories>
+		<CategoryMask>4096</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>iZotope</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/RX 9 De-ess.vst3</Path>
+		<FileTime>2022-09-01 18:02</FileTime>
+		<Name>RX 9 De-ess</Name>
+		<ID>56535472394530525820392044652D65</ID>
+		<Categories>Fx|Restoration</Categories>
+		<CategoryMask>4096</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>iZotope</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/RX 9 Guitar De-noise.vst3</Path>
+		<FileTime>2022-09-01 18:04</FileTime>
+		<Name>RX 9 Guitar De-noise</Name>
+		<ID>56535472394730525820392047756974</ID>
+		<Categories>Fx|Restoration</Categories>
+		<CategoryMask>4096</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>iZotope</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/RX 9 De-hum.vst3</Path>
+		<FileTime>2022-09-01 18:03</FileTime>
+		<Name>RX 9 De-hum</Name>
+		<ID>56535472394830525820392044652D68</ID>
+		<Categories>Fx|Restoration</Categories>
+		<CategoryMask>4096</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>iZotope</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/RX 9 De-click.vst3</Path>
+		<FileTime>2022-09-01 18:02</FileTime>
+		<Name>RX 9 De-click</Name>
+		<ID>56535472394B30525820392044652D63</ID>
+		<Categories>Fx|Restoration</Categories>
+		<CategoryMask>4096</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>iZotope</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/RX 9 Connect.vst3</Path>
+		<FileTime>2022-09-01 18:02</FileTime>
+		<Name>RX 9 Connect</Name>
+		<ID>56535472394C305258203920436F6E6E</ID>
+		<Categories>Fx|Restoration</Categories>
+		<CategoryMask>4096</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>iZotope</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/RX 9 Monitor.vst3</Path>
+		<FileTime>2022-09-01 18:03</FileTime>
+		<Name>RX 9 Monitor</Name>
+		<ID>56535472394D3052582039204D6F6E69</ID>
+		<Categories>Fx|Restoration</Categories>
+		<CategoryMask>4096</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>iZotope</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/RX 9 Spectral De-noise.vst3</Path>
+		<FileTime>2022-09-01 18:03</FileTime>
+		<Name>RX 9 Spectral De-noise</Name>
+		<ID>56535472394E30525820392053706563</ID>
+		<Categories>Fx|Restoration</Categories>
+		<CategoryMask>4096</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>iZotope</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/RX 9 Breath Control.vst3</Path>
+		<FileTime>2022-09-01 18:01</FileTime>
+		<Name>RX 9 Breath Control</Name>
+		<ID>56535472394F30525820392042726561</ID>
+		<Categories>Fx|Restoration</Categories>
+		<CategoryMask>4096</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>iZotope</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/RX 9 De-clip.vst3</Path>
+		<FileTime>2022-09-01 18:02</FileTime>
+		<Name>RX 9 De-clip</Name>
+		<ID>56535472395030525820392044652D63</ID>
+		<Categories>Fx|Restoration</Categories>
+		<CategoryMask>4096</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>iZotope</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/RX 9 Mouth De-click.vst3</Path>
+		<FileTime>2022-09-01 18:03</FileTime>
+		<Name>RX 9 Mouth De-click</Name>
+		<ID>5653547239553052582039204D6F7574</ID>
+		<Categories>Fx|Restoration</Categories>
+		<CategoryMask>4096</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>iZotope</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/RX 9 De-reverb.vst3</Path>
+		<FileTime>2022-09-01 18:03</FileTime>
+		<Name>RX 9 De-reverb</Name>
+		<ID>56535472395630525820392044652D72</ID>
+		<Categories>Fx|Restoration</Categories>
+		<CategoryMask>4096</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>iZotope</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/RX 10 De-plosive.vst3</Path>
+		<FileTime>2023-02-06 16:28</FileTime>
+		<Name>RX 10 De-plosive</Name>
+		<ID>565354725A423052582050726F204465</ID>
+		<Categories>Fx|Restoration</Categories>
+		<CategoryMask>4096</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>iZotope</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/RX 10 De-crackle.vst3</Path>
+		<FileTime>2023-02-06 16:29</FileTime>
+		<Name>RX 10 De-crackle</Name>
+		<ID>565354725A433052582050726F204465</ID>
+		<Categories>Fx|Restoration</Categories>
+		<CategoryMask>4096</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>iZotope</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/RX 10 Voice De-noise.vst3</Path>
+		<FileTime>2023-02-06 16:29</FileTime>
+		<Name>RX 10 Voice De-noise</Name>
+		<ID>565354725A443052582050726F20566F</ID>
+		<Categories>Fx|Restoration</Categories>
+		<CategoryMask>4096</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>iZotope</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/RX 10 De-ess.vst3</Path>
+		<FileTime>2023-02-06 16:28</FileTime>
+		<Name>RX 10 De-ess</Name>
+		<ID>565354725A453052582050726F204465</ID>
+		<Categories>Fx|Restoration</Categories>
+		<CategoryMask>4096</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>iZotope</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/RX 10 Guitar De-noise.vst3</Path>
+		<FileTime>2023-02-06 16:30</FileTime>
+		<Name>RX 10 Guitar De-noise</Name>
+		<ID>565354725A473052582050726F204775</ID>
+		<Categories>Fx|Restoration</Categories>
+		<CategoryMask>4096</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>iZotope</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/RX 10 De-hum.vst3</Path>
+		<FileTime>2023-02-06 16:29</FileTime>
+		<Name>RX 10 De-hum</Name>
+		<ID>565354725A483052582050726F204465</ID>
+		<Categories>Fx|Restoration</Categories>
+		<CategoryMask>4096</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>iZotope</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/RX 10 De-click.vst3</Path>
+		<FileTime>2023-02-06 16:28</FileTime>
+		<Name>RX 10 De-click</Name>
+		<ID>565354725A4B3052582050726F204465</ID>
+		<Categories>Fx|Restoration</Categories>
+		<CategoryMask>4096</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>iZotope</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/RX 10 Connect.vst3</Path>
+		<FileTime>2023-02-06 16:28</FileTime>
+		<Name>RX 10 Connect</Name>
+		<ID>565354725A4C3052582050726F20436F</ID>
+		<Categories>Fx|Restoration</Categories>
+		<CategoryMask>4096</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>iZotope</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/RX 10 Monitor.vst3</Path>
+		<FileTime>2023-02-06 16:29</FileTime>
+		<Name>RX 10 Monitor</Name>
+		<ID>565354725A4D3052582050726F204D6F</ID>
+		<Categories>Fx|Restoration</Categories>
+		<CategoryMask>4096</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>iZotope</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/RX 10 Spectral De-noise.vst3</Path>
+		<FileTime>2023-02-06 16:29</FileTime>
+		<Name>RX 10 Spectral De-noise</Name>
+		<ID>565354725A4E3052582050726F205370</ID>
+		<Categories>Fx|Restoration</Categories>
+		<CategoryMask>4096</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>iZotope</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/RX 10 Breath Control.vst3</Path>
+		<FileTime>2023-02-06 16:27</FileTime>
+		<Name>RX 10 Breath Control</Name>
+		<ID>565354725A4F3052582050726F204272</ID>
+		<Categories>Fx|Restoration</Categories>
+		<CategoryMask>4096</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>iZotope</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/RX 10 De-clip.vst3</Path>
+		<FileTime>2023-02-06 16:28</FileTime>
+		<Name>RX 10 De-clip</Name>
+		<ID>565354725A503052582050726F204465</ID>
+		<Categories>Fx|Restoration</Categories>
+		<CategoryMask>4096</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>iZotope</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/RX 10 Repair Assistant.vst3</Path>
+		<FileTime>2023-02-06 16:31</FileTime>
+		<Name>RX 10 Repair Assistant</Name>
+		<ID>565354725A524152582050726F205265</ID>
+		<Categories>Fx|Restoration</Categories>
+		<CategoryMask>4096</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>iZotope</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/RX 10 Mouth De-click.vst3</Path>
+		<FileTime>2023-02-06 16:30</FileTime>
+		<Name>RX 10 Mouth De-click</Name>
+		<ID>565354725A553052582050726F204D6F</ID>
+		<Categories>Fx|Restoration</Categories>
+		<CategoryMask>4096</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>iZotope</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/RX 10 De-reverb.vst3</Path>
+		<FileTime>2023-02-06 16:29</FileTime>
+		<Name>RX 10 De-reverb</Name>
+		<ID>565354725A563052582050726F204465</ID>
+		<Categories>Fx|Restoration</Categories>
+		<CategoryMask>4096</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>iZotope</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/soothe2.vst3</Path>
+		<FileTime>2022-05-09 01:56</FileTime>
+		<Name>soothe2</Name>
+		<ID>ABCDEF019182FAEB4F656B5353746842</ID>
+		<Categories>Fx|Dynamics|Mastering</Categories>
+		<CategoryMask>264</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor>oeksound</Vendor>
+		<Inputs>2</Inputs>
+		<Outputs>2</Outputs>
+		<Enabled>1</Enabled>
+		<Working>1</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/Bitter.vst3</Path>
+		<FileTime>2014-07-05 17:26</FileTime>
+		<Name>Bitter</Name>
+		<ID>Bitter</ID>
+		<Categories></Categories>
+		<CategoryMask>0</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor></Vendor>
+		<Inputs>-1</Inputs>
+		<Outputs>-1</Outputs>
+		<Enabled>0</Enabled>
+		<Working>0</Working>
+	</Effect>
+	<Effect>
+		<Path>/Library/Audio/Plug-Ins/VST3/iZotope RX Final Mix.vst3</Path>
+		<FileTime>2016-05-27 10:27</FileTime>
+		<Name>iZotope RX Final Mix</Name>
+		<ID>iZotope RX Final Mix</ID>
+		<Categories></Categories>
+		<CategoryMask>0</CategoryMask>
+		<Favourite>0</Favourite>
+		<Vendor></Vendor>
+		<Inputs>-1</Inputs>
+		<Outputs>-1</Outputs>
+		<Enabled>0</Enabled>
+		<Working>0</Working>
+	</Effect>
+</Effects>

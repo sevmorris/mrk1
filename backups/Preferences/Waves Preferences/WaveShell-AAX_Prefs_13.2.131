@@ -1,0 +1,17 @@
+<ShellPrefs>
+    <ClassicPrefs>
+        <bDontAskMeAgain Value="true"/>
+        <bHUIMode Value="false"/>
+        <bDirectTextEntry Value="false"/>
+    </ClassicPrefs>
+    <Statistics>
+        <When>Wed May 17 17:24:26 2023</When>
+        <ms_Create_Type_Objects>0</ms_Create_Type_Objects>
+        <ms_Per_Plugin_File>0</ms_Per_Plugin_File>
+        <ms_Per_Process_Type>0</ms_Per_Process_Type>
+        <Plugin_Files_Found>0</Plugin_Files_Found>
+        <Actual_PlugIn_Files_Used>0</Actual_PlugIn_Files_Used>
+        <AudioSuite_Process_Type>0</AudioSuite_Process_Type>
+        <RealTimeAudioSuite_Process_Type>0</RealTimeAudioSuite_Process_Type>
+    </Statistics>
+</ShellPrefs>

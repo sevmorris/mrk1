@@ -1,0 +1,61 @@
+{
+	"preference" : "client_js",
+	"version" : 1,
+	"values" : [
+		{
+			"value" : false,
+			"key" : "app.log.out",
+			"type" : "bool"
+		},
+		{
+			"value" : -1,
+			"key" : "ma.application.analyticsBannerShownCount",
+			"type" : "float"
+		},
+		{
+			"value" : false,
+			"key" : "ma.application.showM1TrialBanner",
+			"type" : "bool"
+		},
+		{
+			"value" : false,
+			"key" : "rga.application.firstUsage",
+			"type" : "bool"
+		},
+		{
+			"value" : false,
+			"key" : "rga.application.showRedGiantHelp",
+			"type" : "bool"
+		},
+		{
+			"value" : "{\"net.maxon.cinema4d\":false,\"com.redgiant.magicbullet\":false,\"com.redgiant.shooter.pluraleyes\":false,\"com.redgiant.trapcode\":false,\"com.redgiant.universe\":false,\"com.redgiant.vfx\":false,\"com.redshift3d.redshift\":false,\"net.maxon.forger\":false,\"net.maxon.capture\":false,\"net.maxon.zbrush\":false,\"net.maxon.teamrender\":false,\"net.maxon.zbrushcore\":false}",
+			"key" : "rga.groupExpansionStates",
+			"type" : "std::string"
+		},
+		{
+			"value" : "[{\"id\":\"purchased-tab-instructions\"}]",
+			"key" : "rga.notifications.expired",
+			"type" : "std::string"
+		},
+		{
+			"value" : "manually",
+			"key" : "rga.updates.frequency",
+			"type" : "std::string"
+		},
+		{
+			"value" : 1676580543,
+			"key" : "rga.updates.lastCheckedTime",
+			"type" : "int"
+		},
+		{
+			"value" : {
+				"major" : 2023,
+				"minor" : 1,
+				"bug" : 4,
+				"build" : 3
+			},
+			"key" : "rga.version.last.run",
+			"type" : "obj"
+		}
+	]
+}

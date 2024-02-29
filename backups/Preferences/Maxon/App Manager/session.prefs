@@ -1,0 +1,11 @@
+{
+	"preference" : "session",
+	"version" : 1,
+	"values" : [
+		{
+			"value" : "",
+			"key" : "app.path.log.custom",
+			"type" : "std::string"
+		}
+	]
+}

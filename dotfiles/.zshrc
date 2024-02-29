@@ -36,8 +36,6 @@ fi
 # Remove duplicate entries from your $PATH
 PATH="$(perl -e 'print join(":", grep { not $seen{$_}++ } split(/:/, $ENV{PATH}))')"
 
-export PATH="/opt/homebrew/bin:$PATH"
-
 # User Configuration
 # ------------------
 # Personal aliases

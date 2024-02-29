@@ -1,34 +1,28 @@
 
 # ========= LANGUAGE & EDITOR CONFIGURATION =========
-LANG='en_US.UTF-8'     # Set locale to US English for consistent text handling
-LC_ALL='en_US.UTF-8'   # Override locale settings for UTF-8 character encoding
-EDITOR='nano'           # Set 'nano' as the default text editor
-VISUAL="$EDITOR"        # Use the same editor for visual mode commands
+export LANG='en_US.UTF-8'       # Prefer US English
+export LC_ALL='en_US.UTF-8'     # Use UTF-8 encoding
+export EDITOR='nano'            # Default text editor
+export VISUAL="$EDITOR"          # Align with 'EDITOR'
 
-# ========= CUSTOM PATH CONFIGURATION =========
-# Add private bin directories to the beginning of the PATH for priority
-for dir in "$HOME/bin" "$HOME/.local/bin"; do
-  if [ -d "$dir" ]; then  # Check if the directory exists
-    PATH="$dir:$PATH"     # Prepend the directory to PATH
-  fi
-done
+# ========= PATH CONFIGURATION =========
+# Prioritize private bin directories
+export PATH="$HOME/bin:$HOME/.local/bin:$PATH"
 
-# ========= HOMEBREW CONFIGURATION  =========
-BREW_BIN="/opt/homebrew/bin/brew"  # Path to the 'brew' command
+# ========= HOMEBREW CONFIGURATION =========
+export BREW_BIN="/opt/homebrew/bin/brew"
 
-if type "$BREW_BIN" &>/dev/null; then  # Check if Homebrew is installed
-  BREW_PREFIX="$("$BREW_BIN" --prefix)"  # Get Homebrew's installation prefix
-
-  # Prioritize Homebrew binaries in PATH
-  PATH="$BREW_PREFIX/sbin:$BREW_PREFIX/bin:$BREW_PREFIX/opt/coreutils/libexec/gnubin:$PATH"
-
-  # Ensure Homebrew manual pages are accessible
-  MANPATH="$BREW_PREFIX/share/man:$MANPATH"
+if type "$BREW_BIN" &>/dev/null; then
+  export BREW_PREFIX="$("$BREW_BIN" --prefix)"
+  export PATH="$BREW_PREFIX/sbin:$BREW_PREFIX/bin:$BREW_PREFIX/opt/coreutils/libexec/gnubin:$PATH"
+  export MANPATH="$BREW_PREFIX/share/man:$MANPATH"
 fi
 
-# ========= PYTHON-RELATED PATHS =========
-PATH="/Library/Frameworks/Python.framework/Versions/3.10/bin:$PATH"  # Add Python 3.10 framework binaries
-PATH="/usr/local/opt/python/libexec/bin:$PATH"                     # Add Python installations from /usr/local/optss
+# ========= PYTHON (Consolidate with checks) =========
+if [ -d "/Library/Frameworks/Python.framework/Versions/3.10" ] && [ -x "/Library/Frameworks/Python.framework/Versions/3.10/bin" ]; then
+  PATH="/Library/Frameworks/Python.framework/Versions/3.10/bin:$PATH"
+fi
 
-# ========= DISPLAY SYSTEM INFORMATION =========
-neofetch                                 # Display system information using neofetch
+if [ -d "/usr/local/opt/python/libexec/bin" ] && [ -x "/usr/local/opt/python/libexec/bin" ]; then
+  PATH="/usr/local/opt/python/libexec/bin:$PATH"
+fi

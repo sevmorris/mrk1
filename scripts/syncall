@@ -65,7 +65,6 @@ echo "${cyan}${bold}Syncing ${brewfile_source} to $HOME${reset}"
 rsync -rtu --progress "$brewfile_source" "$HOME/"
 echo "${green}${bold}Synced ${brewfile_source} to $HOME${reset}"
 sleep 2
-clear
 
 # Push changes to GitHub (using the function)
 push_to_github "$HOME/mrk1"
@@ -86,7 +85,6 @@ do
 done
 
 # Success message and logging
-clear
 echo
 echo "${green}––––––––––––––${reset}"
 echo "${cyan}${bold}Sync complete${reset}"

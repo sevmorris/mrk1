@@ -53,6 +53,7 @@ push_to_github() {
     git add .
     git commit -m "$commit_message"
     git push
+  echo "${green}${bold}Changes pushed to Github${reset}"
 }
 
 # Constants and descriptive variable names

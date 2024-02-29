@@ -62,13 +62,6 @@ for file in $scripts/{backup,restore,syncall}; do
     fi
 done
 
-cp -f brewfile $HOME
-
-# Create .hushlogin if necessary for suppressing login messages
-if [ ! -f ~/.hushlogin ]; then
-  touch ~/.hushlogin
-fi
-
 # ====== ALIAS SYMLINK ======
 echo "Creating symlink for .aliases in Oh My Zsh custom directory"
 ln -sf $dotfiles/.aliases $OMZ_CUSTOM
@@ -77,6 +70,15 @@ ln -sf $dotfiles/.aliases $OMZ_CUSTOM
 echo "Applying macOS default tweaks"
 . $mac_dafaults                      # Execute the macOS defaults script
 
+echo
+cp -fv brewfile $HOME
+sleep 2
+
 # Homebrew: Run 'brew bundle' from the home directory to ensure
 # Brewfile is found and installations go into the correct locations.
 cd $HOME && brew bundle install --verbose --no-lock
+
+# Create .hushlogin if necessary for suppressing login messages
+if [ ! -f ~/.hushlogin ]; then
+  touch ~/.hushlogin
+fi

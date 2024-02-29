@@ -59,20 +59,11 @@ push_to_github() {
 dotfiles_dir="$HOME/mrk1/dotfiles"
 brewfile_source="$HOME/mrk1/Brewfile"
 
-# Sync dotfiles
-clear
-sleep 1
-echo
-echo "${cyan}${bold}Syncing ${dotfiles_dir} to ${zmac_dir}${reset}"
-rsync -rtu --progress --exclude '.git' "$dotfiles_dir/" "$zmac_dir/"
-echo "${green}${bold}Synced ${dotfiles_dir} to ${zmac_dir}${reset}"
-sleep 1
-
 # Sync Brewfile
 echo
-echo "${cyan}${bold}Syncing ${brewfile_source} to ${brewfile_dir}${reset}"
-rsync -rtu --progress "$brewfile_source" "$brewfile_dir/"
-echo "${green}${bold}Synced ${brewfile_source} to ${brewfile_dir}${reset}"
+echo "${cyan}${bold}Syncing ${brewfile_source} to $HOME${reset}"
+rsync -rtu --progress "$brewfile_source" "$HOME/"
+echo "${green}${bold}Synced ${brewfile_source} to $HOME${reset}"
 sleep 2
 clear
 
@@ -82,7 +73,7 @@ push_to_github "$HOME/mrk1"
 # Timer to make it seem like something impoortant is happening
 
 # Set the countdown duration (in seconds)
-countdown_duration=4
+countdown_duration=3.5
 
 # Start with an empty line for better visual separation
 echo
@@ -99,6 +90,6 @@ clear
 echo
 echo "${green}––––––––––––––${reset}"
 echo "${cyan}${bold}Sync complete${reset}"
-echo "syncall $(date +"%y%m%d %r")" >> ~/Library/Logs/github-repo-backups.log
+echo "syncall $(date +"%y%m%d %r")" >> ~/Library/Logs/mrk1-backups.log
 echo "${green}––––––––––––––${reset}"
 echo

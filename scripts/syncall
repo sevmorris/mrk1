@@ -72,7 +72,7 @@ push_to_github "$HOME/mrk1"
 # Timer to make it seem like something impoortant is happening
 
 # Set the countdown duration (in seconds)
-countdown_duration=3.5
+countdown_duration=3
 
 # Start with an empty line for better visual separation
 echo

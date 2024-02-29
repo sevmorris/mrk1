@@ -1,0 +1,106 @@
+#_______________________//Personal aliases for//_______________________________#
+#______      ______                                           _           _____#
+#_____      / ____ \________ _   ______ ___  ____  __________(_)____       ____#
+#____      / / __ `/ ___/ _ \ | / / __ `__ \/ __ \/ ___/ ___/ / ___/      _____#
+#___      / / /_/ (__  )  __/ |/ / / / / / / /_/ / /  / /  / (__  )      ______#
+#____     \ \__,_/____/\___/|___/_/ /_/ /_/\____/_/  /_/  /_/____/      _______#
+#_____     \____/                                                      ________#
+#______________________________________________________________________________#
+
+                #@@@@@@@^^~~~~~~~~~~~~~~~~~~~~^@@@@@@@@@#
+                #@@@@@@^     ~^  @  @@ @ @ @ I  ~^@@@@@@#
+                #@@@@@            ~ ~~ ~I          @@@@@#
+                #@@@@'                  '  _,w@<    @@@@#
+                #@@@@     @@@@@@@@w___,w@@@@@@@@  @  @@@#
+                #@@@@     @@@@@@@@@@@@@@@@@@@@@@  I  @@@#
+                #@@@@     @@@@@@@@@@@@@@@@@@@@*@[ i  @@@#
+                #@@@@     @@@@@@@@@@@@@@@@@@@@[][ | ]@@@#
+                #@@@@     ~_,,_ ~@@@@@@@~ ____~ @    @@@#
+                #@@@@    _~ ,  ,  `@@@~  _  _`@ ]L  J@@@#
+                #@@@@  , @@w@ww+   @@@ww``,,@w@ ][  @@@@#
+                #@@@@,  @@@@www@@@ @@@@@@@ww@@@@@[  @@@@#
+                #@@@@@_|| @@@@@@P' @@P@@@@@@@@@@@[|c@@@@#
+                #@@@@@@w| '@@P~  P]@@@-~, ~Y@@^'],@@@@@@#
+                #@@@@@@@[   _        _J@@Tk     ]]@@@@@@#
+                #@@@@@@@@,@ @@, c,,,,,,,y ,w@@[ ,@@@@@@@#
+                #@@@@@@@@@ i @w   ====--_@@@@@  @@@@@@@@#
+                #@@@@@@@@@@`,P~ _ ~^^^^Y@@@@@  @@@@@@@@@#
+                #@@@@^^=^@@^   ^' ,ww,w@@@@@ _@@@@@@@@@@#
+                #@@@_xJ~ ~   ,    @@@@@@@P~_@@@@@@@@@@@@#
+                #@@   @,   ,@@@,_____   _,J@@@@@@@@@@@@@#
+                #@@L  `' ,@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#
+                #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#
+
+# ============================
+# Personal Aliases
+# ============================
+
+alias la="ls -la --color=auto"  # Enhanced file listing
+alias nano="nano --linenumbers"                         # Nano with line numbers
+
+alias c="clear && source ~/.zshrc"                      # Clear screen, reload config
+alias cat="bat"                                         # 'cat' with syntax highlighting
+alias netcheck="networkQuality"                         # Measure network responsiveness
+alias s="pmset displaysleepnow"                         # Put display to sleep
+alias shrug="echo '¯\_(ツ)_/¯' | pbcopy"                # Copy shrug to clipboard
+alias pw="pwgen -s -1 19 -y | pbcopy"                   # Generate strong password
+alias shred="shred -uvn 10"                             # Secure file deletion (more iterations)
+alias art="ascii-image-converter"                       # Convert images to ASCII art
+alias pub="gpg --armor --export 7morris@gmail.com | pbcopy" # Copy your PGP public key
+
+# ============================
+# Homebrew Aliases
+# ============================
+
+# Comprehensive maintenance command
+alias brewup="brew -v update && brew -v upgrade && brew -v cleanup --prune=all && brew autoremove && brew doctor"
+
+# Additional cleanup, update, uninstall helpers
+alias cleanbrew="brew -v cleanup --prune=0"     # Clean recently downloaded files
+alias bruce="brew cu --all"                     # Upgrade cask apps
+alias brun="brew uninstall -v"                  # Uninstall with verbose output
+
+# Brewfile Management
+alias dump="brew bundle dump --force --file=~/mrk1/Brewfile && cp -fv ~/mrk1/Brewfile ~/"  # Create/update Brewfile
+
+# ============================
+# Minecraft Server Alias
+# ============================
+
+alias mc="cd mcservers/1.20.4 && java -Xms10G -Xmx10G -XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions -XX:+DisableExplicitGC -XX:+AlwaysPreTouch -XX:G1NewSizePercent=30 -XX:G1MaxNewSizePercent=40 -XX:G1HeapRegionSize=8M -XX:G1ReservePercent=20 -XX:G1HeapWastePercent=5 -XX:G1MixedGCCountTarget=4 -XX:InitiatingHeapOccupancyPercent=15 -XX:G1MixedGCLiveThresholdPercent=90 -XX:G1RSetUpdatingPauseTimePercent=5 -XX:SurvivorRatio=32 -XX:+PerfDisableSharedMem -XX:MaxTenuringThreshold=1 -Dusing.aikars.flags=https://mcflags.emc.gs -Daikars.new.flags=true -jar paper.jar"
+
+# ============================
+# GitHub Aliases
+# ============================
+
+alias gitgo="gh repo create"                   # Create a remote GitHub repository
+alias gitready="git init -b main"              # Initialize local Git with 'main' branch
+alias gitset='git add . && git commit -m "initial commit"'
+alias gitup="pushit && tre"                   # Push changes and get a directory tree
+
+# ============================
+# Utility Functions
+# ============================
+
+# Push current directory to GitHub
+pushit() {
+  DATE=$(date '+%y%m%d-%H%M')
+  git pull 2>&1
+  git add . 2>&1
+  git commit -m "${DATE}" 2>&1
+  git push 2>&1
+}
+
+# Open the current directory (or files) in Atom
+a() {
+  if [ $# -eq 0 ]; then
+    atom .
+  else
+    atom "$@"
+  fi
+}
+
+# Enhanced tree command (hidden files, color, organized)
+tre() {
+  tree -aC -I '.git|node_modules|bower_components' --dirsfirst "$@" | less -FRNX
+}

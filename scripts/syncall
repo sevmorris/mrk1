@@ -1,0 +1,104 @@
+#!/usr/bin/env bash
+
+#____________________//Personal sync script for//______________________________#
+#______      ______                                           _           _____#
+#_____      / ____ \________ _   ______ ___  ____  __________(_)____       ____#
+#____      / / __ `/ ___/ _ \ | / / __ `__ \/ __ \/ ___/ ___/ / ___/      _____#
+#___      / / /_/ (__  )  __/ |/ / / / / / / /_/ / /  / /  / (__  )      ______#
+#____     \ \__,_/____/\___/|___/_/ /_/ /_/\____/_/  /_/  /_/____/      _______#
+#_____     \____/                                                      ________#
+#______________________________________________________________________________#
+
+                #@@@@@@@^^~~~~~~~~~~~~~~~~~~~~^@@@@@@@@@#
+                #@@@@@@^     ~^  @  @@ @ @ @ I  ~^@@@@@@#
+                #@@@@@            ~ ~~ ~I          @@@@@#
+                #@@@@'                  '  _,w@<    @@@@#
+                #@@@@     @@@@@@@@w___,w@@@@@@@@  @  @@@#
+                #@@@@     @@@@@@@@@@@@@@@@@@@@@@  I  @@@#
+                #@@@@     @@@@@@@@@@@@@@@@@@@@*@[ i  @@@#
+                #@@@@     @@@@@@@@@@@@@@@@@@@@[][ | ]@@@#
+                #@@@@     ~_,,_ ~@@@@@@@~ ____~ @    @@@#
+                #@@@@    _~ ,  ,  `@@@~  _  _`@ ]L  J@@@#
+                #@@@@  , @@w@ww+   @@@ww``,,@w@ ][  @@@@#
+                #@@@@,  @@@@www@@@ @@@@@@@ww@@@@@[  @@@@#
+                #@@@@@_|| @@@@@@P' @@P@@@@@@@@@@@[|c@@@@#
+                #@@@@@@w| '@@P~  P]@@@-~, ~Y@@^'],@@@@@@#
+                #@@@@@@@[   _        _J@@Tk     ]]@@@@@@#
+                #@@@@@@@@,@ @@, c,,,,,,,y ,w@@[ ,@@@@@@@#
+                #@@@@@@@@@ i @w   ====--_@@@@@  @@@@@@@@#
+                #@@@@@@@@@@`,P~ _ ~^^^^Y@@@@@  @@@@@@@@@#
+                #@@@@^^=^@@^   ^' ,ww,w@@@@@ _@@@@@@@@@@#
+                #@@@_xJ~ ~   ,    @@@@@@@P~_@@@@@@@@@@@@#
+                #@@   @,   ,@@@,_____   _,J@@@@@@@@@@@@@#
+                #@@L  `' ,@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#
+                #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#
+
+# Constants for color output
+bold=$(tput bold)
+green=$(tput setaf 2)
+yellow=$(tput setaf 3)
+cyan=$(tput setaf 6)
+reset=$(tput sgr0)
+
+# Function for pushing changes to GitHub
+push_to_github() {
+  local repo_dir=$1
+  local commit_message=${2:-$(date '+%y%m%d-%H%M')} # Optional message
+
+  cd "$repo_dir" || return 1  # Exit if changing directory fails
+
+  echo
+  echo "${cyan}${bold}Pushing changes to Github: $repo_dir${reset}"
+    git pull
+    git add .
+    git commit -m "$commit_message"
+    git push
+}
+
+# Constants and descriptive variable names
+dotfiles_dir="$HOME/mrk1/dotfiles"
+brewfile_source="$HOME/mrk1/Brewfile"
+
+# Sync dotfiles
+clear
+sleep 1
+echo
+echo "${cyan}${bold}Syncing ${dotfiles_dir} to ${zmac_dir}${reset}"
+rsync -rtu --progress --exclude '.git' "$dotfiles_dir/" "$zmac_dir/"
+echo "${green}${bold}Synced ${dotfiles_dir} to ${zmac_dir}${reset}"
+sleep 1
+
+# Sync Brewfile
+echo
+echo "${cyan}${bold}Syncing ${brewfile_source} to ${brewfile_dir}${reset}"
+rsync -rtu --progress "$brewfile_source" "$brewfile_dir/"
+echo "${green}${bold}Synced ${brewfile_source} to ${brewfile_dir}${reset}"
+sleep 2
+clear
+
+# Push changes to GitHub (using the function)
+push_to_github "$HOME/mrk1"
+
+# Timer to make it seem like something impoortant is happening
+
+# Set the countdown duration (in seconds)
+countdown_duration=4
+
+# Start with an empty line for better visual separation
+echo
+
+# Print each dot with a slight delay
+for (( i=0; i<$countdown_duration; i++ ))
+do
+  printf "."
+  sleep 1  # Wait for 1 second
+done
+
+# Success message and logging
+clear
+echo
+echo "${green}––––––––––––––${reset}"
+echo "${cyan}${bold}Sync complete${reset}"
+echo "syncall $(date +"%y%m%d %r")" >> ~/Library/Logs/github-repo-backups.log
+echo "${green}––––––––––––––${reset}"
+echo

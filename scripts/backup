@@ -1,0 +1,80 @@
+#!/usr/bin/env bash
+
+#____________________//Personal backup script for//____________________________#
+#______      ______                                           _           _____#
+#_____      / ____ \________ _   ______ ___  ____  __________(_)____       ____#
+#____      / / __ `/ ___/ _ \ | / / __ `__ \/ __ \/ ___/ ___/ / ___/      _____#
+#___      / / /_/ (__  )  __/ |/ / / / / / / /_/ / /  / /  / (__  )      ______#
+#____     \ \__,_/____/\___/|___/_/ /_/ /_/\____/_/  /_/  /_/____/      _______#
+#_____     \____/                                                      ________#
+#______________________________________________________________________________#
+
+                #@@@@@@@^^~~~~~~~~~~~~~~~~~~~~^@@@@@@@@@#
+                #@@@@@@^     ~^  @  @@ @ @ @ I  ~^@@@@@@#
+                #@@@@@            ~ ~~ ~I          @@@@@#
+                #@@@@'                  '  _,w@<    @@@@#
+                #@@@@     @@@@@@@@w___,w@@@@@@@@  @  @@@#
+                #@@@@     @@@@@@@@@@@@@@@@@@@@@@  I  @@@#
+                #@@@@     @@@@@@@@@@@@@@@@@@@@*@[ i  @@@#
+                #@@@@     @@@@@@@@@@@@@@@@@@@@[][ | ]@@@#
+                #@@@@     ~_,,_ ~@@@@@@@~ ____~ @    @@@#
+                #@@@@    _~ ,  ,  `@@@~  _  _`@ ]L  J@@@#
+                #@@@@  , @@w@ww+   @@@ww``,,@w@ ][  @@@@#
+                #@@@@,  @@@@www@@@ @@@@@@@ww@@@@@[  @@@@#
+                #@@@@@_|| @@@@@@P' @@P@@@@@@@@@@@[|c@@@@#
+                #@@@@@@w| '@@P~  P]@@@-~, ~Y@@^'],@@@@@@#
+                #@@@@@@@[   _        _J@@Tk     ]]@@@@@@#
+                #@@@@@@@@,@ @@, c,,,,,,,y ,w@@[ ,@@@@@@@#
+                #@@@@@@@@@ i @w   ====--_@@@@@  @@@@@@@@#
+                #@@@@@@@@@@`,P~ _ ~^^^^Y@@@@@  @@@@@@@@@#
+                #@@@@^^=^@@^   ^' ,ww,w@@@@@ _@@@@@@@@@@#
+                #@@@_xJ~ ~   ,    @@@@@@@P~_@@@@@@@@@@@@#
+                #@@   @,   ,@@@,_____   _,J@@@@@@@@@@@@@#
+                #@@L  `' ,@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#
+                #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#
+
+# Constants for color output
+bold=$(tput bold)
+green=$(tput setaf 2)
+yellow=$(tput setaf 3)
+cyan=$(tput setaf 6)
+reset=$(tput sgr0)
+
+# Just a bold green arrow
+arrow() {
+  echo ""
+  echo "${green}${bold}>>> ${reset}$*"
+}
+
+#-------------------------------------------------------------------------------
+echo "Running backup script"
+sleep 1
+
+#-------------------------------------------------------------------------------
+# Time Machine doesn't back up this folder,
+# and I may not need to, but I'm doing it anyway
+arrow "Backing up ${cyan}~/Library/Saved Application State${reset}"
+sleep 1
+
+sudo rsync -av ~/Library/Saved\ Application\ State ~/mrk1/backups
+
+#-------------------------------------------------------------------------------
+# Time Machine backs up ~/Library/Preferences,
+# but I want it backed up here as well
+arrow "Backing up ${cyan}~/Library/Preferences${reset}"
+sleep 1
+
+sudo rsync -av ~/Library/Preferences ~/mrk1/backups
+
+#-------------------------------------------------------------------------------
+arrow "Backing up ${cyan}Chrono Plus local data${reset}"
+sleep 1
+
+sudo rsync -av ~/Library/Containers/com.xwavesoft.timetrackermac/Data/Documents ~/mrk1/backups
+
+# Create a file showing how current the last backup is
+echo "Last backup: " `date +"%y%m%d %r"` >> ~/mrk1/backups/last-backup.txt
+
+echo "${cyan}–––––––––––––––––––––––––––${reset}"
+echo "     Back up succesful"
+echo "${cyan}–––––––––––––––––––––––––––${reset}"

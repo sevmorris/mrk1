@@ -113,6 +113,9 @@ defaults write com.apple.finder FXPreferredViewStyle -string "Nlsv"
 # Show the /Volumes folder
 sudo chflags nohidden /Volumes
 
+# Show the ~/Library directory
+chflags nohidden "${HOME}/Library"
+
 # Expand the following File Info panes:
 # General, Open with, and Sharing & Permissions
 defaults write com.apple.finder FXInfoPanesExpanded -dict \

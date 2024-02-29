@@ -61,9 +61,9 @@ brewfile_source="$HOME/mrk1/Brewfile"
 
 # Sync Brewfile
 echo
-echo "${cyan}${bold}Syncing ${brewfile_source} to {$HOME}${reset}"
-rsync -rtu --progress "$brewfile_source" "$HOME/"
-echo "${green}${bold}Synced ${brewfile_source} to {$HOME}${reset}"
+echo "${cyan}${bold}Syncing ${brewfile_source} to $HOME${reset}"
+rsync -rtu --progress "$brewfile_source" $HOME
+echo "${green}${bold}Synced ${brewfile_source} to $HOME${reset}"
 sleep 2
 
 # Push changes to GitHub (using the function)

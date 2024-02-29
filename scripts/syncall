@@ -70,21 +70,6 @@ sleep 2
 # Push changes to GitHub (using the function)
 push_to_github "$HOME/mrk1"
 
-# Timer to make it seem like something impoortant is happening
-
-# Set the countdown duration (in seconds)
-countdown_duration=3
-
-# Start with an empty line for better visual separation
-echo
-
-# Print each dot with a slight delay
-for (( i=0; i<$countdown_duration; i++ ))
-do
-  printf "."
-  sleep 1  # Wait for 1 second
-done
-
 # Success message and logging
 echo
 echo "${green}––––––––––––––${reset}"

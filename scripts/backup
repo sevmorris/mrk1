@@ -35,16 +35,19 @@
 
 # Constants for color output
 bold=$(tput bold)
+red=$(tput setaf 1)
 green=$(tput setaf 2)
 yellow=$(tput setaf 3)
 cyan=$(tput setaf 6)
 reset=$(tput sgr0)
 
-# Just a bold green arrow
+backup_dest="$HOME/mrk1/backups"
+
 arrow() {
-  echo ""
-  echo "${green}${bold}>>> ${reset}$*"
+    echo ""
+    echo "${green}${bold}>>> ${reset}$*"
 }
+
 
 #-------------------------------------------------------------------------------
 echo "Running backup script"
@@ -54,23 +57,29 @@ sleep 1
 # Time Machine doesn't back up this folder,
 # and I may not need to, but I'm doing it anyway
 arrow "Backing up ${cyan}~/Library/Saved Application State${reset}"
-sleep 1
-
-sudo rsync -av ~/Library/Saved\ Application\ State ~/mrk1/backups
+if sudo rsync -av ~/Library/Saved\ Application\ State "$backup_dest"; then
+    echo "Backup successful"
+else
+    echo "${bold}${red}Backup failed!${reset}"
+fi
 
 #-------------------------------------------------------------------------------
 # Time Machine backs up ~/Library/Preferences,
 # but I want it backed up here as well
 arrow "Backing up ${cyan}~/Library/Preferences${reset}"
-sleep 1
-
-sudo rsync -av ~/Library/Preferences ~/mrk1/backups
+if sudo rsync -av ~/Library/Preferences "$backup_dest"; then
+    echo "Backup successful"
+else
+    echo "${bold}${red}Backup failed!${reset}"
+fi
 
 #-------------------------------------------------------------------------------
 arrow "Backing up ${cyan}Chrono Plus local data${reset}"
-sleep 1
-
-sudo rsync -av ~/Library/Containers/com.xwavesoft.timetrackermac/Data/Documents ~/mrk1/backups
+if sudo rsync -av ~/Library/Containers/com.xwavesoft.timetrackermac/Data/Documents "$backup_dest"; then
+    echo "Backup successful"
+else
+    echo "${bold}${red}Backup failed!${reset}"
+fi
 
 # Create a file showing how current the last backup is
 echo "Last backup: " `date +"%y%m%d %r"` >> ~/mrk1/backups/last-backup.txt

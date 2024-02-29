@@ -37,10 +37,10 @@ bold=$(tput bold)
 yellow=$(tput setaf 3)
 reset=$(tput sgr0)
 
-# Just a bold yellow arrow
+
 arrow() {
-  echo ""
-  echo "${yellow}${bold}>>> ${reset}$*"
+    echo ""
+    echo "${green}${bold}>>> ${reset}$*"
 }
 
 #-------------------------------------------------------------------------------
@@ -64,5 +64,5 @@ sleep 1
 
 echo ""
 echo "${yellow}–––––––––––––––––––––––––––${reset}"
-echo "     Restores succesful"
+echo "     Restore succesful"
 echo "${yellow}–––––––––––––––––––––––––––${reset}"

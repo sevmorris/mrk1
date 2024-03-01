@@ -57,13 +57,13 @@ This repository helps me quickly customize a fresh macOS installation with my pr
 
 1. **Restoring Preferences:**
 
-Load environment variables from .zshenv
+  Load environment variables from .zshenv
 
   ```bash
   source ~/.zshenv
   ```
 
-Run the restore script
+  Run the restore script
 
   ```bash
   restore
@@ -71,13 +71,13 @@ Run the restore script
 
 2. **Switching to Homebrew's Zsh:**
 
-Add Homebrew's Zsh to the list of valid shells
+  Add Homebrew's Zsh to the list of valid shells
 
   ```
   sudo sh -c 'echo "${BREW_PREFIX}/bin/zsh" >> /etc/shells'
   ```
 
-Switch to Homebrew's Zsh
+  Switch to Homebrew's Zsh
 
   ```
   chsh -s "${BREW_PREFIX}/bin/zsh"
@@ -85,7 +85,7 @@ Switch to Homebrew's Zsh
 
 3. **Removing Dock Icons (Optional):**
 
-Reset the macOS Dock to its default (empty) state
+  Reset the macOS Dock to its default (empty) state
 
   ```
   defaults write com.apple.dock persistent-apps -array

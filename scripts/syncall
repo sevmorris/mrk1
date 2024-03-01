@@ -9,6 +9,7 @@
 #_____     \____/                                                      ________#
 #______________________________________________________________________________#
 
+
 # Constants for color output
 bold=$(tput bold)
 green=$(tput setaf 2)
@@ -18,18 +19,19 @@ reset=$(tput sgr0)
 
 # Function for pushing changes to GitHub
 push_to_github() {
-  local repo_dir=$1
-  local commit_message=${2:-$(date '+%y%m%d-%H%M')} # Optional message
+  local repo_dir="$1"
+  local commit_message="${2:-$(date '+%y%m%d-%H%M')}" # Optional message
 
-  cd "$repo_dir" || return 1  # Exit if changing directory fails
+  # Change directory and exit if it fails
+  cd "$repo_dir" || return 1
 
   echo
-  echo "${cyan}${bold}Pushing changes to Github: $repo_dir${reset}"
-    git pull
-    git add .
-    git commit -m "$commit_message"
-    git push
-  echo "${green}${bold}Changes pushed to Github${reset}"
+  echo "${cyan}${bold}Pushing changes to GitHub: $repo_dir${reset}"
+  git pull
+  git add .
+  git commit -m "$commit_message"
+  git push
+  echo "${green}${bold}Changes pushed to GitHub${reset}"
 }
 
 # Constants and descriptive variable names
@@ -39,7 +41,7 @@ brewfile_source="$HOME/mrk1/assets/Brewfile"
 # Sync Brewfile
 echo
 echo "${cyan}${bold}Syncing ${brewfile_source} to $HOME${reset}"
-rsync -rtu --progress "$brewfile_source" $HOME
+rsync -rtu --progress "$brewfile_source" "$HOME"
 echo "${green}${bold}Synced ${brewfile_source} to $HOME${reset}"
 sleep 2
 

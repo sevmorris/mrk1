@@ -17,7 +17,18 @@ source $ZSH/oh-my-zsh.sh
 export EDITOR=nano  # Default editor, SSH sessions will override if needed
 
 # Path Cleanup
-export PATH=$(perl -e 'print join(":", grep { not $seen{$_}++ } split(/:/, $ENV{PATH}))')
+new_path=""
+IFS=":"
+for dir in $PATH; do
+  if [[ ! "${seen[$dir]}" ]]; then
+    new_path="$new_path:$dir"
+    seen[$dir]=true
+  fi
+done
+export PATH="${new_path#:}"
+
+# Place Homebrew's bin before user's bin
+export PATH="/opt/homebrew/bin:$PATH"
 
 # User Configuration
 source ~/.aliases

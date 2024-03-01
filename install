@@ -27,21 +27,24 @@
 set -e  # Exit immediately if a command fails
 
 # ====== PATH VARIABLES ======
-mrk1_dir=$HOME/mrk1                  # Base directory for mrk1 project
-dotfiles=$mrk1_dir/dotfiles     # Location of dotfiles
-scripts=$mrk1_dir/scripts       # Location of project-specific scripts
+mrk1_dir=$HOME/mrk1                   # Base directory for mrk1 project
+dotfiles=$mrk1_dir/dotfiles           # Location of dotfiles
+scripts=$mrk1_dir/scripts             # Location of project-specific scripts
 mac_dafaults=$scripts/macdefaults.sh  # Script for macOS default tweaks
 
-bin=$HOME/.local/bin                 # User-specific binaries
-OMZ_CUSTOM=$HOME/.oh-my-zsh/custom   # Customizations for Oh My Zsh
+bin=$HOME/.local/bin                  # User-specific binaries
+OMZ_CUSTOM=$HOME/.oh-my-zsh/custom    # Customizations for Oh My Zsh
 
 # ====== FILE SETUP VARIABLES ======
-zshenv=$dotfiles/.zshenv        # Path to .zshenv
-zshrc=$dotfiles/.zshrc          # Path to .zshrc
-aliases=$dotfiles/.aliases      # Path to Zsh aliases
+zshenv=$dotfiles/.zshenv              # Path to .zshenv
+zshrc=$dotfiles/.zshrc                # Path to .zshrc
+aliases=$dotfiles/.aliases            # Path to Zsh aliases
 backup=$scripts/backup
 restore=$scripts/restore
 syncall=$scripts/syncall
+
+cp -fv assets/topgrade.toml $HOME/.config
+cp -fv assets/Brewfile $HOME
 
 echo "Creating dotfile symlinks in home directory"
 for file in $dotfiles/.{aliases,zshenv,zshrc}; do
@@ -68,10 +71,6 @@ ln -sf $dotfiles/.aliases $OMZ_CUSTOM
 # ====== MACOS DEFAULTS ======
 echo "Applying macOS default tweaks"
 . $mac_dafaults                      # Execute the macOS defaults script
-
-echo
-cp -fv Brewfile $HOME
-sleep 2
 
 # Homebrew: Run 'brew bundle' from the home directory to ensure
 # Brewfile is found and installations go into the correct locations.

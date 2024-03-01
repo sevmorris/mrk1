@@ -37,8 +37,8 @@ alias cleanbrew="brew -v cleanup --prune=0"     # Clean recently downloaded file
 alias bruce="brew cu --all"                     # Upgrade cask apps
 alias brun="brew uninstall -v"                  # Uninstall with verbose output
 
-# Brewfile Management
-alias dump="brew bundle dump --force --file=~/mrk1/Brewfile && cp -fv ~/mrk1/Brewfile ~/"  # Create/update Brewfile
+# Brewfile Management (Create/update Brewfile)
+alias dump="brew bundle dump --force --file=~/mrk1/assets/Brewfile && cp -fv ~/mrk1/assets/Brewfile ~/"
 
 # ============================
 # Minecraft Server Alias

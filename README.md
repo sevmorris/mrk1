@@ -1,6 +1,5 @@
 
 ## macOS Personalization with mrk1
----
 
 This repository helps me quickly customize a fresh macOS installation with my preferred tools, settings, and configurations.
 

@@ -34,7 +34,7 @@ push_to_github() {
 
 # Constants and descriptive variable names
 dotfiles_dir="$HOME/mrk1/dotfiles"
-brewfile_source="$HOME/mrk1/Brewfile"
+brewfile_source="$HOME/mrk1/assets/Brewfile"
 
 # Sync Brewfile
 echo

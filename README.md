@@ -51,7 +51,8 @@ This repository helps me quickly customize a fresh macOS installation with my pr
    ./install
    ```  
 
-**Note:** The installer script provides options to tailor how dotfiles and macOS defaults are applied.
+**Note:**
+The installer script provides options to tailor how dotfiles and macOS defaults are applied.
 ---
 
 **Additional Instructions**

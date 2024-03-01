@@ -1,5 +1,6 @@
 
-# macOS Personalization with mrk1
+## macOS Personalization with mrk1
+---
 
 This repository helps me quickly customize a fresh macOS installation with my preferred tools, settings, and configurations.
 
@@ -51,7 +52,7 @@ This repository helps me quickly customize a fresh macOS installation with my pr
    ```  
 
 **Note:** The installer script provides options to tailor how dotfiles and macOS defaults are applied.
-
+---
 
 **Additional Instructions**
 
@@ -72,7 +73,6 @@ Run the restore script
 2. **Switching to Homebrew's Zsh:**
 
 Add Homebrew's Zsh to the list of valid shells
-
 
   ```
   sudo sh -c 'echo "${BREW_PREFIX}/bin/zsh" >> /etc/shells'

@@ -20,7 +20,7 @@ export EDITOR=nano  # Default editor, SSH sessions will override if needed
 export PATH=$(perl -e 'print join(":", grep { not $seen{$_}++ } split(/:/, $ENV{PATH}))')
 
 # Place Homebrew's bin before user's bin
-#export PATH="/opt/homebrew/bin:$PATH"
+export PATH="/opt/homebrew/bin:$PATH"
 
 # User Configuration
 source ~/.aliases

@@ -9,7 +9,6 @@
 #_____     \____/                                                      ________#
 #______________________________________________________________________________#
 
-
 # Constants for color output
 bold=$(tput bold)
 red=$(tput setaf 1)
@@ -20,38 +19,47 @@ reset=$(tput sgr0)
 
 backup_dest="$HOME/mrk1/backups"
 
-# Function to perform a backup and display status
-perform_backup() {
-    local source_path="$1"
-    local backup_message="$2"
-
-    arrow "Backing up ${cyan}$source_path${reset}"
-    if sudo rsync -av "$source_path" "$backup_dest"; then
-        echo "Backup successful"
-    else
-        echo "${bold}${red}Backup failed!${reset}"
-    fi
-}
-
 arrow() {
     echo ""
     echo "${green}${bold}>>> ${reset}$*"
 }
+
 
 #-------------------------------------------------------------------------------
 echo "Running backup script"
 sleep 1
 
 #-------------------------------------------------------------------------------
-# Perform backups using the function
+# Time Machine doesn't back up this folder,
+# and I may not need to, but I'm doing it anyway
+arrow "Backing up ${cyan}~/Library/Saved Application State${reset}"
+if sudo rsync -av ~/Library/Saved\ Application\ State "$backup_dest"; then
+    echo "Backup successful"
+else
+    echo "${bold}${red}Backup failed!${reset}"
+fi
 
-perform_backup "~/Library/Saved Application State" "Saved Application State"
-perform_backup "~/Library/Preferences" "Preferences"
-perform_backup "~/Library/Containers/com.xwavesoft.timetrackermac/Data/Documents" "Chrono Plus local data"
+#-------------------------------------------------------------------------------
+# Time Machine backs up ~/Library/Preferences,
+# but I want it backed up here as well
+arrow "Backing up ${cyan}~/Library/Preferences${reset}"
+if sudo rsync -av ~/Library/Preferences "$backup_dest"; then
+    echo "Backup successful"
+else
+    echo "${bold}${red}Backup failed!${reset}"
+fi
+
+#-------------------------------------------------------------------------------
+arrow "Backing up ${cyan}Chrono Plus local data${reset}"
+if sudo rsync -av ~/Library/Containers/com.xwavesoft.timetrackermac/Data/Documents "$backup_dest"; then
+    echo "Backup successful"
+else
+    echo "${bold}${red}Backup failed!${reset}"
+fi
 
 # Create a file showing how current the last backup is
-echo "Last backup: " "$(date +"%y%m%d %r")" >> "$backup_dest/last-backup.txt"
+echo "Last backup: " `date +"%y%m%d %r"` >> ~/mrk1/backups/last-backup.txt
 
 echo "${cyan}–––––––––––––––––––––––––––${reset}"
-echo "     Backup successful"
+echo "     Back up succesful"
 echo "${cyan}–––––––––––––––––––––––––––${reset}"

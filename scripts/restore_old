@@ -33,40 +33,36 @@
                 #@@L  `' ,@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#
                 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#
 
-# Color variables for better readability
 bold=$(tput bold)
 yellow=$(tput setaf 3)
 reset=$(tput sgr0)
-green=$(tput setaf 2)  # Corrected color variable for green
 
-# Function to print arrows for better visual separation
+
 arrow() {
     echo ""
     echo "${green}${bold}>>> ${reset}$*"
 }
 
-# Introduction
+#-------------------------------------------------------------------------------
 echo "Running restore script"
 sleep 1
 
-# Restoring to ~/Library/Saved Application State
+#-------------------------------------------------------------------------------
 arrow "Restoring to ${yellow}~/Library/Saved Application State${reset}" && echo
 sleep 1
 
 sudo rsync -av ~/mrk1/backups/Saved\ Application\ State/ ~/Library/Saved\ Application\ State/
 
-# Restoring ~/Library/Preferences
+#-------------------------------------------------------------------------------
 arrow "Restoring ${yellow}~/Library/Preferences${reset}" && echo
 sleep 1
 
 sudo rsync -av ~/mrk1/backups/Preferences/ ~/Library/Preferences/
 
-# Manual instruction for specific data restoration
 echo "Restore Chrono Plus data manually"
 sleep 1
 
-# Display restore success message
 echo ""
 echo "${yellow}–––––––––––––––––––––––––––${reset}"
-echo "     Restore successful"
+echo "     Restore succesful"
 echo "${yellow}–––––––––––––––––––––––––––${reset}"

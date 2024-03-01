@@ -1,6 +1,5 @@
 SET UP NEW MAC
 
-
 Install Homebrew
 
 ```
@@ -34,6 +33,28 @@ gh completion --shell zsh > $ZSH_CUSTOM/plugins/gh.zsh
 ```
 
 Clone this repo and run install script (Note: This will replace the .zshrc file created by oh-my-zsh with my modified version)
+
+**Purpose**
+
+The install script automates the setup of a personal development environment along with associated macOS preferences. It achieves this with the following key actions:
+
+**Actions**
+
+1. **Symlinking Dotfiles:** Creates symbolic links in the user's home directory for configuration files like `.zshenv`, `.zshrc`, and `.aliases`.
+2. **Symlinking Scripts:** Creates symbolic links in `~/.local/bin` for project-specific scripts (e.g., `backup`, `restore`, `syncall`).
+3. **macOS Defaults:**  Applies macOS customizations using a script named `macdefaults.sh`.
+4. **Homebrew Setup:** Copies the project's `Brewfile` (`brewfile` in the code) to the home directory and installs dependencies using 'brew bundle'.
+5. **Suppressing Login Messages:** Creates the `.hushlogin` file if it doesn't exist.  
+
+**Additional Features**
+
+* **Error Handling:** The script will exit if there are failures during symlinking operations.
+* **User Feedback:** Provides output messages indicating the actions being taken.
+
+**In Summary**
+
+This script streamlines the initial setup of a development environment on macOS, ensuring dotfiles, scripts, and software dependencies are in place.
+---
 
 ```
 gh repo clone sevmorris/mrk1

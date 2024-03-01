@@ -42,7 +42,6 @@ aliases=$dotfiles/.aliases      # Path to Zsh aliases
 backup=$scripts/backup
 restore=$scripts/restore
 syncall=$scripts/syncall
-brewfile=$mrk1_dir/Brewfile
 
 echo "Creating dotfile symlinks in home directory"
 for file in $dotfiles/.{aliases,zshenv,zshrc}; do
@@ -71,7 +70,7 @@ echo "Applying macOS default tweaks"
 . $mac_dafaults                      # Execute the macOS defaults script
 
 echo
-cp -fv brewfile $HOME
+cp -fv Brewfile $HOME
 sleep 2
 
 # Homebrew: Run 'brew bundle' from the home directory to ensure

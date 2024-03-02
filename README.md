@@ -9,7 +9,7 @@
           #______________________________________________________________________________#
 ```
 
-This repository helps me quickly customize a fresh macOS installation with my preferred tools, settings, and configurations.
+This repository helps me quickly customize a fresh (Apple Silicone) macOS installation with my preferred tools, settings, and configurations.
 
 ## Getting Started
 

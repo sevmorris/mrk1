@@ -34,8 +34,6 @@ alias shred="shred -uvn 10"
 alias art="ascii-image-converter"
 # Copy your PGP public key
 alias pub="gpg --armor --export 7morris@gmail.com | pbcopy"
-# Detects which tools you use and runs the appropriate commands to update them
-alias update="topgrade"
 
 # ============================
 # Homebrew Aliases
@@ -45,10 +43,14 @@ alias update="topgrade"
 alias brewup="brew -v update && brew -v upgrade && brew -v cleanup --prune=all && brew autoremove && brew doctor"
 # Additional cleanup, update, uninstall helpers
 alias cleanbrew="brew -v cleanup --prune=0"
-alias bruce="brew cu --all"
+alias cleanerbrew="brew cleanup"
+alias brupdate="brup"
 alias brun="brew uninstall -v"
 # Brewfile Management (Create/update Brewfile)
 alias dump="brew bundle dump --force --file=~/mrk1/assets/Brewfile && cp -fv ~/mrk1/assets/Brewfile ~/"
+
+# Ultimate update
+alias update="topgrade && brupdate && brewup"
 
 # ============================
 # Minecraft Server Alias
@@ -94,4 +96,19 @@ a() {
 # Enhanced tree command (hidden files, color, organized)
 tre() {
   tree -aC -I '.git|node_modules|bower_components' --dirsfirst "$@" | less -FRNX
+}
+
+brup() {
+  echo "Checking for outdated Homebrew packages..."
+  brew outdated
+
+  echo -e "\nWould you like to upgrade outdated packages? (y/n) "
+  read -r answer
+
+  if [[ $answer == "y" || $answer == "Y" ]]; then
+      echo "Upgrading outdated packages..."
+      brew upgrade
+  else
+      echo "Skipping upgrade."
+  fi
 }

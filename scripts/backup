@@ -17,10 +17,10 @@ yellow=$(tput setaf 3)
 cyan=$(tput setaf 6)
 reset=$(tput sgr0)
 
-backup_dest="$HOME/mrk1/backups"
+backup_dest="$HOME/.backups"
 
 arrow() {
-    echo ""
+    echo
     echo "${green}${bold}>>> ${reset}$*"
 }
 

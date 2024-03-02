@@ -1,29 +1,5 @@
 #!/usr/bin/env bash
 
-              #@@@@@@@^^~~~~~~~~~~~~~~~~~~~~^@@@@@@@@@#
-              #@@@@@@^     ~^  @  @@ @ @ @ I  ~^@@@@@@#
-              #@@@@@            ~ ~~ ~I          @@@@@#
-              #@@@@'                  '  _,w@<    @@@@#
-              #@@@@     @@@@@@@@w___,w@@@@@@@@  @  @@@#
-              #@@@@     @@@@@@@@@@@@@@@@@@@@@@  I  @@@#
-              #@@@@     @@@@@@@@@@@@@@@@@@@@*@[ i  @@@#
-              #@@@@     @@@@@@@@@@@@@@@@@@@@[][ | ]@@@#
-              #@@@@     ~_,,_ ~@@@@@@@~ ____~ @    @@@#
-              #@@@@    _~ ,  ,  `@@@~  _  _`@ ]L  J@@@#
-              #@@@@  , @@w@ww+   @@@ww``,,@w@ ][  @@@@#
-              #@@@@,  @@@@www@@@ @@@@@@@ww@@@@@[  @@@@#
-              #@@@@@_|| @@@@@@P' @@P@@@@@@@@@@@[|c@@@@#
-              #@@@@@@w| '@@P~  P]@@@-~, ~Y@@^'],@@@@@@#
-              #@@@@@@@[   _        _J@@Tk     ]]@@@@@@#
-              #@@@@@@@@,@ @@, c,,,,,,,y ,w@@[ ,@@@@@@@#
-              #@@@@@@@@@ i @w   ====--_@@@@@  @@@@@@@@#
-              #@@@@@@@@@@`,P~ _ ~^^^^Y@@@@@  @@@@@@@@@#
-              #@@@@^^=^@@^   ^' ,ww,w@@@@@ _@@@@@@@@@@#
-              #@@@_xJ~ ~   ,    @@@@@@@P~_@@@@@@@@@@@@#
-              #@@   @,   ,@@@,_____   _,J@@@@@@@@@@@@@#
-              #@@L  `' ,@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#
-              #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#
-
 set -e  # Exit immediately if a command fails
 
 # ===== PATH VARIABLES =====
@@ -35,10 +11,16 @@ mac_defaults="$scripts/macdefaults.sh"   # Script for macOS default tweaks
 bin="$HOME/.local/bin"                   # User-specific binaries
 OMZ_CUSTOM="$HOME/.oh-my-zsh/custom"      # Customizations for Oh My Zsh
 
-# ===== FILE SETUP VARIABLES =====
-zshenv="$dotfiles/.zshenv"              # Path to .zshenv
-zshrc="$dotfiles/.zshrc"                # Path to .zshrc
-aliases="$dotfiles/.aliases"            # Path to Zsh aliases
+cp -fv assets/topgrade.toml "$HOME/.config"   # Custom config file for topgrade
+cp -fv assets/Brewfile "$HOME"                # Up-to-date Brewfile
+
+# Create a directory for backups if it doesn't already exist
+backups_dir="$HOME/.backups"
+
+if [ ! -d "$backups_dir" ]; then
+    echo "Backups directory does not exist. Creating..."
+    mkdir -p "$backups_dir"
+fi
 
 # Create symlinks for dotfiles in the home directory
 echo "Creating dotfile symlinks in the home directory"
@@ -68,11 +50,11 @@ ln -sf "$dotfiles/.aliases" "$OMZ_CUSTOM"
 echo "Applying macOS default tweaks"
 . "$mac_defaults"                      # Execute the macOS defaults script
 
-# Homebrew: Run 'brew bundle' from the home directory to ensure
-# Brewfile is found and installations go into the correct locations.
-cd "$HOME" && brew bundle install --verbose --no-lock
-
 # Create .hushlogin if necessary for suppressing login messages
 if [ ! -f "$HOME/.hushlogin" ]; then
     touch "$HOME/.hushlogin"
 fi
+
+# Homebrew: Run 'brew bundle' from the home directory to ensure
+# Brewfile is found and installations go into the correct locations.
+cd "$HOME" && brew bundle install --verbose --no-lock

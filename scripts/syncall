@@ -1,4 +1,4 @@
-#!/usr/bin/env zsh
+#!/usr/bin/env bash
 
 #____________________//Personal sync script for//______________________________#
 #______      ______                                           _           _____#
@@ -36,6 +36,7 @@ push_to_github() {
 # Constants and descriptive variable names
 dotfiles_dir="$HOME/mrk1/dotfiles"
 brewfile_source="$HOME/mrk1/assets/Brewfile"
+backups="$HOME/.backups"
 
 # Sync Brewfile
 echo
@@ -45,7 +46,7 @@ echo "${green}${bold}Synced ${brewfile_source} to $HOME${reset}"
 sleep 2
 
 # Push changes to GitHub (using the function)
-push_to_github "$HOME/mrk1"
+push_to_github "$HOME/mrk1" "$backups"
 
 # Success message and logging
 echo

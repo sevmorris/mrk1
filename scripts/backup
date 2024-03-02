@@ -20,8 +20,6 @@ echo "Running backup script"
 sleep 1
 
 #-------------------------------------------------------------------------------
-# Time Machine doesn't back up this folder,
-# and I may not need to, but I'm doing it anyway
 arrow "Backing up ${cyan}~/Library/Saved Application State${reset}"
 if sudo rsync -av ~/Library/Saved\ Application\ State "$backup_dest"; then
     echo "Backup successful"
@@ -30,8 +28,6 @@ else
 fi
 
 #-------------------------------------------------------------------------------
-# Time Machine backs up ~/Library/Preferences,
-# but I want it backed up here as well
 arrow "Backing up ${cyan}~/Library/Preferences${reset}"
 if sudo rsync -av ~/Library/Preferences "$backup_dest"; then
     echo "Backup successful"

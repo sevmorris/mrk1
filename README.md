@@ -70,7 +70,7 @@ This repository helps me quickly customize a fresh macOS installation with my pr
   source ~/.zshenv
   ```
 
-  Run the restore script to move Preferences & Application Saved State files from ~/.backups (pulled from a private repo)
+  Run the restore script to move Preferences & Saved Application State files from ~/.backups (pulled from a private repo)
 
   ```
   restore

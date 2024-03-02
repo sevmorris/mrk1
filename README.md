@@ -62,7 +62,7 @@ This repository helps me quickly customize a fresh macOS installation with my pr
 
 ## Additional Instructions
 
-1. **Restoring Preferences and Application Saved States:**
+**Restoring Preferences and Application Saved States:**
 
   Load environment variables from .zshenv
 
@@ -76,7 +76,7 @@ This repository helps me quickly customize a fresh macOS installation with my pr
   restore
   ```
 
-2. **Switching to Homebrew's Zsh:**
+**Switching to Homebrew's Zsh:**
 
   Add Homebrew's Zsh to the list of valid shells and switch to it.
 
@@ -85,7 +85,7 @@ This repository helps me quickly customize a fresh macOS installation with my pr
   chsh -s "${BREW_PREFIX}/bin/zsh"
   ```
 
-3. **Removing Dock Icons (Optional):**
+**Removing Dock Icons (Optional):**
 
   Reset the macOS Dock to its default (empty) state
 

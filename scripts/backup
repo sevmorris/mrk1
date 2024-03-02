@@ -8,20 +8,22 @@ yellow=$(tput setaf 3)
 cyan=$(tput setaf 6)
 reset=$(tput sgr0)
 
-backup_dest="$HOME/.backups"
-
 arrow() {
     echo
     echo "${green}${bold}>>> ${reset}$*"
 }
 
-#-------------------------------------------------------------------------------
-echo "Running backup script"
-sleep 1
+backup_dir="$HOME/.backups"
+
+# Create a directory for backups if it doesn't already exist
+if [ ! -d "$backup_dir" ]; then
+    echo "Backups directory does not exist. Creating..."
+    mkdir -p "$backup_dir"
+fi
 
 #-------------------------------------------------------------------------------
 arrow "Backing up ${cyan}~/Library/Saved Application State${reset}"
-if sudo rsync -av ~/Library/Saved\ Application\ State "$backup_dest"; then
+if sudo rsync -av ~/Library/Saved\ Application\ State "$backup_dir"; then
     echo "Backup successful"
 else
     echo "${bold}${red}Backup failed!${reset}"
@@ -29,7 +31,7 @@ fi
 
 #-------------------------------------------------------------------------------
 arrow "Backing up ${cyan}~/Library/Preferences${reset}"
-if sudo rsync -av ~/Library/Preferences "$backup_dest"; then
+if sudo rsync -av ~/Library/Preferences "$backup_dir"; then
     echo "Backup successful"
 else
     echo "${bold}${red}Backup failed!${reset}"
@@ -37,14 +39,14 @@ fi
 
 #-------------------------------------------------------------------------------
 arrow "Backing up ${cyan}Chrono Plus local data${reset}"
-if sudo rsync -av ~/Library/Containers/com.xwavesoft.timetrackermac/Data/Documents "$backup_dest"; then
+if sudo rsync -av ~/Library/Containers/com.xwavesoft.timetrackermac/Data/Documents "$backup_dir"; then
     echo "Backup successful"
 else
     echo "${bold}${red}Backup failed!${reset}"
 fi
 
 # Create a file showing how current the last backup is
-echo "Last backup: " "$(date +"%y%m%d %r")" >> "$backup_dest/last-backup.txt"
+echo "Last backup: " "$(date +"%y%m%d %r")" >> "$backup_dir/last-backup.txt"
 
 echo "${cyan}–––––––––––––––––––––––––––${reset}"
 echo "     Backup successful"

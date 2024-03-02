@@ -253,34 +253,29 @@ sudo spctl --master-disable
 # Prevent Time Machine from prompting to use new hard drives as backup volume
 defaults write com.apple.TimeMachine DoNotOfferNewDisksForBackup -bool true
 
-echo "Restarting affected applications to enable changes..."
+# //////////////////////////////////////////////////////////////////////////////
+# Restart Applications
+# //////////////////////////////////////////////////////////////////////////////
+
+# Announce that we're restarting processes
+echo "Restarting affected applications to enable changes."
 sleep 1
 
-apps_to_restart=("Activity Monitor" "cfprefsd" "Dock" "Finder" "SystemUIServer")
-
-for app in "${apps_to_restart[@]}"; do
-  if killall "${app}" > /dev/null 2>&1; then
-    echo "Restarted ${app}"
-  else
-    echo "Failed to restart ${app}"
-  fi
+# Restart processes
+for app in "Activity Monitor" "cfprefsd" \
+  "Dock" "Finder" "SystemUIServer"; do
+  killall "${app}" > /dev/null 2>&1
 done
+}
 
 while true; do
-  echo ""
-  read -p "Do you want to change default macOS settings? (y/n) " yn
-  case $yn in
-    [Yy]* )
-      osdefaults
-      break
-      ;;
-    [Nn]* )
-      exit 0  # Cleaner exit
-      ;;
-    * )
-      echo "Please answer yes (y) or no (n)."
-      ;;
-  esac
+    echo
+    read -p "Do you want to change some default macOS settings? " yn
+    case $yn in
+        [Yy]* ) osdefaults; break;;
+        [Nn]* ) break;;
+        * ) echo "Please answer yes(y) or no(n)";;
+    esac
 done
 
 set -e

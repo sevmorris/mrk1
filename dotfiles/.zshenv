@@ -1,4 +1,4 @@
-#!/usr/bin/env zsh
+#!/usr/bin/env bash
 
 # ========= LANGUAGE & EDITOR CONFIGURATION =========
 export LANG='en_US.UTF-8'

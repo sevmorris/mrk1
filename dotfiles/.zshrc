@@ -1,4 +1,4 @@
-#!/usr/bin/env zsh
+#!/usr/bin/env bash
 
 # Oh-My-Zsh Configuration
 export ZSH="$HOME/.oh-my-zsh"

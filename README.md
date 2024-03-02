@@ -22,22 +22,22 @@ This repository helps me quickly customize a fresh macOS installation with my pr
 **Step-by-Step Setup**
 
 1. **Install Homebrew:**
-   ```bash
-   /bin/bash -c "$(curl -fsSL [https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh](https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh))"
+   ```
+   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
    ```
 
 2. **Install git & GitHub CLI:**
-   ```bash
+   ```
    brew install git gh
    ```
 
 3. **Install oh-my-zsh:**
-   ```bash
+   ```
    sh -c "$(curl -fsSL [https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh](https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh))"  "" --unattended
    ```
 
 4. **Install oh-my-zsh Plugins:**
-   ```bash
+   ```
    plugins_dir="${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins"
    mkdir -p "$plugins_dir"
 
@@ -48,12 +48,12 @@ This repository helps me quickly customize a fresh macOS installation with my pr
    ```
 
 5. **Clone this Repository:**
-   ```bash
+   ```
    gh repo clone sevmorris/mrk1
    ```
 
 6. **Run the Installer:**
-   ```bash
+   ```
    cd ~/mrk1
    chmod +x install
    ./install
@@ -66,13 +66,13 @@ This repository helps me quickly customize a fresh macOS installation with my pr
 
   Load environment variables from .zshenv
 
-  ```bash
+  ```
   source ~/.zshenv
   ```
 
   Run the restore script
 
-  ```bash
+  ```
   restore
   ```
 

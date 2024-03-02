@@ -17,7 +17,7 @@ green=$(tput setaf 2)  # Corrected color variable for green
 
 # Function to print arrows for better visual separation
 arrow() {
-    echo ""
+    echo
     echo "${green}${bold}>>> ${reset}$*"
 }
 
@@ -29,13 +29,13 @@ sleep 1
 arrow "Restoring to ${yellow}~/Library/Saved Application State${reset}" && echo
 sleep 1
 
-sudo rsync -av ~/mrk1/backups/Saved\ Application\ State/ ~/Library/Saved\ Application\ State/
+sudo rsync -av ~/.backups/Saved\ Application\ State/ ~/Library/Saved\ Application\ State/
 
 # Restoring ~/Library/Preferences
 arrow "Restoring ${yellow}~/Library/Preferences${reset}" && echo
 sleep 1
 
-sudo rsync -av ~/mrk1/backups/Preferences/ ~/Library/Preferences/
+sudo rsync -av ~/.backups/Preferences/ ~/Library/Preferences/
 
 # Manual instruction for specific data restoration
 echo "Restore Chrono Plus data manually"

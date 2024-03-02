@@ -1,2 +1,0 @@
-folders:
-  - /Library/Audio/Plug-Ins/WPAPI

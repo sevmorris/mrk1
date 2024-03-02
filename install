@@ -14,7 +14,8 @@ OMZ_CUSTOM="$HOME/.oh-my-zsh/custom"      # Customizations for Oh My Zsh
 cp -fv assets/topgrade.toml "$HOME/.config"   # Custom config file for topgrade
 cp -fv assets/Brewfile "$HOME"                # Up-to-date Brewfile
 
-# Create a directory for backups if it doesn't already exist
+# Create a directory for Preferences & Application Saved State
+# backups if it doesn't already exist
 backups_dir="$HOME/.backups"
 
 if [ ! -d "$backups_dir" ]; then
@@ -32,7 +33,7 @@ for file in "$dotfiles/.aliases" "$dotfiles/.zshenv" "$dotfiles/.zshrc"; do
     fi
 done
 
-# Create symlinks for scripts in .local/bin directory
+# Create symlinks for scripts (backup, restore, syncall) in .local/bin directory
 echo "Creating script symlinks in .local/bin directory"
 for file in "$scripts/backup" "$scripts/restore" "$scripts/syncall"; do
     if [ -r "$file" ] && [ -f "$file" ]; then

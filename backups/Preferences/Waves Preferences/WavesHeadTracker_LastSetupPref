@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-<WavesHeadTrackerPrefs>
-    <ActiveTab>Camera</ActiveTab>
-    <CameraState>Off</CameraState>
-    <CameraName></CameraName>
-    <AutomaticConnection>On</AutomaticConnection>
-    <DoNotShowCloseMessageAgain>On</DoNotShowCloseMessageAgain>
-</WavesHeadTrackerPrefs>

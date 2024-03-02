@@ -1,2 +1,0 @@
-This file is created for the 'Skip All' button functionality within the license absence dialog.
- It is not relevant 15 minutes after its creation.

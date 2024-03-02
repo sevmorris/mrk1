@@ -1,6 +1,0 @@
-<?xml version="1.0"?>
-<PresetPage_Preference>
-    <LoadInputVolume Value="false" />
-    <LoadOutputVolume Value="false" />
-    <LoadTempo Value="false" />
-</PresetPage_Preference>

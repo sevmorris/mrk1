@@ -1,5 +1,13 @@
-
-## macOS Personalization with mrk1
+```
+#__________________//macOS Personalization with mrk1//_________________________#
+#______      ______                                           _           _____#
+#_____      / ____ \________ _   ______ ___  ____  __________(_)____       ____#
+#____      / / __ `/ ___/ _ \ | / / __ `__ \/ __ \/ ___/ ___/ / ___/      _____#
+#___      / / /_/ (__  )  __/ |/ / / / / / / /_/ / /  / /  / (__  )      ______#
+#____     \ \__,_/____/\___/|___/_/ /_/ /_/\____/_/  /_/  /_/____/      _______#
+#_____     \____/                                                      ________#
+#______________________________________________________________________________#
+```
 
 This repository helps me quickly customize a fresh macOS installation with my preferred tools, settings, and configurations.
 
@@ -18,9 +26,9 @@ This repository helps me quickly customize a fresh macOS installation with my pr
    /bin/bash -c "$(curl -fsSL [https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh](https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh))"
    ```
 
-2. **Install git, GitHub CLI, and Zsh:**
+2. **Install git & GitHub CLI:**
    ```bash
-   brew install git gh zsh
+   brew install git gh
    ```
 
 3. **Install oh-my-zsh:**
@@ -46,14 +54,15 @@ This repository helps me quickly customize a fresh macOS installation with my pr
 
 6. **Run the Installer:**
    ```bash
-   cd mrk1
+   cd ~/mrk1
+   chmod +x install
    ./install
    ```  
 
 
 ## Additional Instructions
 
-1. **Restoring Preferences:**
+1. **Restoring Preferences and Application Saved States:**
 
   Load environment variables from .zshenv
 
@@ -69,15 +78,10 @@ This repository helps me quickly customize a fresh macOS installation with my pr
 
 2. **Switching to Homebrew's Zsh:**
 
-  Add Homebrew's Zsh to the list of valid shells
+  Add Homebrew's Zsh to the list of valid shells and switch to it.
 
   ```
   sudo sh -c 'echo "${BREW_PREFIX}/bin/zsh" >> /etc/shells'
-  ```
-
-  Switch to Homebrew's Zsh
-
-  ```
   chsh -s "${BREW_PREFIX}/bin/zsh"
   ```
 

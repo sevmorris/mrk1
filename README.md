@@ -59,6 +59,7 @@ This repository helps me quickly customize a fresh macOS installation with my pr
    ./install
    ```  
 
+**Note:** This repo must remain in place! For simplicty all dotfiles and scripts remain in this project and are symlinked where needed. Changes to the files will not break functionality and are easily synced to Github using the `syncall` command.
 
 ## Additional Instructions
 

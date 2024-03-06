@@ -42,7 +42,7 @@ alias pub="gpg --armor --export 7morris@gmail.com | pbcopy"
 # Comprehensive update & cleanup command
 #alias brewup="brew -v update && brew -v upgrade && brew -v cleanup --prune=all && brew autoremove && brew doctor"
 # Comprehensive cleanup command
-#alias brewclean="brew -v cleanup --prune=all && brew autoremove && brew doctor"
+alias brewclean="brew -v cleanup --prune=all && brew autoremove && brew doctor"
 # Additional cleanup, update, uninstall helpers
 alias cleanbrew="brew -v cleanup --prune=0"
 alias cleanerbrew="brew cleanup"

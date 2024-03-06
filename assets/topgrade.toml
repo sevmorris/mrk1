@@ -18,4 +18,4 @@ no_retry = true
 cleanup = true
 
 [brew]
-greedy_cask = true
+#greedy_cask = true

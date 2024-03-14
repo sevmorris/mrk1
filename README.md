@@ -41,9 +41,9 @@ This repository helps me quickly customize a fresh (Apple Silicone) macOS instal
    plugins_dir="${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins"
    mkdir -p "$plugins_dir"
 
-   git clone [https://github.com/zsh-users/zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions) "$plugins_dir"
-   git clone [https://github.com/zsh-users/zsh-syntax-highlighting](https://github.com/zsh-users/zsh-syntax-highlighting) "$plugins_dir"
-   git clone [https://github.com/gretzky/auto-color-ls](https://github.com/gretzky/auto-color-ls) "$plugins_dir"
+   git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+   git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+   git clone https://github.com/gretzky/auto-color-ls ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/auto-color-ls
    gh completion --shell zsh > "$plugins_dir/gh.zsh"
    ```
 

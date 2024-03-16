@@ -5,12 +5,6 @@ assume_yes = true
 # Disable specific steps - same options as the command line flag
 disable = ["system"]
 
-# Ignore failures for these steps
-#ignore_failures = ["powershell"]
-
-# Run specific steps - same options as the command line flag
-#only = ["system", "emacs"]
-
 # Do not ask to retry failed steps (default: false)
 no_retry = true
 

@@ -12,27 +12,33 @@ arrow() {
     echo "${green}${bold}>>> ${reset}$*"
 }
 
-# Introduction
+#-------------------------------------------------------------------------------
 echo "Running restore script"
 sleep 1
 
-# Restoring to ~/Library/Saved Application State
+#-------------------------------------------------------------------------------
 arrow "Restoring to ${yellow}~/Library/Saved Application State${reset}" && echo
 sleep 1
 
 sudo rsync -av ~/.backups/Saved\ Application\ State/ ~/Library/Saved\ Application\ State/
 
-# Restoring ~/Library/Preferences
+#-------------------------------------------------------------------------------
 arrow "Restoring ${yellow}~/Library/Preferences${reset}" && echo
 sleep 1
 
 sudo rsync -av ~/.backups/Preferences/ ~/Library/Preferences/
 
-# Manual instruction for specific data restoration
+#-------------------------------------------------------------------------------
+arrow "Restoring ${yellow}~/Music/Audio Music Apps${reset}" && echo
+sleep 1
+
+sudo rsync -av ~/.backups/~/Music/Audio\ Music\ Apps/ ~/Music/Audio\ Music\ Apps/
+
+#-------------------------------------------------------------------------------
 echo "Restore Chrono Plus data manually"
 sleep 1
 
-# Display restore success message
+#-------------------------------------------------------------------------------
 echo ""
 echo "${yellow}–––––––––––––––––––––––––––${reset}"
 echo "     Restore successful"

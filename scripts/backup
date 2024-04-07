@@ -38,6 +38,14 @@ else
 fi
 
 #-------------------------------------------------------------------------------
+arrow "Backing up ${cyan}~/Music/Audio Music Apps${reset}"
+if sudo rsync -av ~/Music/Audio\ Music\ Apps "$backup_dir"; then
+    echo "Backup successful"
+else
+    echo "${bold}${red}Backup failed!${reset}"
+fi
+
+#-------------------------------------------------------------------------------
 arrow "Backing up ${cyan}Chrono Plus local data${reset}"
 if sudo rsync -av ~/Library/Containers/com.xwavesoft.timetrackermac/Data/Documents "$backup_dir"; then
     echo "Backup successful"

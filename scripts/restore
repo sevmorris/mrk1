@@ -18,35 +18,34 @@ echo "Running restore script"
 sleep 1
 
 #-------------------------------------------------------------------------------
-arrow "Restoring to ${yellow}~/Library/Saved Application State${reset}" && echo
-sleep 1
+arrow "${yellow}~/Library/Saved Application State${reset}" && echo
 
 sudo rsync -av ~/.backups/Saved\ Application\ State/ ~/Library/Saved\ Application\ State/
 
 #-------------------------------------------------------------------------------
-arrow "Restoring ${yellow}~/Library/Preferences${reset}" && echo
-sleep 1
+arrow "${yellow}~/Library/Preferences${reset}" && echo
 
 sudo rsync -av ~/.backups/Preferences/ ~/Library/Preferences/
 
 #-------------------------------------------------------------------------------
-arrow "Restoring ${yellow}~/Music/Audio Music Apps${reset}" && echo
-sleep 1
+arrow "${yellow}~/Music/Audio Music Apps${reset}" && echo
 
 sudo rsync -av ~/.backups/Audio\ Music\ Apps/ ~/Music/Audio\ Music\ Apps/
 
 #-------------------------------------------------------------------------------
-arrow "Restoring ${yellow}~/Documents/iZotope${reset}" && echo
-sleep 1
+arrow "${yellow}~/Documents/iZotope${reset}" && echo
 
 sudo rsync -av ~/.backups/iZotope ~/Documents/iZotope/
 
 #-------------------------------------------------------------------------------
-echo "${red}${bold}Restore Chrono Plus data manually"
+echo ""
+echo "${yellow}–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––${reset}"
+echo "${red}${bold}Restore Chrono Plus data manually to:${reset}"
+echo "${green}~/Library/Containers/com.xwavesoft.timetrackermac/Data/Documents${reset}"
+echo "${yellow}–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––${reset}"
 sleep 1
 
 #-------------------------------------------------------------------------------
 echo ""
-echo "${yellow}–––––––––––––––––––––––––––${reset}"
-echo "     Restore successful"
-echo "${yellow}–––––––––––––––––––––––––––${reset}"
+echo "Restore successful"
+echo ""

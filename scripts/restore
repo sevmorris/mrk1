@@ -2,6 +2,7 @@
 
 # Color variables for better readability
 bold=$(tput bold)
+red=$(tput setaf 1)
 yellow=$(tput setaf 3)
 reset=$(tput sgr0)
 green=$(tput setaf 2)  # Corrected color variable for green
@@ -41,7 +42,7 @@ sleep 1
 sudo rsync -av ~/.backups/iZotope ~/Documents/iZotope/
 
 #-------------------------------------------------------------------------------
-echo "${green}${bold}Restore Chrono Plus data manually"
+echo "${red}${bold}Restore Chrono Plus data manually"
 sleep 1
 
 #-------------------------------------------------------------------------------

@@ -41,7 +41,7 @@ sleep 1
 sudo rsync -av ~/.backups/iZotope ~/Documents/iZotope/
 
 #-------------------------------------------------------------------------------
-echo "Restore Chrono Plus data manually"
+echo "${yellow}${bold}sRestore Chrono Plus data manually"
 sleep 1
 
 #-------------------------------------------------------------------------------

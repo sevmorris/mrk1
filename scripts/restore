@@ -32,13 +32,13 @@ sudo rsync -av ~/.backups/Preferences/ ~/Library/Preferences/
 arrow "Restoring ${yellow}~/Music/Audio Music Apps${reset}" && echo
 sleep 1
 
-sudo rsync -av ~/.backups/Music/Audio\ Music\ Apps/ ~/Music/Audio\ Music\ Apps/
+sudo rsync -av ~/.backups/Audio\ Music\ Apps/ ~/Music/Audio\ Music\ Apps/
 
 #-------------------------------------------------------------------------------
 arrow "Restoring ${yellow}~/Documents/iZotope${reset}" && echo
 sleep 1
 
-sudo rsync -av ~/.backups/Documents/iZotope ~/Documents/iZotope/
+sudo rsync -av ~/.backups/iZotope ~/Documents/iZotope/
 
 #-------------------------------------------------------------------------------
 echo "Restore Chrono Plus data manually"

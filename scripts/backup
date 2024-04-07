@@ -46,6 +46,14 @@ else
 fi
 
 #-------------------------------------------------------------------------------
+arrow "Backing up ${cyan}~/Documents/iZotope${reset}"
+if sudo rsync -av ~/Documents/iZotope "$backup_dir"; then
+    echo "Backup successful"
+else
+    echo "${bold}${red}Backup failed!${reset}"
+fi
+
+#-------------------------------------------------------------------------------
 arrow "Backing up ${cyan}Chrono Plus local data${reset}"
 if sudo rsync -av ~/Library/Containers/com.xwavesoft.timetrackermac/Data/Documents "$backup_dir"; then
     echo "Backup successful"

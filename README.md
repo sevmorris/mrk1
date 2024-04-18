@@ -33,7 +33,7 @@ This repository helps me quickly customize a fresh (Apple Silicone) macOS instal
 
 3. **Install oh-my-zsh:**
    ```
-   sh -c "$(curl -fsSL [https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh](https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh))"  "" --unattended
+   sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
    ```
 
 4. **Install oh-my-zsh Plugins:**

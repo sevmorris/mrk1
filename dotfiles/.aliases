@@ -11,44 +11,30 @@
 # Personal Aliases
 # ============================
 
-# Enhanced file listing
-alias la="ls -la --color=auto"
-# Nano with line numbers
-alias nano="nano --linenumbers"
 
-# Clear screen, reload config
-alias c="clear && source ~/.zshrc"
-# 'cat' with syntax highlighting
-alias cat="bat"
-# Measure network responsiveness
-alias netcheck="networkQuality"
-# Put display to sleep
-alias s="pmset displaysleepnow"
-# Copy shrug to clipboard
-alias shrug="echo '¯\_(ツ)_/¯' | pbcopy"
-# Generate strong password
-alias pw="pwgen -s -1 19 -y | pbcopy"
-# Secure file deletion (more iterations)
-alias shred="shred -uvn 10"
-# Convert images to ASCII art
-alias art="ascii-image-converter"
-# Copy your PGP public key
-alias pub="gpg --armor --export 7morris@gmail.com | pbcopy"
+alias la="ls -la --color=auto"                                    # Enhanced file listing
+alias nano="nano --linenumbers"                                   # Nano with line numbers
+alias c="clear && source ~/.zshrc"                                # Clear screen, reload config
+alias cat="bat"                                                   # 'cat' with syntax highlighting
+alias netcheck="networkQuality"                                   # Measure network responsiveness
+alias s="pmset displaysleepnow"                                   # Put display to sleep
+alias shrug="echo '¯\_(ツ)_/¯' | pbcopy"                          # Copy shrug to clipboard
+alias pw="pwgen -s -1 19 -y | pbcopy"                             # Generate strong password
+alias shred="shred -uvn 10"                                       # Secure file deletion (more iterations)
+alias art="ascii-image-converter"                                 # Convert images to ASCII art
+alias pub="gpg --armor --export 7morris@gmail.com | pbcopy"       # Copy your PGP public key
+alias decrypt="gpg --decrypt "                                    # Decrypt a file encrypted with my secret gpg key
 
 # ============================
 # Homebrew Aliases
 # ============================
 
-# Comprehensive update & cleanup command
 #alias brewup="brew -v update && brew -v upgrade && brew -v cleanup --prune=all && brew autoremove && brew doctor"
-# Comprehensive cleanup command
 alias brewclean="brew -v cleanup --prune=all && brew autoremove && brew doctor"
-# Additional cleanup, update, uninstall helpers
 alias cleanbrew="brew -v cleanup --prune=0"
 alias cleanerbrew="brew cleanup"
 alias brupdate="brup"
 alias brun="brew uninstall -v"
-# Brewfile Management (Create/update Brewfile)
 alias dump="brew bundle dump --force --file=~/mrk1/assets/Brewfile && cp -fv ~/mrk1/assets/Brewfile ~/"
 
 # Ultimate update
@@ -59,19 +45,6 @@ alias update="topgrade && brewclean"
 # ============================
 
 alias mc="cd mcservers/1.20.4 && java -Xms10G -Xmx10G -XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions -XX:+DisableExplicitGC -XX:+AlwaysPreTouch -XX:G1NewSizePercent=30 -XX:G1MaxNewSizePercent=40 -XX:G1HeapRegionSize=8M -XX:G1ReservePercent=20 -XX:G1HeapWastePercent=5 -XX:G1MixedGCCountTarget=4 -XX:InitiatingHeapOccupancyPercent=15 -XX:G1MixedGCLiveThresholdPercent=90 -XX:G1RSetUpdatingPauseTimePercent=5 -XX:SurvivorRatio=32 -XX:+PerfDisableSharedMem -XX:MaxTenuringThreshold=1 -Dusing.aikars.flags=https://mcflags.emc.gs -Daikars.new.flags=true -jar paper.jar"
-
-# ============================
-# GitHub Aliases
-# ============================
-
-# Create a remote GitHub repository
-alias gitgo="gh repo create"
-# Initialize local Git with 'main' branch
-alias gitready="git init -b main"
-# Initial commit
-alias gitset='git add . && git commit -m "initial commit"'
-# Push changes and get a directory tree
-alias gitup="pushit && tre"
 
 # ============================
 # Utility Functions

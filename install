@@ -14,6 +14,12 @@ OMZ_CUSTOM="$HOME/.oh-my-zsh/custom"          # Customizations for Oh My Zsh
 cp -fv assets/topgrade.toml "$HOME/.config"   # Custom config file for topgrade
 cp -fv assets/Brewfile "$HOME"                # Up-to-date Brewfile
 
+# Create the ~/.local/bin directory if it doesn't exist
+if [ ! -d "$bin" ]; then
+  mkdir -p "$bin"  # -p flag creates parent directories if needed
+  echo ".local/bin directory created"
+fi
+
 # Create symlinks for dotfiles in the home directory
 echo "Creating dotfile symlinks in the home directory"
 for file in "$dotfiles/.aliases" "$dotfiles/.zshenv" "$dotfiles/.zshrc"; do

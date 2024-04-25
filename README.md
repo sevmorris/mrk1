@@ -26,22 +26,28 @@ This repository helps me quickly customize a fresh (Apple Silicone) macOS instal
    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
    ```
 
-2. **Install git, GitHub CLI & zsh:**
+2. **Run these two commands in your terminal to add Homebrew to your PATH**
+  ```
+  (echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') >> /Users/sev/.zprofile
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+  ```
+
+3. **Install git, GitHub CLI & zsh:**
    ```
    brew install git gh zsh
    ```
 
-3. **Authorize GitHub account for GitHub CLI***
+4. **Authorize GitHub account for GitHub CLI***
   ```
   gh auth login
   ```
 
-4. **Install oh-my-zsh:**
+5. **Install oh-my-zsh:**
    ```
    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
    ```
 
-5. **Install oh-my-zsh Plugins:**
+6. **Install oh-my-zsh Plugins:**
    ```
    plugins_dir="${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins"
    mkdir -p "$plugins_dir"
@@ -52,12 +58,12 @@ This repository helps me quickly customize a fresh (Apple Silicone) macOS instal
    gh completion --shell zsh > "$plugins_dir/gh.zsh"
    ```
 
-6. **Clone this Repository:**
+7. **Clone this Repository:**
    ```
    gh repo clone sevmorris/mrk1
    ```
 
-7. **Run the Installer:**
+8. **Run the Installer:**
    ```
    cd ~/mrk1
    chmod +x install

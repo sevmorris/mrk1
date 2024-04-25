@@ -26,11 +26,11 @@ This repository helps me quickly customize a fresh (Apple Silicone) macOS instal
    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
    ```
 
-2. **Run these two commands in your terminal to add Homebrew to your PATH**
-  ```
-  (echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') >> /Users/sev/.zprofile
-  eval "$(/opt/homebrew/bin/brew shellenv)"
-  ```
+2. **Run the following two commands to add Homebrew to PATH**
+   ```
+   (echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') >> /Users/sev/.zprofile
+   eval "$(/opt/homebrew/bin/brew shellenv)"
+   ```
 
 3. **Install git, GitHub CLI & zsh:**
    ```
@@ -38,9 +38,9 @@ This repository helps me quickly customize a fresh (Apple Silicone) macOS instal
    ```
 
 4. **Authorize GitHub account for GitHub CLI***
-  ```
-  gh auth login
-  ```
+   ```
+   gh auth login
+   ```
 
 5. **Install oh-my-zsh:**
    ```

@@ -53,6 +53,11 @@ if [ ! -f "$HOME/.hushlogin" ]; then
     touch "$HOME/.hushlogin"
 fi
 
-# Homebrew: Run 'brew bundle' from the home directory to ensure
-# Brewfile is found and installations go into the correct locations
-cd "$HOME" && brew bundle install --verbose --no-lock
+echo "Run Homebrew bundle installation? (yes/no/--run-brew): "
+read run_brew
+
+if [[ $run_brew == "yes" || $1 == "--run-brew" ]]; then
+    cd "$HOME" && brew bundle install --verbose --no-lock
+else
+    echo "Skipping Homebrew installation."
+fi

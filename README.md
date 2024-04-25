@@ -26,17 +26,22 @@ This repository helps me quickly customize a fresh (Apple Silicone) macOS instal
    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
    ```
 
-2. **Install git & GitHub CLI:**
+2. **Install git, GitHub CLI & zsh:**
    ```
-   brew install git gh
+   brew install git gh zsh
    ```
 
-3. **Install oh-my-zsh:**
+3. **Authorize GitHub account for GitHub CLI***
+  ```
+  gh auth login
+  ```
+
+4. **Install oh-my-zsh:**
    ```
    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
    ```
 
-4. **Install oh-my-zsh Plugins:**
+5. **Install oh-my-zsh Plugins:**
    ```
    plugins_dir="${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins"
    mkdir -p "$plugins_dir"
@@ -47,19 +52,19 @@ This repository helps me quickly customize a fresh (Apple Silicone) macOS instal
    gh completion --shell zsh > "$plugins_dir/gh.zsh"
    ```
 
-5. **Clone this Repository:**
+6. **Clone this Repository:**
    ```
    gh repo clone sevmorris/mrk1
    ```
 
-6. **Run the Installer:**
+7. **Run the Installer:**
    ```
    cd ~/mrk1
    chmod +x install
    ./install
    ```  
 
-**Note:** This repo must remain in place! For simplicty all dotfiles and scripts remain in this project and are symlinked where needed. Changes to the files will not break functionality and are easily synced to Github using the `syncall` command.
+**Note:** This repo must remain in place! For simplicity and convenience all dotfiles and scripts remain in this project and are symlinked where needed. Changes to the files will not break functionality and are easily synced to Github using the `syncall` command.
 
 ## Additional Instructions
 
@@ -79,11 +84,21 @@ This repository helps me quickly customize a fresh (Apple Silicone) macOS instal
 
 **Switching to Homebrew's Zsh:**
 
-  Add Homebrew's Zsh to the list of valid shells and switch to it.
+  Open /etc/shells
 
   ```
-  sudo sh -c 'echo "${BREW_PREFIX}/bin/zsh" >> /etc/shells'
-  chsh -s "${BREW_PREFIX}/bin/zsh"
+  sudo nano /etc/shells
+  ```
+  Add Homebrew's Zsh to to /etc/shells by pasting the following
+
+  ```
+  /opt/homebrew/bin/zsh
+  ```
+
+  And finally, switch to Homebrew's Zsh
+
+  ```
+  chsh -s /opt/homebrew/bin/zsh
   ```
 
 **Removing Dock Icons (Optional):**

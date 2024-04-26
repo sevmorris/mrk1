@@ -13,13 +13,13 @@ This repository helps me quickly customize a fresh (Apple Silicone) macOS instal
 
 ## Getting Started
 
-**Prerequisites:**
+### Prerequisites
 
 * A fresh macOS installation
 * Xcode Command Line Tools (install if needed: `xcode-select --install`)
 
 
-**Step-by-Step Setup**
+### Step-by-Step Setup
 
 1. **Install Homebrew:**
    ```
@@ -74,43 +74,24 @@ This repository helps me quickly customize a fresh (Apple Silicone) macOS instal
 
 ## Additional Instructions
 
-**Restoring Preferences and Application Saved States:**
+### Switch to Homebrew's Zsh
 
-  Load environment variables from .zshenv
-
-  ```
-  source ~/.zshenv
-  ```
-
-  Run the restore script to move Preferences & Saved Application State files from ~/.backups (pulled from a private repo)
-
-  ```
-  restore
-  ```
-
-**Switching to Homebrew's Zsh:**
-
-  Open /etc/shells
-
+  1. **Open /etc/shells**
   ```
   sudo nano /etc/shells
   ```
-  Add Homebrew's Zsh to to /etc/shells by pasting the following
 
+  2. **Add Homebrew's Zsh to to /etc/shells by pasting the following**
   ```
   /opt/homebrew/bin/zsh
   ```
 
-  And finally, switch to Homebrew's Zsh
-
+  3. **And finally, switch to Homebrew's Zsh**
   ```
   chsh -s /opt/homebrew/bin/zsh
   ```
 
-**Removing Dock Icons (Optional):**
-
-  Reset the macOS Dock to its default (empty) state
-
+### Remove Default Dock Icons (Optional)
   ```
   defaults write com.apple.dock persistent-apps -array
   killAll Dock

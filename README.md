@@ -63,7 +63,7 @@ This repository helps me quickly customize a fresh (Apple Silicone) macOS instal
    ./install
    ```  
 
-**Note:** This repo must remain in place! The install script creates symlinks to dotfiles and scripts in the correct locations. This way any updates to the dotfiles and Brewfile in the repo will not break functionality and are easily synced to Github using the `syncall` command.
+**Note:** This repo must remain in place! The install script creates symlinks to dotfiles and scripts in the correct locations. This way any updates to the dotfiles and Brewfile in the repo will not break functionality and are easily synced to GitHub using the `syncall` command.
 
 ## Additional Instructions
 

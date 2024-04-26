@@ -63,6 +63,8 @@ This repository helps me quickly customize a fresh (Apple Silicone) macOS instal
    ./install
    ```  
 
+**Note:** You will be prompted to run the Brewfile install command (`brew bundle install`). There are *a lot* of apps in my Brewfile. It may be desirable to edit the Brewfile before running the command.
+
 **Note:** This repo must remain in place! The install script creates symlinks to dotfiles and scripts in the correct locations. This way any updates to the dotfiles and Brewfile in the repo will not break functionality and are easily synced to GitHub using the `syncall` command.
 
 ## Additional Instructions

@@ -88,7 +88,7 @@ This repository helps me quickly customize a fresh (Apple Silicone) macOS instal
 
 ### Remove Default Dock Icons (Optional)
 
-  This removes all those Dock icons from a fresh macOS install, leaving only open apps in the Dock
+  This removes all the default Dock icons from a fresh macOS install, leaving only currently open apps in the Dock
   ```
   defaults write com.apple.dock persistent-apps -array
   killAll Dock

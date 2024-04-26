@@ -11,13 +11,6 @@
 
 This repository helps me quickly customize a fresh (Apple Silicone) macOS installation with my preferred tools, settings, and configurations.
 
-## Getting Started
-
-### Prerequisites
-
-* A fresh macOS installation
-* Xcode Command Line Tools (install if needed: `xcode-select --install`)
-
 
 ### Step-by-Step Setup
 

@@ -27,4 +27,7 @@ export PATH="/opt/homebrew/bin:$PATH"
 # User Configuration
 source "$HOME/.aliases"
 compctl -K _gh gh  # Assuming `_gh` is a completion function for the `gh` command
-export PATH="/opt/homebrew/opt/node@20/bin:$PATH"
+
+export PATH="/opt/homebrew/opt/coreutils/libexec/gnubin:$PATH"
+
+fastfetch

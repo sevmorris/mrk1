@@ -40,6 +40,7 @@ alias dump="brew bundle dump --force --file=~/mrk1/assets/Brewfile && cp -fv ~/m
 
 # Ultimate update
 alias update="topgrade && brewclean"
+alias ud="topgrade && brewclean"
 
 # ============================
 # Minecraft Server Alias

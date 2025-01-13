@@ -11,6 +11,9 @@ plugins=(
   git
   zsh-autosuggestions
   zsh-syntax-highlighting
+  z
+  colored-man-pages
+  command-not-found
 )
 
 source "$ZSH/oh-my-zsh.sh"

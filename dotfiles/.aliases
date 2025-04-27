@@ -38,6 +38,7 @@ alias brewclean="brew -v cleanup --prune=all && brew autoremove && brew doctor"
 alias cleanbrew="brew -v cleanup --prune=0"
 alias cleanerbrew="brew cleanup"
 alias dump="brew bundle dump --force --file=~/mrk1/assets/Brewfile && cp -fv ~/mrk1/assets/Brewfile ~/"
+alias bruses="brew uses --installed "
 
 # Ultimate update
 alias u="brew update && topgrade && brewclean"

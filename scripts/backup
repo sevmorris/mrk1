@@ -13,7 +13,10 @@ arrow() {
     echo "${green}${bold}>>> ${reset}$*"
 }
 
-backup_dir="$HOME/.backups"
+## Back up to internal drive
+# backup_dir="$HOME/.backups"
+## Back up to external drive
+backup_dir="/Volumes/WORK_2TB/Backup"
 
 # Create a directory for backups if it doesn't already exist
 if [ ! -d "$backup_dir" ]; then
@@ -23,7 +26,7 @@ fi
 
 #-------------------------------------------------------------------------------
 arrow "Backing up ${cyan}~/Library/Saved Application State${reset}"
-if sudo rsync -av ~/Library/Saved\ Application\ State "$backup_dir"; then
+if sudo rsync -av --ignore-errors --delete --log-file=rsync_backup.log ~/Library/Saved\ Application\ State "$backup_dir"; then
     echo "Backup successful"
 else
     echo "${bold}${red}Backup failed!${reset}"
@@ -31,7 +34,7 @@ fi
 
 #-------------------------------------------------------------------------------
 arrow "Backing up ${cyan}~/Library/Preferences${reset}"
-if sudo rsync -av ~/Library/Preferences "$backup_dir"; then
+if sudo rsync -av --ignore-errors --delete --log-file=rsync_backup.log ~/Library/Preferences "$backup_dir"; then
     echo "Backup successful"
 else
     echo "${bold}${red}Backup failed!${reset}"
@@ -39,7 +42,7 @@ fi
 
 #-------------------------------------------------------------------------------
 arrow "Backing up ${cyan}~/Music/Audio Music Apps${reset}"
-if sudo rsync -av ~/Music/Audio\ Music\ Apps "$backup_dir"; then
+if sudo rsync -av --ignore-errors --delete --log-file=rsync_backup.log ~/Music/Audio\ Music\ Apps "$backup_dir"; then
     echo "Backup successful"
 else
     echo "${bold}${red}Backup failed!${reset}"
@@ -47,7 +50,7 @@ fi
 
 #-------------------------------------------------------------------------------
 arrow "Backing up ${cyan}~/Documents/iZotope${reset}"
-if sudo rsync -av ~/Documents/iZotope "$backup_dir"; then
+if sudo rsync -av --ignore-errors --delete --log-file=rsync_backup.log ~/Documents/iZotope "$backup_dir"; then
     echo "Backup successful"
 else
     echo "${bold}${red}Backup failed!${reset}"
@@ -55,7 +58,7 @@ fi
 
 #-------------------------------------------------------------------------------
 arrow "Backing up ${cyan}Chrono Plus local data${reset}"
-if sudo rsync -av ~/Library/Containers/com.xwavesoft.timetrackermac/Data/Documents "$backup_dir"; then
+if sudo rsync -av --ignore-errors --delete --log-file=rsync_backup.log ~/Library/Containers/com.xwavesoft.timetrackermac/Data/Documents "$backup_dir"; then
     echo "Backup successful"
 else
     echo "${bold}${red}Backup failed!${reset}"

@@ -13,6 +13,18 @@ arrow() {
     echo "${green}${bold}>>> ${reset}$*"
 }
 
+## Restore from internal drive
+# restore_sas="$HOME/.backups/Saved\ Application\ State/"
+#restore_prefs="$HOME/.backups/Preferences/"
+#restore_ama="$HOME/.backups/Audio\ Music\ Apps/"
+#restore_izo="$HOME/.backups/iZotope"
+
+## Restore from external drive
+restore_sas="/Volumes/WORK_2TB/Backup/Saved Application State/"
+restore_prefs="/Volumes/WORK_2TB/Backup/Preferences/"
+restore_ama="/Volumes/WORK_2TB/Backup/Audio Music Apps/"
+restore_izo="/Volumes/WORK_2TB/Backup/iZotope"
+
 #-------------------------------------------------------------------------------
 echo "Running restore script"
 sleep 1
@@ -20,22 +32,34 @@ sleep 1
 #-------------------------------------------------------------------------------
 arrow "${yellow}~/Library/Saved Application State${reset}" && echo
 
-sudo rsync -av ~/.backups/Saved\ Application\ State/ ~/Library/Saved\ Application\ State/
+## Restore from internal drive
+# sudo rsync -av ~/.backups/Saved\ Application\ State/ ~/Library/Saved\ Application\ State/
+## Restore from external drive
+rsync -av --ignore-errors --delete "$restore_sas" ~/Library/Saved\ Application\ State/
 
 #-------------------------------------------------------------------------------
 arrow "${yellow}~/Library/Preferences${reset}" && echo
 
-sudo rsync -av ~/.backups/Preferences/ ~/Library/Preferences/
+## Restore from internal drive
+# sudo rsync -av ~/.backups/Preferences/ ~/Library/Preferences/
+## Restore from external drive
+rsync -av --ignore-errors --delete "$restore_prefs" ~/Library/Preferences/
 
 #-------------------------------------------------------------------------------
 arrow "${yellow}~/Music/Audio Music Apps${reset}" && echo
 
-sudo rsync -av ~/.backups/Audio\ Music\ Apps/ ~/Music/Audio\ Music\ Apps/
+## Restore from internal drive
+# sudo rsync -av ~/.backups/Audio\ Music\ Apps/ ~/Music/Audio\ Music\ Apps/
+## Restore from external drive
+rsync -av --ignore-errors --delete "$restore_ama" ~/Music/Audio\ Music\ Apps/
 
 #-------------------------------------------------------------------------------
 arrow "${yellow}~/Documents/iZotope${reset}" && echo
 
-sudo rsync -av ~/.backups/iZotope ~/Documents/iZotope/
+## Restore from internal drive
+# sudo rsync -av ~/.backups/iZotope ~/Documents/iZotope/
+## Restore from external drive
+rsync -av --ignore-errors --delete "$restore_izo" ~/Documents/iZotope/
 
 #-------------------------------------------------------------------------------
 echo ""
@@ -47,5 +71,5 @@ sleep 1
 
 #-------------------------------------------------------------------------------
 echo ""
-echo "Restore successful"
+echo "Restore successful (see rsync_backup.log for details)"
 echo ""

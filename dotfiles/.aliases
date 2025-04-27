@@ -11,7 +11,6 @@
 # Personal Aliases
 # ============================
 
-
 alias la="ls -la --color=auto"                                    # Enhanced file listing
 alias nano="nano --linenumbers"                                   # Nano with line numbers
 alias c="clear && source ~/.zshrc"                                # Clear screen, reload config
@@ -25,22 +24,24 @@ alias art="ascii-image-converter"                                 # Convert imag
 alias pub="gpg --armor --export 7morris@gmail.com | pbcopy"       # Copy your PGP public key
 alias decrypt="gpg --decrypt "                                    # Decrypt a file encrypted with my secret gpg key
 alias badblocks='/opt/homebrew/opt/e2fsprogs/sbin/badblocks'
+alias v='source .venv/bin/activate'				  # Activate Python virtual environment
+alias delempty='~/.local/bin/remove_empty_dirs.sh '		  # Delete empty directories, including those containing only .DS_Store
+
 
 # ============================
 # Homebrew Aliases
 # ============================
 
-#alias brewup="brew -v update && brew -v upgrade && brew -v cleanup --prune=all && brew autoremove && brew doctor"
+alias brewup="brew -v update && brew -v upgrade && brew -v cleanup --prune=all && brew autoremove && brew doctor"
+alias brun="brew uninstall -v"
 alias brewclean="brew -v cleanup --prune=all && brew autoremove && brew doctor"
 alias cleanbrew="brew -v cleanup --prune=0"
 alias cleanerbrew="brew cleanup"
-alias brupdate="brup"
-alias brun="brew uninstall -v"
 alias dump="brew bundle dump --force --file=~/mrk1/assets/Brewfile && cp -fv ~/mrk1/assets/Brewfile ~/"
 
 # Ultimate update
-alias update="topgrade && brewclean"
-alias ud="topgrade && brewclean"
+alias u="brew update && topgrade && brewclean"
+alias update="brew update && topgrade && brewclean"
 
 # ============================
 # Minecraft Server Alias
@@ -79,19 +80,4 @@ a() {
 # Enhanced tree command (hidden files, color, organized)
 tre() {
   tree -aC -I '.git|node_modules|bower_components' --dirsfirst "$@" | less -FRNX
-}
-
-brup() {
-  echo "Checking for outdated Homebrew packages..."
-  brew outdated
-
-  echo -e "\nWould you like to upgrade outdated packages? (y/n) "
-  read -r answer
-
-  if [[ $answer == "y" || $answer == "Y" ]]; then
-      echo "Upgrading outdated packages..."
-      brew upgrade
-  else
-      echo "Skipping upgrade."
-  fi
 }

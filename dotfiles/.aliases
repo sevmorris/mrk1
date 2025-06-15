@@ -39,10 +39,12 @@ alias cleanbrew="brew -v cleanup --prune=0"
 alias cleanerbrew="brew cleanup"
 alias dump="brew bundle dump --force --file=~/mrk1/assets/Brewfile && cp -fv ~/mrk1/assets/Brewfile ~/"
 alias bruses="brew uses --installed "
+alias fixp="sudo chown -R $(whoami) /opt/homebrew"
+alias f="sudo chown -R $(whoami) /opt/homebrew"
 
 # Ultimate update
-alias u="brew update && topgrade && brewclean"
 alias update="brew update && topgrade && brewclean"
+alias u="brew update && topgrade && brewclean"
 
 # ============================
 # Minecraft Server Alias

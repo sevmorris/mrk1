@@ -2,30 +2,27 @@
 #  .zshrc: Sourced for INTERACTIVE shells.
 # ==============================================================================
 
-# --- PATH Management ---
-# The 'path' array is tied to the $PATH variable in Zsh.
-# We modify this array, then de-duplicate it at the end.
+# --- Oh-My-Zsh (OMZ) Configuration ---
+export ZSH="$HOME/.oh-my-zsh"
+ZSH_THEME="bira"
+zstyle ':omz:update' mode auto
+COMPLETION_WAITING_DOTS="true"
+plugins=(git zsh-autosuggestions zsh-syntax-highlighting z colored-man-pages command-not-found gh)
 
-# Start with user-specific bin directories.
+# Load Oh My Zsh.
+source "$ZSH/oh-my-zsh.sh"
+
+# --- PATH Customization ---
+# Add user-specific and Python paths. Assumes Homebrew path is set in .zprofile.
+
+# Add user-local binaries
 path=(
   "$HOME/bin"
   "$HOME/.local/bin"
   $path
 )
 
-# Add Homebrew and its installed packages to the PATH.
-if command -v brew &>/dev/null; then
-  BREW_PREFIX="$(brew --prefix)"
-  path=(
-    "$BREW_PREFIX/bin"
-    "$BREW_PREFIX/sbin"
-    "$BREW_PREFIX/opt/coreutils/libexec/gnubin" # GNU coreutils
-    $path
-  )
-  export MANPATH="$BREW_PREFIX/share/man:$MANPATH"
-fi
-
-# Find and add the latest python.org version to the PATH.
+# Find and add the latest python.org version
 PYTHON_FRAMEWORK_DIR="/Library/Frameworks/Python.framework/Versions"
 if [[ -d "$PYTHON_FRAMEWORK_DIR" ]]; then
   LATEST_PYTHON_VERSION=$(ls "$PYTHON_FRAMEWORK_DIR" | sort -V | tail -n 1)
@@ -35,18 +32,8 @@ if [[ -d "$PYTHON_FRAMEWORK_DIR" ]]; then
   fi
 fi
 
-# Use Zsh's built-in 'typeset' to remove duplicate entries from the PATH.
+# Use Zsh's built-in 'typeset' to remove any duplicate entries.
 typeset -U path
-
-# --- Oh-My-Zsh (OMZ) Configuration ---
-export ZSH="$HOME/.oh-my-zsh"
-ZSH_THEME="bira"
-zstyle ':omz:update' mode auto
-COMPLETION_WAITING_DOTS="true"
-plugins=(git zsh-autosuggestions zsh-syntax-highlighting z colored-man-pages command-not-found gh)
-
-# Load Oh My Zsh. This must come AFTER setting variables and PATH.
-source "$ZSH/oh-my-zsh.sh"
 
 # --- Source Personal Aliases ---
 if [[ -f "$HOME/.aliases" ]]; then

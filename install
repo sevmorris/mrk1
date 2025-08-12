@@ -55,7 +55,7 @@ install_core_tools() {
   header "Installing core tools with Homebrew"
   brew bundle --file=- <<EOF
 cask "iterm2"
-cask "visual-studio-code"
+cask "pulsar" # <-- CHANGED
 brew "git"
 brew "gh"
 brew "zsh"
@@ -106,6 +106,7 @@ create_symlinks() {
         ["$mrk1_dir/.zshenv"]="$HOME/.zshenv"
         ["$mrk1_dir/.zshrc"]="$HOME/.zshrc"
         ["$mrk1_dir/.aliases"]="$HOME/.aliases"
+        ["$mrk1_dir/.zprofile"]="$HOME/.zprofile"
         ["$mrk1_dir/topgrade.toml"]="$HOME/.config/topgrade.toml"
     )
 

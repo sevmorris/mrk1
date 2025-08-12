@@ -1,80 +1,69 @@
-# ------------------------------------------------------------------------------
-# Oh-My-Zsh (OMZ) Configuration
-# ------------------------------------------------------------------------------
-# This must be defined before OMZ is sourced.
-export ZSH="$HOME/.oh-my-zsh"
+# ==============================================================================
+#  .zshrc: Sourced for INTERACTIVE shells.
+# ==============================================================================
 
-# Theme and update settings.
-ZSH_THEME="bira"
-zstyle ':omz:update' mode auto      # Automatically update without prompting.
-COMPLETION_WAITING_DOTS="true"     # Show dots while waiting for completions.
-
-# Enabled OMZ plugins.
-plugins=(
-  git
-  zsh-autosuggestions
-  zsh-syntax-highlighting
-  z
-  colored-man-pages
-  command-not-found
-  gh # The 'gh' plugin handles completions automatically.
-)
-
-# Load Oh My Zsh.
-source "$ZSH/oh-my-zsh.sh"
-
-# ------------------------------------------------------------------------------
-# PATH Management
-# ------------------------------------------------------------------------------
+# --- PATH Management ---
 # The 'path' array is tied to the $PATH variable in Zsh.
-# Prepending to the array adds the entry to the beginning of $PATH.
+# We modify this array, then de-duplicate it at the end.
 
-# Add Homebrew and its installed packages to the PATH.
+# Start with user-specific bin directories.
 path=(
-  /opt/homebrew/bin
-  /opt/homebrew/opt/coreutils/libexec/gnubin
+  "$HOME/bin"
+  "$HOME/.local/bin"
   $path
 )
 
+# Add Homebrew and its installed packages to the PATH.
+if command -v brew &>/dev/null; then
+  BREW_PREFIX="$(brew --prefix)"
+  path=(
+    "$BREW_PREFIX/bin"
+    "$BREW_PREFIX/sbin"
+    "$BREW_PREFIX/opt/coreutils/libexec/gnubin" # GNU coreutils
+    $path
+  )
+  export MANPATH="$BREW_PREFIX/share/man:$MANPATH"
+fi
+
+# Find and add the latest python.org version to the PATH.
+PYTHON_FRAMEWORK_DIR="/Library/Frameworks/Python.framework/Versions"
+if [[ -d "$PYTHON_FRAMEWORK_DIR" ]]; then
+  LATEST_PYTHON_VERSION=$(ls "$PYTHON_FRAMEWORK_DIR" | sort -V | tail -n 1)
+  LATEST_PYTHON_PATH="$PYTHON_FRAMEWORK_DIR/$LATEST_PYTHON_VERSION"
+  if [[ -d "$LATEST_PYTHON_PATH/bin" ]]; then
+    path=("$LATEST_PYTHON_PATH/bin" $path)
+  fi
+fi
+
 # Use Zsh's built-in 'typeset' to remove duplicate entries from the PATH.
-# This is faster and more reliable than external tools like perl or awk.
 typeset -U path
 
-# ------------------------------------------------------------------------------
-# Aliases and Editor
-# ------------------------------------------------------------------------------
-# Source personal aliases.
+# --- Oh-My-Zsh (OMZ) Configuration ---
+export ZSH="$HOME/.oh-my-zsh"
+ZSH_THEME="bira"
+zstyle ':omz:update' mode auto
+COMPLETION_WAITING_DOTS="true"
+plugins=(git zsh-autosuggestions zsh-syntax-highlighting z colored-man-pages command-not-found gh)
+
+# Load Oh My Zsh. This must come AFTER setting variables and PATH.
+source "$ZSH/oh-my-zsh.sh"
+
+# --- Source Personal Aliases ---
 if [[ -f "$HOME/.aliases" ]]; then
   source "$HOME/.aliases"
 fi
 
-# Set the default command-line editor.
-export EDITOR=nano
-
-# ------------------------------------------------------------------------------
-# Node Version Manager (NVM) - Lazy Loaded for Speed
-# ------------------------------------------------------------------------------
-# Avoid loading NVM on every shell startup. Instead, load it the first
-# time you call 'nvm', 'node', 'npm', etc.
+# --- Node Version Manager (NVM) - Lazy Loaded for Speed ---
 export NVM_DIR="$HOME/.nvm"
-
 lazy_load_nvm() {
-  # Unset the function and aliases to prevent this from running again.
   unset -f nvm node npm npx
-  # Source the real NVM script.
   [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-  # Call the command that was originally intended.
   "$@"
 }
-
-# Create functions that will trigger the lazy load.
 nvm()   { lazy_load_nvm nvm "$@"; }
 node()  { lazy_load_nvm node "$@"; }
 npm()   { lazy_load_nvm npm "$@"; }
 npx()   { lazy_load_nvm npx "$@"; }
 
-# ------------------------------------------------------------------------------
-# Shell Welcome Message
-# ------------------------------------------------------------------------------
-# Note: Running commands here will slow down every new terminal window.
+# --- Shell Welcome Message ---
 fastfetch

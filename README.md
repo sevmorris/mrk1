@@ -9,87 +9,44 @@
           #______________________________________________________________________________#
 ```
 
-This repository helps me quickly customize a fresh (Apple Silicone) macOS installation with my preferred tools, settings, and configurations.
+This repository contains my personal configuration for quickly setting up a new Apple Silicon Mac with all my preferred tools and settings.
 
+---
 
-### Step-by-Step Setup
+## 🚀 Quick Start: One-Step Install
 
-1. Install Homebrew
-   ```
-   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-   ```
+After a fresh macOS installation, open the Terminal and run these commands.
 
-2. After Homebrew is installed it will prompt you to run the following two commands to add Homebrew to PATH
-   ```
-   (echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') >> /Users/sev/.zprofile
-   eval "$(/opt/homebrew/bin/brew shellenv)"
-   ```
+1.  **Clone the Repository:**
+    ```bash
+    git clone [https://github.com/sevmorris/mrk1.git](https://github.com/sevmorris/mrk1.git) ~/mrk1
+    ```
+2.  **Run the Bootstrap Installer:**
+    ```bash
+    cd ~/mrk1 && ./install
+    ```
+The installer script will guide you through the rest of the process, including installing required tools and applications.
 
-3. Install git, GitHub CLI & zsh
-   ```
-   brew install git gh zsh
-   ```
+---
 
-4. Authorize your GitHub account to run gh commands
-   ```
-   gh auth login
-   ```
+## 🤖 What the Installer Does
 
-5. Install oh-my-zsh
-   ```
-   sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-   ```
+The `./install` script is **idempotent**, meaning you can run it multiple times without breaking anything. It automates the following tasks:
 
-6. Install a few oh-my-zsh plugins
-   ```
-   plugins_dir="${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins"
-   mkdir -p "$plugins_dir"
+1.  **Installs Xcode Command Line Tools**: A prerequisite for Homebrew and Git.
+2.  **Installs Homebrew**: The package manager for macOS.
+3.  **Installs Core Tools**: Uses Homebrew to install `git`, `gh`, `zsh`, and other essentials.
+4.  **Sets Up Zsh**:
+    * Installs Oh My Zsh.
+    * Clones your preferred Zsh plugins (`zsh-syntax-highlighting`, etc.).
+    * Sets Homebrew's `zsh` as your default shell automatically.
+5.  **Creates Symlinks**: Symlinks all the configuration files (`.zshrc`, `.aliases`, etc.) from this repository into your home directory.
+6.  **Installs Applications**: Prompts you to install all GUI and CLI applications listed in the `Brewfile`.
 
-   git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
-   git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
-   git clone https://github.com/gretzky/auto-color-ls ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/auto-color-ls
-   gh completion --shell zsh > "$plugins_dir/gh.zsh"
-   ```
+---
 
-7. Clone this repo
-   ```
-   gh repo clone sevmorris/mrk1
-   ```
+## 💡 How It Works
 
-8. Run the Installer
-   ```
-   cd ~/mrk1
-   chmod +x install
-   ./install
-   ```  
+This repository must remain at `~/mrk1`. The installer creates symbolic links (symlinks) from the dotfiles in this repo to their correct locations in your home directory (e.g., `~/.zshrc`).
 
-**Note:** You will be prompted to run the Brewfile install command (`brew bundle install`). There are *a lot* of apps in my Brewfile. It may be desirable to edit the Brewfile before running the command.
-
-**Note:** This repo must remain in place! The install script creates symlinks to dotfiles and scripts in the correct locations. This way any updates to the dotfiles and Brewfile in the repo will not break functionality and are easily synced to GitHub using the `syncall` command.
-
-## Additional Instructions
-
-### Switch to Homebrew's Zsh
-
-  1. Open /etc/shells for editing
-  ```
-  sudo nano /etc/shells
-  ```
-
-  2. Add Homebrew's Zsh to to /etc/shells by adding the following line
-  ```
-  /opt/homebrew/bin/zsh
-  ```
-
-  3. And finally, switch to Homebrew's Zsh
-  ```
-  chsh -s /opt/homebrew/bin/zsh
-  ```
-
-### Remove Default Dock Icons (Optional)
-
-  This removes all the default Dock icons from a fresh macOS install, leaving only currently open apps in the Dock
-  ```
-  defaults write com.apple.dock persistent-apps -array
-  killAll Dock
-  ```
+This allows you to edit the files in the `~/mrk1` repo, commit the changes, and use the `syncall` command to push your updated configuration to GitHub.

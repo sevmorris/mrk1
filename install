@@ -1,101 +1,160 @@
 #!/usr/bin/env bash
 
-# Exit on error, error on unset variables, and fail pipelines on first error.
+# This script automates the entire setup process for a new macOS machine.
+# It's idempotent, meaning it can be run multiple times safely.
+
 set -euo pipefail
 
-# ===== CONFIGURATION =====
-# Color constants for clearer output
+# --- Color & Style Constants ---
 bold=$(tput bold)
 cyan=$(tput setaf 6)
 green=$(tput setaf 2)
+red=$(tput setaf 1)
+reset=$(tput sgr0)
 
-# Directory and file paths
-readonly mrk1_dir="$HOME/mrk1"
-readonly dotfiles_dir="$mrk1_dir/dotfiles"
-readonly scripts_dir="$mrk1_dir/scripts"
-readonly assets_dir="$mrk1_dir/assets"
-readonly bin_dir="$HOME/.local/bin"
-readonly omz_custom_dir="$HOME/.oh-my-zsh/custom"
+# --- Functions ---
 
-# Lists of files to be symlinked
-dotfiles_to_link=(
-  ".aliases"
-  ".zshenv"
-  ".zshrc"
-)
-scripts_to_link=(
-  "backup"
-  "restore"
-  "syncall"
-)
-
-# ===== FUNCTIONS =====
-
-# Prints a formatted header message.
 header() {
   echo
-  echo "${cyan}${bold}==> ${*}...${reset:-}"
+  echo "${cyan}${bold}==> ${*}...${reset}"
 }
 
-# Creates symlinks for a list of files into a destination directory.
-# Usage: create_symlinks "destination_dir" "source_dir" "file_list_array"
+success() {
+  echo "${green}✅ ${*}...${reset}"
+}
+
+warn() {
+  echo "${red}⚠️  ${*}...${reset}"
+}
+
+# --- Installation Logic ---
+
+install_xcode_tools() {
+  header "Checking for Xcode Command Line Tools"
+  if ! xcode-select -p &>/dev/null; then
+    echo "Xcode Command Line Tools not found. Installing..."
+    xcode-select --install
+  else
+    success "Xcode Command Line Tools already installed"
+  fi
+}
+
+install_homebrew() {
+  header "Checking for Homebrew"
+  if ! command -v brew &>/dev/null; then
+    echo "Homebrew not found. Installing..."
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    # Add Homebrew to this script's PATH for immediate use
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+  else
+    success "Homebrew already installed"
+  fi
+}
+
+install_core_tools() {
+  header "Installing core tools with Homebrew"
+  brew bundle --file=- <<EOF
+cask "iterm2"
+cask "visual-studio-code"
+brew "git"
+brew "gh"
+brew "zsh"
+brew "coreutils"
+brew "topgrade"
+brew "bat"
+brew "pwgen"
+EOF
+}
+
+install_oh_my_zsh() {
+  header "Checking for Oh My Zsh"
+  if [[ ! -d "$HOME/.oh-my-zsh" ]]; then
+    echo "Oh My Zsh not found. Installing..."
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+  else
+    success "Oh My Zsh already installed"
+  fi
+}
+
+install_zsh_plugins() {
+    header "Installing Zsh plugins"
+    local plugins_dir="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins"
+    mkdir -p "$plugins_dir"
+
+    # Define plugins in an associative array for clarity
+    declare -A zsh_plugins=(
+        [zsh-syntax-highlighting]="https://github.com/zsh-users/zsh-syntax-highlighting.git"
+        [zsh-autosuggestions]="https://github.com/zsh-users/zsh-autosuggestions.git"
+    )
+
+    for plugin in "${!zsh_plugins[@]}"; do
+        if [[ ! -d "$plugins_dir/$plugin" ]]; then
+            echo "Installing $plugin..."
+            git clone "${zsh_plugins[$plugin]}" "$plugins_dir/$plugin"
+        else
+            success "$plugin already installed"
+        fi
+    done
+}
+
 create_symlinks() {
-  local dest_dir="$1"
-  local source_dir="$2"
-  shift 2
-  local files=("$@")
+    header "Creating symlinks for dotfiles"
+    local mrk1_dir="$HOME/mrk1" # Assuming script is run from within cloned repo
 
-  header "Linking files to $dest_dir"
-  mkdir -p "$dest_dir" # Ensure destination directory exists
+    # Define files and their destinations
+    declare -A links=(
+        ["$mrk1_dir/.zshenv"]="$HOME/.zshenv"
+        ["$mrk1_dir/.zshrc"]="$HOME/.zshrc"
+        ["$mrk1_dir/.aliases"]="$HOME/.aliases"
+        ["$mrk1_dir/topgrade.toml"]="$HOME/.config/topgrade.toml"
+    )
 
-  for file in "${files[@]}"; do
-    local source_file="$source_dir/$file"
-    if [[ -r "$source_file" && -f "$source_file" ]]; then
-      ln -sf "$source_file" "$dest_dir/"
-      echo "  Linked $file"
-    else
-      echo "  Skipping $file (not a readable file)"
+    mkdir -p "$HOME/.config"
+    for src in "${!links[@]}"; do
+        dest="${links[$src]}"
+        echo "Linking $dest -> $src"
+        ln -sf "$src" "$dest"
+    done
+}
+
+switch_to_zsh() {
+    header "Setting Homebrew Zsh as default shell"
+    local brew_zsh="/opt/homebrew/bin/zsh"
+    if ! grep -q "$brew_zsh" /etc/shells; then
+        echo "Adding $brew_zsh to /etc/shells..."
+        echo "$brew_zsh" | sudo tee -a /etc/shells
     fi
-  done
+    if [[ "$SHELL" != "$brew_zsh" ]]; then
+        echo "Changing default shell to $brew_zsh..."
+        chsh -s "$brew_zsh"
+        success "Shell changed! Please restart your terminal for it to take effect."
+    else
+        success "Default shell is already Homebrew Zsh"
+    fi
 }
 
-# ===== MAIN SCRIPT LOGIC =====
+# --- Main Execution ---
+
 main() {
-  header "Setting up mrk1 configuration"
+  install_xcode_tools
+  install_homebrew
+  install_core_tools
+  install_oh_my_zsh
+  install_zsh_plugins
+  create_symlinks
+  switch_to_zsh
 
-  # Copy static config files
-  cp -fv "$assets_dir/topgrade.toml" "$HOME/.config/"
-  cp -fv "$assets_dir/Brewfile" "$HOME/"
-
-  # Create symlinks using the reusable function
-  create_symlinks "$HOME" "$dotfiles_dir" "${dotfiles_to_link[@]}"
-  create_symlinks "$bin_dir" "$scripts_dir" "${scripts_to_link[@]}"
-  create_symlinks "$omz_custom_dir" "$dotfiles_dir" ".aliases" # Handle single file
-
-  # Apply macOS default tweaks
-  header "Applying macOS default tweaks"
-  if [[ -f "$scripts_dir/macdefaults.sh" ]]; then
-    bash "$scripts_dir/macdefaults.sh"
-  else
-    echo "macdefaults.sh not found, skipping."
-  fi
-
-  # Suppress "Last login" message
-  touch "$HOME/.hushlogin"
-
-  # Prompt to run Homebrew bundle
-  header "Homebrew Bundle Installation"
-  read -p "Run 'brew bundle install'? (y/n): " -n 1 -r
+  header "Final Steps"
+  read -p "Run 'brew bundle install' to install all applications from Brewfile? (y/n): " -n 1 -r
   echo
-  if [[ $REPLY =~ ^[Yy]$ || "${1-}" == "--run-brew" ]]; then
-    cd "$HOME" && brew bundle install --verbose --no-lock
+  if [[ $REPLY =~ ^[Yy]$ ]]; then
+    brew bundle install --file="$HOME/mrk1/Brewfile" --verbose
   else
-    echo "Skipping Homebrew installation."
+    echo "Skipping full Brewfile installation. You can run it later with 'brew bundle --file=~/mrk1/Brewfile'."
   fi
 
   echo
-  echo "${green}${bold}✅ Setup complete!${reset:-}"
+  echo "${green}${bold}✅ All done! Please restart your terminal to apply all changes.${reset}"
 }
 
-# Run the main function, passing along any command-line arguments
-main "$@"
+main

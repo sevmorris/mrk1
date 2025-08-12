@@ -26,7 +26,9 @@ alias decrypt="gpg --decrypt "                                    # Decrypt a fi
 alias badblocks='/opt/homebrew/opt/e2fsprogs/sbin/badblocks'
 alias v='source .venv/bin/activate'				  # Activate Python virtual environment
 alias delempty='~/.local/bin/remove_empty_dirs.sh '		  # Delete empty directories, including those containing only .DS_Store
-
+alias dsx="find ~/Documents/Floppy_Letters -name ".DS_Store" -depth -exec rm {} \;"
+alias fl="dsx && cd ~/Documents/Floppy_Letters/fl_2025"
+alias flup="dsx && scp -r ~/Documents/Floppy_Letters/fl_2025 sev@192.168.6.22:~/"
 
 # ============================
 # Homebrew Aliases
@@ -50,13 +52,8 @@ alias u="brew update && topgrade && brewclean"
 # Minecraft Server Alias
 # ============================
 
-alias mc="cd mcservers/1.20.4 && java -Xms10G -Xmx10G -XX:+UseG1GC -XX:+ParallelRefProcEnabled \
--XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions -XX:+DisableExplicitGC -XX:+AlwaysPreTouch \
--XX:G1NewSizePercent=30 -XX:G1MaxNewSizePercent=40 -XX:G1HeapRegionSize=8M -XX:G1ReservePercent=20 \
--XX:G1HeapWastePercent=5 -XX:G1MixedGCCountTarget=4 -XX:InitiatingHeapOccupancyPercent=15 \
--XX:G1MixedGCLiveThresholdPercent=90 -XX:G1RSetUpdatingPauseTimePercent=5 -XX:SurvivorRatio=32 \
--XX:+PerfDisableSharedMem -XX:MaxTenuringThreshold=1 -Dusing.aikars.flags=https://mcflags.emc.gs \
--Daikars.new.flags=true -jar paper.jar"
+alias mc="cd mcservers/1.21.5 && java -Xms10G -Xmx10G -XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions -XX:+DisableExplicitGC -XX:+AlwaysPreTouch -XX:G1NewSizePercent=30 -XX:G1MaxNewSizePercent=40 -XX:G1HeapRegionSize=8M -XX:G1ReservePercent=20 -XX:G1HeapWastePercent=5 -XX:G1MixedGCCountTarget=4 -XX:InitiatingHeapOccupancyPercent=15 -XX:G1MixedGCLiveThresholdPercent=90 -XX:G1RSetUpdatingPauseTimePercent=5 -XX:SurvivorRatio=32 -XX:+PerfDisableSharedMem -XX:MaxTenuringThreshold=1 -Dusing.aikars.flags=https://mcflags.emc.gs -Daikars.new.flags=true -jar paper.jar"
+
 
 # ============================
 # Utility Functions

@@ -1,72 +1,78 @@
 #!/usr/bin/env bash
 
-# Constants for color output
-bold=$(tput bold)
-red=$(tput setaf 1)
-green=$(tput setaf 2)
-yellow=$(tput setaf 3)
-cyan=$(tput setaf 6)
-reset=$(tput sgr0)
+# Exit immediately if a command exits with a non-zero status.
+set -e
+# Treat unset variables as an error when substituting.
+set -u
+# Pipes fail if any command in the pipe fails.
+set -o pipefail
 
-arrow() {
-    echo
-    echo "${green}${bold}>>> ${reset}$*"
+# --- Configuration ---
+
+# The backup destination is set to the local .backups directory.
+backup_dir="$HOME/.backups"
+
+# Add the full paths of directories you want to back up to this array.
+declare -a source_dirs=(
+    "$HOME/Library/Saved Application State"
+    "$HOME/Library/Preferences"
+    "$HOME/Music/Audio Music Apps"
+    "$HOME/Documents/iZotope"
+    "$HOME/Library/Containers/com.xwavesoft.timetrackermac/Data/Documents"
+)
+# --- End Configuration ---
+
+# --- Functions & Constants ---
+bold=$(tput bold); red=$(tput setaf 1); green=$(tput setaf 2); yellow=$(tput setaf 3); cyan=$(tput setaf 6); reset=$(tput sgr0)
+arrow() { echo; echo "${green}${bold}>>> ${reset}$*"; }
+
+run_backup() {
+    local source_path="$1"
+    local dest_path="$2"
+    local source_basename
+
+    source_basename=$(basename "$source_path")
+    arrow "Backing up ${cyan}${source_basename}${reset} to ${cyan}${dest_path}${reset}"
+
+    # Using sudo to overcome potential permission errors.
+    if sudo rsync -av --delete --ignore-errors "$source_path/" "$dest_path/$source_basename/"; then
+        echo "✅ Backup of ${cyan}${source_basename}${reset} successful."
+        return 0
+    else
+        echo "❌ ${bold}${red}Backup of ${cyan}${source_basename}${reset} failed!${reset}"
+        return 1
+    fi
 }
 
-## Back up to internal drive
-# backup_dir="$HOME/.backups"
-## Back up to external drive
-backup_dir="/Volumes/WORK_2TB/Backup"
+# --- Main Script ---
 
-# Create a directory for backups if it doesn't already exist
-if [ ! -d "$backup_dir" ]; then
-    echo "Backups directory does not exist. Creating..."
-    mkdir -p "$backup_dir"
-fi
+echo "Using backup location: ${cyan}$backup_dir${reset}"
 
-#-------------------------------------------------------------------------------
-arrow "Backing up ${cyan}~/Library/Saved Application State${reset}"
-if sudo rsync -av --ignore-errors --delete ~/Library/Saved\ Application\ State "$backup_dir"; then
-    echo "Backup successful"
-else
-    echo "${bold}${red}Backup failed!${reset}"
-fi
+# Create the backup directory if it doesn't exist.
+# Use sudo in case parent directory permissions require it.
+sudo mkdir -p "$backup_dir"
+# Ensure the current user owns the top-level backup directory.
+sudo chown "$USER" "$backup_dir"
 
-#-------------------------------------------------------------------------------
-arrow "Backing up ${cyan}~/Library/Preferences${reset}"
-if sudo rsync -av --ignore-errors --delete ~/Library/Preferences "$backup_dir"; then
-    echo "Backup successful"
-else
-    echo "${bold}${red}Backup failed!${reset}"
-fi
+overall_status=0
+for src in "${source_dirs[@]}"; do
+    if [ -d "$src" ]; then
+        if ! run_backup "$src" "$backup_dir"; then
+            overall_status=1
+        fi
+    else
+        echo "⚠️  ${yellow}Warning: Source directory not found, skipping:${reset} $src"
+    fi
+done
 
-#-------------------------------------------------------------------------------
-arrow "Backing up ${cyan}~/Music/Audio Music Apps${reset}"
-if sudo rsync -av --ignore-errors --delete ~/Music/Audio\ Music\ Apps "$backup_dir"; then
-    echo "Backup successful"
-else
-    echo "${bold}${red}Backup failed!${reset}"
-fi
-
-#-------------------------------------------------------------------------------
-arrow "Backing up ${cyan}~/Documents/iZotope${reset}"
-if sudo rsync -av --ignore-errors --delete ~/Documents/iZotope "$backup_dir"; then
-    echo "Backup successful"
-else
-    echo "${bold}${red}Backup failed!${reset}"
-fi
-
-#-------------------------------------------------------------------------------
-arrow "Backing up ${cyan}Chrono Plus local data${reset}"
-if sudo rsync -av --ignore-errors --delete ~/Library/Containers/com.xwavesoft.timetrackermac/Data/Documents "$backup_dir"; then
-    echo "Backup successful"
-else
-    echo "${bold}${red}Backup failed!${reset}"
-fi
-
-# Create a file showing how current the last backup is
-echo "Last backup: " "$(date +"%y%m%d %r")" >> "$backup_dir/last-backup.txt"
-
+echo
 echo "${cyan}–––––––––––––––––––––––––––${reset}"
-echo "     Backup successful"
+if [ $overall_status -eq 0 ]; then
+    echo "🎉 ${bold}${green}All backups completed successfully!${reset}"
+    date +"Last backup: %Y-%m-%d %r" > "$backup_dir/last_backup.log"
+else
+    echo "🔥 ${bold}${red}Some backups failed. Please review the output above.${reset}"
+fi
 echo "${cyan}–––––––––––––––––––––––––––${reset}"
+
+exit $overall_status

@@ -1,75 +1,93 @@
 #!/usr/bin/env bash
 
-# Color variables for better readability
-bold=$(tput bold)
-red=$(tput setaf 1)
-yellow=$(tput setaf 3)
-reset=$(tput sgr0)
-green=$(tput setaf 2)  # Corrected color variable for green
+# --- Safety & Strict Mode ---
+# Exit immediately if a command exits with a non-zero status.
+set -e
+# Treat unset variables as an error when substituting.
+set -u
+# Pipes fail if any command in the pipe fails.
+set -o pipefail
 
-# Function to print arrows for better visual separation
-arrow() {
-    echo
-    echo "${green}${bold}>>> ${reset}$*"
+# --- Configuration ---
+
+# The single source directory for the restore operation.
+backup_dir="$HOME/.backups"
+
+# An array of the final destination paths for the restore.
+# This list should match the source list in your backup script.
+declare -a restore_destinations=(
+    "$HOME/Library/Saved Application State"
+    "$HOME/Library/Preferences"
+    "$HOME/Music/Audio Music Apps"
+    "$HOME/Documents/iZotope"
+    "$HOME/Library/Containers/com.xwavesoft.timetrackermac/Data/Documents"
+)
+# --- End Configuration ---
+
+# --- Functions & Constants ---
+bold=$(tput bold); red=$(tput setaf 1); green=$(tput setaf 2); yellow=$(tput setaf 3); cyan=$(tput setaf 6); reset=$(tput sgr0)
+arrow() { echo; echo "${green}${bold}>>> ${reset}$*"; }
+
+run_restore() {
+    local dest_path="$1"
+    local source_basename
+    local source_path
+
+    # Derive the source directory name from the destination path.
+    source_basename=$(basename "$dest_path")
+    source_path="$backup_dir/$source_basename/"
+
+    arrow "Restoring to ${cyan}${dest_path}${reset}"
+
+    # Check if the specific backup we need to restore from actually exists.
+    if [ ! -d "$source_path" ]; then
+        echo "⚠️  ${yellow}Warning: Backup source not found, skipping:${reset} $source_path"
+        return 0 # Return success to not halt the script for a missing item.
+    fi
+
+    # Using sudo to write files to system-managed Library folders.
+    # --delete ensures the destination matches the backup exactly.
+    if sudo rsync -av --delete "$source_path" "$dest_path/"; then
+        echo "✅ Restore of ${cyan}${source_basename}${reset} successful."
+        return 0
+    else
+        echo "❌ ${bold}${red}Restore of ${cyan}${source_basename}${reset} failed!${reset}"
+        return 1
+    fi
 }
 
-## Restore from internal drive
-# restore_sas="$HOME/.backups/Saved\ Application\ State/"
-#restore_prefs="$HOME/.backups/Preferences/"
-#restore_ama="$HOME/.backups/Audio\ Music\ Apps/"
-#restore_izo="$HOME/.backups/iZotope"
+# --- Main Script ---
 
-## Restore from external drive
-restore_sas="/Volumes/WORK_2TB/Backup/Saved Application State/"
-restore_prefs="/Volumes/WORK_2TB/Backup/Preferences/"
-restore_ama="/Volumes/WORK_2TB/Backup/Audio Music Apps/"
-restore_izo="/Volumes/WORK_2TB/Backup/iZotope"
+# SAFETY CHECK: Confirm with the user before proceeding.
+echo "${yellow}This script will overwrite existing files with data from your backup."
+echo "${yellow}The backup location is: ${cyan}${backup_dir}${reset}"
+read -p "${bold}Are you sure you want to continue? (y/n) ${reset}" -n 1 -r
+echo
+if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    echo "Restore cancelled."
+    exit 1
+fi
 
-#-------------------------------------------------------------------------------
-echo "Running restore script"
-sleep 1
+# Check if the main backup directory exists.
+if [ ! -d "$backup_dir" ]; then
+    echo "❌ ${red}Error: Backup directory not found at ${cyan}${backup_dir}${reset}"
+    exit 1
+fi
 
-#-------------------------------------------------------------------------------
-arrow "${yellow}~/Library/Saved Application State${reset}" && echo
+overall_status=0
+for dest in "${restore_destinations[@]}"; do
+    if ! run_restore "$dest"; then
+        overall_status=1
+    fi
+done
 
-## Restore from internal drive
-# sudo rsync -av ~/.backups/Saved\ Application\ State/ ~/Library/Saved\ Application\ State/
-## Restore from external drive
-rsync -av --ignore-errors --delete "$restore_sas" ~/Library/Saved\ Application\ State/
+echo
+echo "${cyan}–––––––––––––––––––––––––––${reset}"
+if [ $overall_status -eq 0 ]; then
+    echo "🎉 ${bold}${green}All restore operations completed successfully!${reset}"
+else
+    echo "🔥 ${bold}${red}Some restore operations failed. Please review the output above.${reset}"
+fi
+echo "${cyan}–––––––––––––––––––––––––––${reset}"
 
-#-------------------------------------------------------------------------------
-arrow "${yellow}~/Library/Preferences${reset}" && echo
-
-## Restore from internal drive
-# sudo rsync -av ~/.backups/Preferences/ ~/Library/Preferences/
-## Restore from external drive
-rsync -av --ignore-errors --delete "$restore_prefs" ~/Library/Preferences/
-
-#-------------------------------------------------------------------------------
-arrow "${yellow}~/Music/Audio Music Apps${reset}" && echo
-
-## Restore from internal drive
-# sudo rsync -av ~/.backups/Audio\ Music\ Apps/ ~/Music/Audio\ Music\ Apps/
-## Restore from external drive
-rsync -av --ignore-errors --delete "$restore_ama" ~/Music/Audio\ Music\ Apps/
-
-#-------------------------------------------------------------------------------
-arrow "${yellow}~/Documents/iZotope${reset}" && echo
-
-## Restore from internal drive
-# sudo rsync -av ~/.backups/iZotope ~/Documents/iZotope/
-## Restore from external drive
-rsync -av --ignore-errors --delete "$restore_izo" ~/Documents/iZotope/
-
-#-------------------------------------------------------------------------------
-echo ""
-echo "${yellow}–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––${reset}"
-echo "${red}${bold}Restore Chrono Plus data manually to:${reset}"
-echo "${green}~/Library/Containers/com.xwavesoft.timetrackermac/Data/Documents${reset}"
-echo "${yellow}–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––${reset}"
-sleep 1
-
-#-------------------------------------------------------------------------------
-echo ""
-echo "Restore successful (see rsync_backup.log for details)"
-echo ""
+exit $overall_status

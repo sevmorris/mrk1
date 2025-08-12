@@ -1,47 +1,73 @@
 #!/usr/bin/env bash
 
-# Constants for color output
+# Exit script if a command fails, if an unset variable is used, or if a command
+# in a pipeline fails. This makes the script safer and more predictable.
+set -euo pipefail
+
+# --- Constants for color output ---
 bold=$(tput bold)
 green=$(tput setaf 2)
-yellow=$(tput setaf 3)
 cyan=$(tput setaf 6)
 reset=$(tput sgr0)
 
-# Function for pushing changes to GitHub
+# --- Functions ---
+
+# Pushes changes in a given Git repository to GitHub.
+# This version automatically commits any local changes before syncing.
 push_to_github() {
   local repo_dir="$1"
-  local commit_message="${2:-$(date '+%y%m%d-%H%M')}" # Optional message
+  local auto_commit_message="WIP: Auto-sync local changes on $(date '+%Y-%m-%d %H:%M:%S')"
 
-  # Change directory and exit if it fails
-  cd "$repo_dir" || return 1
+  # Exit if the provided path is not a directory
+  if [[ ! -d "$repo_dir" ]]; then
+    echo >&2 "Error: Repository directory not found at $repo_dir"
+    return 1
+  fi
+
+  # Change directory, exiting the script if it fails
+  cd "$repo_dir"
 
   echo
-  echo "${cyan}${bold}Pushing changes to GitHub: $repo_dir${reset}"
-  git pull
-  git add .
-  git commit -m "$commit_message"
+  echo "${cyan}${bold}Processing repository: $repo_dir${reset}"
+
+  # Check for local changes before doing anything else.
+  if [[ -n $(git status --porcelain) ]]; then
+    echo "Local changes detected. Staging and committing them first..."
+    git add .
+    git commit -m "$auto_commit_message"
+    echo "${green}Local changes committed.${reset}"
+  fi
+
+  # Now that the directory is clean, pull changes and push everything.
+  echo "Syncing with GitHub..."
+  git pull --rebase
   git push
-  echo "${green}${bold}Changes pushed to GitHub${reset}"
+  echo "${green}${bold}Repository is now up to date.${reset}"
 }
 
-# Constants and descriptive variable names
-dotfiles_dir="$HOME/mrk1/dotfiles"
+# --- Main Script ---
+
+# Constants for file paths
 brewfile_source="$HOME/mrk1/assets/Brewfile"
+backup_log_file="$HOME/Library/Logs/mrk1-backups.log"
 
 # Sync Brewfile
 echo
-echo "${cyan}${bold}Syncing ${brewfile_source} to $HOME${reset}"
-rsync -rtu --progress "$brewfile_source" "$HOME"
-echo "${green}${bold}Synced ${brewfile_source} to $HOME${reset}"
-sleep 2
+echo "${cyan}${bold}Syncing Brewfile to home directory...${reset}"
+rsync -au --progress "$brewfile_source" "$HOME/"
+echo "${green}${bold}Brewfile sync complete.${reset}"
 
-# Push changes to GitHub (using the function)
+# Push changes in the main project repository to GitHub
 push_to_github "$HOME/mrk1"
 
-# Success message and logging
+# --- Success message and logging ---
 echo
 echo "${green}––––––––––––––${reset}"
 echo "${cyan}${bold}Sync complete${reset}"
-echo "syncall $(date +"%y%m%d %r")" >> ~/Library/Logs/mrk1-backups.log
+
+# Ensure the log directory exists before writing to the log file
+mkdir -p "$(dirname "$backup_log_file")"
+echo "syncall ran on $(date)" >> "$backup_log_file"
+
 echo "${green}––––––––––––––${reset}"
 echo

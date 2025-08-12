@@ -32,8 +32,11 @@ warn() {
 install_xcode_tools() {
   header "Checking for Xcode Command Line Tools"
   if ! xcode-select -p &>/dev/null; then
-    echo "Xcode Command Line Tools not found. Installing..."
+    echo "Xcode Command Line Tools not found. Starting installation..."
     xcode-select --install
+
+    # Add a pause to wait for the user to complete the installation
+    read -p "Press [Enter] to continue after the Xcode Tools installation is complete."
   else
     success "Xcode Command Line Tools already installed"
   fi
@@ -55,7 +58,7 @@ install_core_tools() {
   header "Installing core tools with Homebrew"
   brew bundle --file=- <<EOF
 cask "iterm2"
-cask "pulsar" # <-- CHANGED
+cask "pulsar"
 brew "git"
 brew "gh"
 brew "zsh"
@@ -154,10 +157,10 @@ main() {
     else
       # Corrected the path in the informational message as well
       echo "Skipping full Brewfile installation. You can run it later with 'brew bundle --file=~/mrk1/assets/Brewfile'."
-    fis
+    fi
 
   echo
   echo "${green}${bold}✅ All done! Please restart your terminal to apply all changes.${reset}"
 }
 
-main
+main "$@"

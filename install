@@ -2,7 +2,6 @@
 
 # This script automates the entire setup process for a new macOS machine.
 # It's idempotent, meaning it can be run multiple times safely.
-
 set -euo pipefail
 
 # --- Color & Style Constants ---
@@ -144,6 +143,32 @@ create_symlinks() {
     done
 }
 
+link_executable_scripts() {
+    header "Linking executable scripts to ~/.local/bin"
+    local scripts_dir="$HOME/mrk1/scripts"
+    local dest_dir="$HOME/.local/bin"
+
+    mkdir -p "$dest_dir"
+
+    local scripts_to_link=(
+        "backup"
+        "restore"
+        "syncall"
+    )
+
+    for script in "${scripts_to_link[@]}"; do
+        local src="$scripts_dir/$script"
+        if [[ -f "$src" ]]; then
+            # Ensure the script is executable before linking
+            chmod +x "$src"
+            echo "Linking $dest_dir/$script -> $src"
+            ln -sf "$src" "$dest_dir/$script"
+        else
+            warn "Script not found, skipping link: $src"
+        fi
+    done
+}
+
 switch_to_zsh() {
     header "Setting Homebrew Zsh as default shell"
     local brew_zsh="/opt/homebrew/bin/zsh"
@@ -160,6 +185,21 @@ switch_to_zsh() {
     fi
 }
 
+apply_macos_defaults() {
+    header "Applying macOS default settings"
+    local defaults_script="$HOME/mrk1/scripts/macdefaults.sh"
+
+    if [[ -f "$defaults_script" ]]; then
+        echo "Running macdefaults.sh..."
+        # Refresh sudo timestamp before running, as the script contains sudo commands.
+        sudo -v
+        bash "$defaults_script"
+    else
+        warn "macdefaults.sh not found, skipping."
+    fi
+}
+
+
 # --- Main Execution ---
 
 main() {
@@ -168,16 +208,20 @@ main() {
   install_core_tools
   install_oh_my_zsh
   install_zsh_plugins
-  copy_config_files # <-- Added this step for config files
-  create_symlinks   # <-- This now only handles dotfiles
+  copy_config_files
+  create_symlinks
+  link_executable_scripts
   switch_to_zsh
+  apply_macos_defaults
 
   header "Final Steps"
     read -p "Run 'brew bundle install' to install all applications from Brewfile? (y/n): " -n 1 -r
     echo
     if [[ $REPLY =~ ^[Yy]$ ]]; then
+      # Corrected the path to include the 'assets' directory
       brew bundle install --file="$HOME/mrk1/assets/Brewfile" --verbose
     else
+      # Corrected the path in the informational message as well
       echo "Skipping full Brewfile installation. You can run it later with 'brew bundle --file=~/mrk1/assets/Brewfile'."
     fi
 

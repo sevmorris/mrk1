@@ -146,13 +146,15 @@ main() {
   switch_to_zsh
 
   header "Final Steps"
-  read -p "Run 'brew bundle install' to install all applications from Brewfile? (y/n): " -n 1 -r
-  echo
-  if [[ $REPLY =~ ^[Yy]$ ]]; then
-    brew bundle install --file="$HOME/mrk1/Brewfile" --verbose
-  else
-    echo "Skipping full Brewfile installation. You can run it later with 'brew bundle --file=~/mrk1/Brewfile'."
-  fi
+    read -p "Run 'brew bundle install' to install all applications from Brewfile? (y/n): " -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+      # Corrected the path to include the 'assets' directory
+      brew bundle install --file="$HOME/mrk1/assets/Brewfile" --verbose
+    else
+      # Corrected the path in the informational message as well
+      echo "Skipping full Brewfile installation. You can run it later with 'brew bundle --file=~/mrk1/assets/Brewfile'."
+    fis
 
   echo
   echo "${green}${bold}✅ All done! Please restart your terminal to apply all changes.${reset}"

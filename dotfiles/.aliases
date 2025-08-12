@@ -34,17 +34,7 @@ alias decrypt='gpg --decrypt ' # Trailing space allows for filename completion.
 alias delempty='~/.local/bin/remove_empty_dirs.sh '
 # Use the more efficient -delete flag for find.
 alias dsx='find ~/Documents/Floppy_Letters -name ".DS_Store" -depth -delete'
-
-# Define functions for multi-step commands for better clarity and error handling.
-fl() {
-  echo "Cleaning .DS_Store files and changing directory..."
-  dsx && cd ~/Documents/Floppy_Letters/fl_2025
-}
-
-flup() {
-  echo "Cleaning .DS_Store files and uploading via scp..."
-  dsx && scp -r ~/Documents/Floppy_Letters/fl_2025 sev@192.168.6.22:~/
-}
+alias flup='dsx && scp -r ~/Documents/Floppy_Letters/fl_2025 sev@192.168.6.22:~/'
 
 # ==============================================================================
 #  Homebrew & Development Aliases

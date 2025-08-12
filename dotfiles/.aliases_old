@@ -1,0 +1,83 @@
+#_______________________//Personal aliases for//_______________________________#
+#______      ______                                           _           _____#
+#_____      / ____ \________ _   ______ ___  ____  __________(_)____       ____#
+#____      / / __ `/ ___/ _ \ | / / __ `__ \/ __ \/ ___/ ___/ / ___/      _____#
+#___      / / /_/ (__  )  __/ |/ / / / / / / /_/ / /  / /  / (__  )      ______#
+#____     \ \__,_/____/\___/|___/_/ /_/ /_/\____/_/  /_/  /_/____/      _______#
+#_____     \____/                                                      ________#
+#______________________________________________________________________________#
+
+# ============================
+# Personal Aliases
+# ============================
+
+alias la="ls -la --color=auto"                                    # Enhanced file listing
+alias nano="nano --linenumbers"                                   # Nano with line numbers
+alias c="clear && source ~/.zshrc"                                # Clear screen, reload config
+alias cat="bat"                                                   # 'cat' with syntax highlighting
+alias netcheck="networkQuality"                                   # Measure network responsiveness
+alias s="pmset displaysleepnow"                                   # Put display to sleep
+alias shrug="echo '¯\_(ツ)_/¯' | pbcopy"                          # Copy shrug to clipboard
+alias pw="pwgen -s -1 19 -0 | pbcopy"                             # Generate strong password (without special characters)
+alias shred="shred -uvn 10"                                       # Secure file deletion (more iterations)
+alias art="ascii-image-converter"                                 # Convert images to ASCII art
+alias pub="gpg --armor --export 7morris@gmail.com | pbcopy"       # Copy your PGP public key
+alias decrypt="gpg --decrypt "                                    # Decrypt a file encrypted with my secret gpg key
+alias badblocks='/opt/homebrew/opt/e2fsprogs/sbin/badblocks'
+alias v='source .venv/bin/activate'				  # Activate Python virtual environment
+alias delempty='~/.local/bin/remove_empty_dirs.sh '		  # Delete empty directories, including those containing only .DS_Store
+alias dsx="find ~/Documents/Floppy_Letters -name ".DS_Store" -depth -exec rm {} \;"
+alias fl="dsx && cd ~/Documents/Floppy_Letters/fl_2025"
+alias flup="dsx && scp -r ~/Documents/Floppy_Letters/fl_2025 sev@192.168.6.22:~/"
+
+# ============================
+# Homebrew Aliases
+# ============================
+
+alias brewup="brew -v update && brew -v upgrade && brew -v cleanup --prune=all && brew autoremove && brew doctor"
+alias brun="brew uninstall -v"
+alias brewclean="brew -v cleanup --prune=all && brew autoremove && brew doctor"
+alias cleanbrew="brew -v cleanup --prune=0"
+alias cleanerbrew="brew cleanup"
+alias dump="brew bundle dump --force --file=~/mrk1/assets/Brewfile && cp -fv ~/mrk1/assets/Brewfile ~/"
+alias bruses="brew uses --installed "
+alias fixp="sudo chown -R $(whoami) /opt/homebrew"
+alias f="sudo chown -R $(whoami) /opt/homebrew"
+
+# Ultimate update
+alias update="brew update && topgrade && brewclean"
+alias u="brew update && topgrade && brewclean"
+
+# ============================
+# Minecraft Server Alias
+# ============================
+
+alias mc="cd mcservers/1.21.5 && java -Xms10G -Xmx10G -XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions -XX:+DisableExplicitGC -XX:+AlwaysPreTouch -XX:G1NewSizePercent=30 -XX:G1MaxNewSizePercent=40 -XX:G1HeapRegionSize=8M -XX:G1ReservePercent=20 -XX:G1HeapWastePercent=5 -XX:G1MixedGCCountTarget=4 -XX:InitiatingHeapOccupancyPercent=15 -XX:G1MixedGCLiveThresholdPercent=90 -XX:G1RSetUpdatingPauseTimePercent=5 -XX:SurvivorRatio=32 -XX:+PerfDisableSharedMem -XX:MaxTenuringThreshold=1 -Dusing.aikars.flags=https://mcflags.emc.gs -Daikars.new.flags=true -jar paper.jar"
+
+
+# ============================
+# Utility Functions
+# ============================
+
+# Push current directory to GitHub
+pushit() {
+  DATE=$(date '+%y%m%d-%H%M')
+  git pull 2>&1
+  git add . 2>&1
+  git commit -m "${DATE}" 2>&1
+  git push 2>&1
+}
+
+# Open the current directory (or files) in Atom
+a() {
+  if [ $# -eq 0 ]; then
+    atom .
+  else
+    atom "$@"
+  fi
+}
+
+# Enhanced tree command (hidden files, color, organized)
+tre() {
+  tree -aC -I '.git|node_modules|bower_components' --dirsfirst "$@" | less -FRNX
+}

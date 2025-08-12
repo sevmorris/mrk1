@@ -1,63 +1,101 @@
 #!/usr/bin/env bash
 
-set -e  # Exit immediately if a command fails
+# Exit on error, error on unset variables, and fail pipelines on first error.
+set -euo pipefail
 
-# ===== PATH VARIABLES =====
-mrk1_dir="$HOME/mrk1"                         # Base directory for mrk1 project
-dotfiles="$mrk1_dir/dotfiles"                 # Location of dotfiles
-scripts="$mrk1_dir/scripts"                   # Location of project-specific scripts
-mac_defaults="$scripts/macdefaults.sh"        # Script for macOS default tweaks
+# ===== CONFIGURATION =====
+# Color constants for clearer output
+bold=$(tput bold)
+cyan=$(tput setaf 6)
+green=$(tput setaf 2)
 
-bin="$HOME/.local/bin"                        # User-specific binaries
-OMZ_CUSTOM="$HOME/.oh-my-zsh/custom"          # Customizations for Oh My Zsh
+# Directory and file paths
+readonly mrk1_dir="$HOME/mrk1"
+readonly dotfiles_dir="$mrk1_dir/dotfiles"
+readonly scripts_dir="$mrk1_dir/scripts"
+readonly assets_dir="$mrk1_dir/assets"
+readonly bin_dir="$HOME/.local/bin"
+readonly omz_custom_dir="$HOME/.oh-my-zsh/custom"
 
-cp -fv assets/topgrade.toml "$HOME/.config"   # Custom config file for topgrade
-cp -fv assets/Brewfile "$HOME"                # Up-to-date Brewfile
+# Lists of files to be symlinked
+dotfiles_to_link=(
+  ".aliases"
+  ".zshenv"
+  ".zshrc"
+)
+scripts_to_link=(
+  "backup"
+  "restore"
+  "syncall"
+)
 
-# Create the ~/.local/bin directory if it doesn't exist
-if [ ! -d "$bin" ]; then
-  mkdir -p "$bin"  # -p flag creates parent directories if needed
-  echo ".local/bin directory created"
-fi
+# ===== FUNCTIONS =====
 
-# Create symlinks for dotfiles in the home directory
-echo "Creating dotfile symlinks in the home directory"
-for file in "$dotfiles/.aliases" "$dotfiles/.zshenv" "$dotfiles/.zshrc"; do
-    if [ -r "$file" ] && [ -f "$file" ]; then
-        ln -sf "$file" "$HOME" || { echo "Error symlinking $file"; exit 1; }
+# Prints a formatted header message.
+header() {
+  echo
+  echo "${cyan}${bold}==> ${*}...${reset:-}"
+}
+
+# Creates symlinks for a list of files into a destination directory.
+# Usage: create_symlinks "destination_dir" "source_dir" "file_list_array"
+create_symlinks() {
+  local dest_dir="$1"
+  local source_dir="$2"
+  shift 2
+  local files=("$@")
+
+  header "Linking files to $dest_dir"
+  mkdir -p "$dest_dir" # Ensure destination directory exists
+
+  for file in "${files[@]}"; do
+    local source_file="$source_dir/$file"
+    if [[ -r "$source_file" && -f "$source_file" ]]; then
+      ln -sf "$source_file" "$dest_dir/"
+      echo "  Linked $file"
     else
-        echo "Skipping $file: Not a regular file or not readable"
+      echo "  Skipping $file (not a readable file)"
     fi
-done
+  done
+}
 
-# Create symlinks for scripts (backup, restore, syncall) in .local/bin directory
-echo "Creating script symlinks in .local/bin directory"
-for file in "$scripts/backup" "$scripts/restore" "$scripts/syncall"; do
-    if [ -r "$file" ] && [ -f "$file" ]; then
-        ln -sf "$file" "$bin" || { echo "Error symlinking $file"; exit 1; }
-    else
-        echo "Skipping $file: Not a regular file or not readable"
-    fi
-done
+# ===== MAIN SCRIPT LOGIC =====
+main() {
+  header "Setting up mrk1 configuration"
 
-# Create symlink for .aliases in Oh My Zsh custom directory
-echo "Creating symlink for .aliases in Oh My Zsh custom directory"
-ln -sf "$dotfiles/.aliases" "$OMZ_CUSTOM"
+  # Copy static config files
+  cp -fv "$assets_dir/topgrade.toml" "$HOME/.config/"
+  cp -fv "$assets_dir/Brewfile" "$HOME/"
 
-# Apply macOS default tweaks
-echo "Applying macOS default tweaks"
-. "$mac_defaults"                      # Execute the macOS defaults script
+  # Create symlinks using the reusable function
+  create_symlinks "$HOME" "$dotfiles_dir" "${dotfiles_to_link[@]}"
+  create_symlinks "$bin_dir" "$scripts_dir" "${scripts_to_link[@]}"
+  create_symlinks "$omz_custom_dir" "$dotfiles_dir" ".aliases" # Handle single file
 
-# Create .hushlogin if necessary for suppressing login messages
-if [ ! -f "$HOME/.hushlogin" ]; then
-    touch "$HOME/.hushlogin"
-fi
+  # Apply macOS default tweaks
+  header "Applying macOS default tweaks"
+  if [[ -f "$scripts_dir/macdefaults.sh" ]]; then
+    bash "$scripts_dir/macdefaults.sh"
+  else
+    echo "macdefaults.sh not found, skipping."
+  fi
 
-echo "Run Homebrew bundle installation? (yes/no/--run-brew): "
-read run_brew
+  # Suppress "Last login" message
+  touch "$HOME/.hushlogin"
 
-if [[ $run_brew == "yes" || $1 == "--run-brew" ]]; then
+  # Prompt to run Homebrew bundle
+  header "Homebrew Bundle Installation"
+  read -p "Run 'brew bundle install'? (y/n): " -n 1 -r
+  echo
+  if [[ $REPLY =~ ^[Yy]$ || "${1-}" == "--run-brew" ]]; then
     cd "$HOME" && brew bundle install --verbose --no-lock
-else
+  else
     echo "Skipping Homebrew installation."
-fi
+  fi
+
+  echo
+  echo "${green}${bold}✅ Setup complete!${reset:-}"
+}
+
+# Run the main function, passing along any command-line arguments
+main "$@"

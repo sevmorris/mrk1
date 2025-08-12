@@ -81,43 +81,66 @@ install_oh_my_zsh() {
 
 install_zsh_plugins() {
     header "Installing Zsh plugins"
-    local plugins_dir="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins"
+    local plugins_dir="$HOME/.oh-my-zsh/custom/plugins"
     mkdir -p "$plugins_dir"
 
-    # Define plugins in an associative array for clarity
-    declare -A zsh_plugins=(
-        [zsh-syntax-highlighting]="https://github.com/zsh-users/zsh-syntax-highlighting.git"
-        [zsh-autosuggestions]="https://github.com/zsh-users/zsh-autosuggestions.git"
+    # Using simple indexed arrays for maximum shell compatibility.
+    local plugin_names=("zsh-syntax-highlighting" "zsh-autosuggestions")
+    local plugin_urls=(
+        "https://github.com/zsh-users/zsh-syntax-highlighting.git"
+        "https://github.com/zsh-users/zsh-autosuggestions.git"
     )
 
-    for plugin in "${!zsh_plugins[@]}"; do
-        if [[ ! -d "$plugins_dir/$plugin" ]]; then
-            echo "Installing $plugin..."
-            git clone "${zsh_plugins[$plugin]}" "$plugins_dir/$plugin"
+    for i in "${!plugin_names[@]}"; do
+        local name="${plugin_names[i]}"
+        local url="${plugin_urls[i]}"
+        if [[ ! -d "$plugins_dir/$name" ]]; then
+            echo "Installing $name..."
+            git clone "$url" "$plugins_dir/$name"
         else
-            success "$plugin already installed"
+            success "$name already installed"
         fi
     done
 }
 
+copy_config_files() {
+    header "Copying static configuration files"
+    mkdir -p "$HOME/.config"
+
+    local topgrade_src="$HOME/mrk1/assets/topgrade.toml"
+    local topgrade_dest="$HOME/.config/topgrade.toml"
+
+    if [[ -f "$topgrade_src" ]]; then
+        echo "Copying $topgrade_src -> $topgrade_dest"
+        cp -f "$topgrade_src" "$topgrade_dest"
+    else
+        warn "topgrade.toml not found in assets, skipping copy."
+    fi
+}
+
 create_symlinks() {
     header "Creating symlinks for dotfiles"
-    local mrk1_dir="$HOME/mrk1" # Assuming script is run from within cloned repo
+    # This now correctly points to your dotfiles subdirectory
+    local dotfiles_repo_dir="$HOME/mrk1/dotfiles"
 
-    # Define files and their destinations
-    declare -A links=(
-        ["$mrk1_dir/.zshenv"]="$HOME/.zshenv"
-        ["$mrk1_dir/.zshrc"]="$HOME/.zshrc"
-        ["$mrk1_dir/.aliases"]="$HOME/.aliases"
-        ["$mrk1_dir/.zprofile"]="$HOME/.zprofile"
-        ["$mrk1_dir/topgrade.toml"]="$HOME/.config/topgrade.toml"
+    # List of files in your repo to symlink to the HOME directory.
+    local files_to_link=(
+        ".zshenv"
+        ".zshrc"
+        ".aliases"
+        ".zprofile"
     )
 
-    mkdir -p "$HOME/.config"
-    for src in "${!links[@]}"; do
-        dest="${links[$src]}"
-        echo "Linking $dest -> $src"
-        ln -sf "$src" "$dest"
+    for file in "${files_to_link[@]}"; do
+        local src="$dotfiles_repo_dir/$file"
+        local dest="$HOME/$file"
+
+        if [[ -f "$src" ]]; then
+            echo "Linking $dest -> $src"
+            ln -sf "$src" "$dest"
+        else
+            warn "Source file not found, skipping link: $src"
+        fi
     done
 }
 
@@ -145,17 +168,16 @@ main() {
   install_core_tools
   install_oh_my_zsh
   install_zsh_plugins
-  create_symlinks
+  copy_config_files # <-- Added this step for config files
+  create_symlinks   # <-- This now only handles dotfiles
   switch_to_zsh
 
   header "Final Steps"
     read -p "Run 'brew bundle install' to install all applications from Brewfile? (y/n): " -n 1 -r
     echo
     if [[ $REPLY =~ ^[Yy]$ ]]; then
-      # Corrected the path to include the 'assets' directory
       brew bundle install --file="$HOME/mrk1/assets/Brewfile" --verbose
     else
-      # Corrected the path in the informational message as well
       echo "Skipping full Brewfile installation. You can run it later with 'brew bundle --file=~/mrk1/assets/Brewfile'."
     fi
 

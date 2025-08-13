@@ -120,9 +120,9 @@ defaults write NSGlobalDomain PMPrintingExpandedStateForPrint -bool true
 # Disable press-and-hold for keys in favor of key repeat.
 defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
 
-# Set a fast keyboard repeat rate.
-defaults write NSGlobalDomain KeyRepeat -int 1
-defaults write NSGlobalDomain InitialKeyRepeat -int 10
+# Set a fast, but standard, keyboard repeat rate
+defaults write NSGlobalDomain KeyRepeat -int 2
+defaults write NSGlobalDomain InitialKeyRepeat -int 15
 
 # Disable smart quotes and dashes as they’re annoying when writing code.
 defaults write NSGlobalDomain NSAutomaticQuoteSubstitutionEnabled -bool false

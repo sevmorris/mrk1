@@ -13,7 +13,7 @@ This repository contains my personal configuration for quickly setting up a new 
 
 ---
 
-## 🚀 Quick Start: One-Step Install
+## 🚀 Quick Start: Primary Setup
 
 This process is designed to be as automated as possible. After a fresh macOS installation, open the Terminal and run the following commands in order.
 
@@ -54,3 +54,13 @@ The `./install` script is **idempotent**, meaning you can run it multiple times 
     * Sets Homebrew's `zsh` as your default shell automatically.
 5.  **Creates Symlinks**: Symlinks all the configuration files (`.zshrc`, `.aliases`, etc.) from this repository into your home directory.
 6.  **Installs Applications**: Prompts you to install all GUI and CLI applications listed in the `Brewfile`.
+
+## ✅ Optional Tweaks
+
+These commands are not included in the main installer but can be run manually for further customization.
+
+### Clear Default Dock Icons
+This removes all default app icons from a fresh macOS Dock, leaving only Finder and open applications.
+
+```bash
+defaults write com.apple.dock persistent-apps -array && killall Dock

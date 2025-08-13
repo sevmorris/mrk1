@@ -56,7 +56,6 @@ header "Configuring Finder"
 defaults write com.apple.finder QuitMenuItem -bool true
 
 # Set Desktop as the default location for new Finder windows.
-# For other options, see: https://apple.stackexchange.com/a/328479
 defaults write com.apple.finder NewWindowTarget -string "PfDe"
 defaults write com.apple.finder NewWindowTargetPath -string "file://${HOME}/Desktop/"
 
@@ -77,7 +76,7 @@ defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
 defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
 defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
 
-# Use list view in all Finder windows by default (Nlsv=List, icnv=Icon, clmv=Column).
+# Use list view in all Finder windows by default.
 defaults write com.apple.finder FXPreferredViewStyle -string "Nlsv"
 
 # Show icons for hard drives, servers, and removable media on the desktop.
@@ -88,6 +87,9 @@ defaults write com.apple.finder ShowRemovableMediaOnDesktop -bool true
 
 # Disable the warning before emptying the Trash.
 defaults write com.apple.finder WarnOnEmptyTrash -bool false
+
+# Allow text selection in Quick Look windows. # <-- ADDED
+defaults write com.apple.finder QLEnableTextSelection -bool true
 
 # --- Dock & Mission Control ---
 header "Configuring Dock & Mission Control"
@@ -107,6 +109,18 @@ defaults write com.apple.dock minimize-to-application -bool true
 # Don’t show recent applications in Dock.
 defaults write com.apple.dock show-recents -bool false
 
+# --- Screenshots --- # <-- ADDED SECTION
+header "Configuring Screenshots"
+
+# Create a dedicated folder for screenshots.
+mkdir -p "${HOME}/Pictures/Screenshots"
+
+# Save screenshots to the new folder.
+defaults write com.apple.screencapture location -string "${HOME}/Pictures/Screenshots"
+
+# Disable the floating thumbnail that appears after taking a screenshot.
+defaults write com.apple.screencapture show-thumbnail -bool false
+
 # --- General UI/UX ---
 header "Configuring General UI/UX"
 
@@ -123,13 +137,16 @@ defaults write NSGlobalDomain PMPrintingExpandedStateForPrint -bool true
 # Disable press-and-hold for keys in favor of key repeat.
 defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
 
-# Set a fast, but standard, keyboard repeat rate
+# Set a fast, but standard, keyboard repeat rate.
 defaults write NSGlobalDomain KeyRepeat -int 2
 defaults write NSGlobalDomain InitialKeyRepeat -int 15
 
 # Disable smart quotes and dashes as they’re annoying when writing code.
 defaults write NSGlobalDomain NSAutomaticQuoteSubstitutionEnabled -bool false
 defaults write NSGlobalDomain NSAutomaticDashSubstitutionEnabled -bool false
+
+# Enable full keyboard access for all controls (e.g. enable Tab in modal dialogs). # <-- ADDED
+defaults write NSGlobalDomain AppleKeyboardUIMode -int 3
 
 # --- Activity Monitor ---
 header "Configuring Activity Monitor"
@@ -166,6 +183,10 @@ header "Configuring Safari"
 sudo defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2JavaEnabled -bool false
 sudo defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2JavaEnabledForLocalFiles -bool false
 
+# Enable Tab to highlight links and form controls in Safari. # <-- ADDED
+defaults write com.apple.Safari WebKitTabToLinks -bool true
+defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2TabsToLinks -bool true
+
 # --- Time Machine ---
 header "Configuring Time Machine"
 
@@ -177,7 +198,7 @@ header "Applying Settings"
 
 # Restart affected applications to apply changes.
 for app in "Activity Monitor" "cfprefsd" "Dock" "Finder" "SystemUIServer" "Safari"; do
-    killall "${app}" > /dev/null 2>&1 || true
+    killall "${app}" > /dev/null 2>/dev/null || true
 done
 
 echo

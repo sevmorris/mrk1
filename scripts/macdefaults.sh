@@ -92,6 +92,9 @@ defaults write com.apple.finder WarnOnEmptyTrash -bool false
 # --- Dock & Mission Control ---
 header "Configuring Dock & Mission Control"
 
+# Position Dock on the left side of the screen.
+defaults write com.apple.dock orientation -string left
+
 # Set the icon size of Dock items.
 defaults write com.apple.dock tilesize -int 36
 

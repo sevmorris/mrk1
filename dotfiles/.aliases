@@ -66,7 +66,7 @@ alias update='topgrade' # Topgrade already runs `brew update` and more.
 # Reload the shell completely for a clean state.
 c() {
   echo "Reloading shell..."
-  exec zsh
+  clear && exec zsh
 }
 
 # Run the Minecraft server with Aikar's flags.

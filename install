@@ -199,6 +199,104 @@ apply_macos_defaults() {
     fi
 }
 
+install_from_brewfile() {
+    header "Installing applications from Brewfile"
+    local brewfile_path="$HOME/mrk1/assets/Brewfile"
+    local REPLY
+
+    if [[ ! -f "$brewfile_path" ]]; then
+        warn "Brewfile not found at $brewfile_path, skipping installations."
+        return
+    fi
+
+    # --- CLI Tool (Formulae) Installations ---
+    header "Install CLI Tools (Homebrew Formulae)"
+    while true; do
+        read -p "Install all CLI tools from Brewfile? (y/n): " -n 1 -r REPLY
+        echo
+        case "$REPLY" in
+            [Yy])
+                local temp_brew_file
+                temp_brew_file=$(mktemp)
+                grep '^brew ' "$brewfile_path" > "$temp_brew_file"
+                if [[ -s "$temp_brew_file" ]]; then
+                    echo "Installing formulae..."
+                    brew bundle install --file="$temp_brew_file" --verbose
+                else
+                    echo "No formulae found in Brewfile."
+                fi
+                rm "$temp_brew_file"
+                break
+                ;;
+            [Nn])
+                echo "Skipping CLI tool installations."
+                break
+                ;;
+            *)
+                echo "Invalid input. Please enter 'y' or 'n'."
+                ;;
+        esac
+    done
+
+    # --- Mac App Store (MAS) Installations ---
+    header "Install Mac App Store Applications"
+    while true; do
+        read -p "Install all MAS apps from Brewfile? (y/n): " -n 1 -r REPLY
+        echo
+        case "$REPLY" in
+            [Yy])
+                local temp_mas_file
+                temp_mas_file=$(mktemp)
+                grep -E '^mas |^tap ' "$brewfile_path" > "$temp_mas_file"
+                if grep -q '^mas ' "$temp_mas_file"; then
+                    echo "Installing MAS apps..."
+                    brew bundle install --file="$temp_mas_file" --verbose
+                else
+                    echo "No MAS apps found in Brewfile."
+                fi
+                rm "$temp_mas_file"
+                break
+                ;;
+            [Nn])
+                echo "Skipping MAS app installations."
+                break
+                ;;
+            *)
+                echo "Invalid input. Please enter 'y' or 'n'."
+                ;;
+        esac
+    done
+
+    # --- Interactive Cask Installations ---
+    header "Install GUI Applications (Casks)"
+    local cask_list
+    cask_list=$(grep '^cask ' "$brewfile_path" | cut -d '"' -f 2)
+
+    for cask in $cask_list; do
+        while true; do
+            read -p "Install ${bold}${cask}${reset}? (y/n/q to quit): " -n 1 -r REPLY
+            echo
+            case "$REPLY" in
+                [Yy])
+                    brew install --cask "$cask"
+                    break
+                    ;;
+                [Nn])
+                    echo "Skipping $cask."
+                    break
+                    ;;
+                [Qq])
+                    echo "Quitting Cask installation."
+                    break 2 # Break out of both the while and for loops
+                    ;;
+                *)
+                    echo "Invalid input. Please enter 'y', 'n', or 'q'."
+                    ;;
+            esac
+        done
+    done
+}
+
 
 # --- Main Execution ---
 
@@ -213,17 +311,7 @@ main() {
   link_executable_scripts
   switch_to_zsh
   apply_macos_defaults
-
-  header "Final Steps"
-    read -p "Run 'brew bundle install' to install all applications from Brewfile? (y/n): " -n 1 -r
-    echo
-    if [[ $REPLY =~ ^[Yy]$ ]]; then
-      # Corrected the path to include the 'assets' directory
-      brew bundle install --file="$HOME/mrk1/assets/Brewfile" --verbose
-    else
-      # Corrected the path in the informational message as well
-      echo "Skipping full Brewfile installation. You can run it later with 'brew bundle --file=~/mrk1/assets/Brewfile'."
-    fi
+  install_from_brewfile
 
   echo
   echo "${green}${bold}✅ All done! Please restart your terminal to apply all changes.${reset}"

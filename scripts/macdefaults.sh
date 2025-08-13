@@ -176,17 +176,6 @@ defaults write com.apple.SoftwareUpdate CriticalUpdateInstall -int 1
 # Turn on app auto-update.
 defaults write com.apple.commerce AutoUpdate -bool true
 
-# --- Safari ---
-header "Configuring Safari"
-
-# For security, disable Java. Modern web pages do not use Java applets.
-sudo defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2JavaEnabled -bool false
-sudo defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2JavaEnabledForLocalFiles -bool false
-
-# Enable Tab to highlight links and form controls in Safari. # <-- ADDED
-defaults write com.apple.Safari WebKitTabToLinks -bool true
-defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2TabsToLinks -bool true
-
 # --- Time Machine ---
 header "Configuring Time Machine"
 

@@ -27,7 +27,7 @@ git clone https://github.com/sevmorris/mrk1.git ~/mrk1
 
 ### 2. Run the Installer
 ```bash
-cd ~/mrk1/scripts && ./install.sh
+cd ~/mrk1/scripts && ./install
 ```
 
 ---
@@ -40,7 +40,7 @@ If you’d like to skip the manual clone step, you can run this **direct install
 ```
 
 ⚠️ **Note**: Running scripts directly from the internet is inherently risky.
-Review the [`install.sh`](scripts/install.sh) script before using this method.
+Review the [`install.sh`](scripts/install) script before using this method.
 
 ---
 

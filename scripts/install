@@ -1,0 +1,306 @@
+#!/usr/bin/env bash
+#
+# This script automates the setup process for a new macOS machine.
+# It's designed to be idempotent and can be run multiple times safely.
+
+# --- Strict Mode & Script Directory ---
+# Exit immediately if a command exits with a non-zero status.
+# Treat unset variables as an error when substituting.
+# Pipestatus is the exit status of the last command to exit with a non-zero status.
+set -euo pipefail
+
+# Determine the script's absolute directory to locate other project files.
+SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+# The main project directory is one level up from the script's location.
+DOTFILES_DIR=$(dirname "$SCRIPT_DIR")
+
+# --- Color & Style Constants ---
+# Check if the terminal supports colors; if not, set variables to empty strings.
+if [[ -t 1 ]] && command -v tput >/dev/null; then
+    bold=$(tput bold)
+    cyan=$(tput setaf 6)
+    green=$(tput setaf 2)
+    red=$(tput setaf 1)
+    reset=$(tput sgr0)
+else
+    bold=""
+    cyan=""
+    green=""
+    red=""
+    reset=""
+fi
+
+# --- Global Flags ---
+# These can be overridden by command-line arguments.
+HEADLESS=false
+SKIP_BREWFILE=false
+
+# --- Utility Functions ---
+header() {
+    echo
+    echo "${cyan}${bold}==> ${*}...${reset}"
+}
+
+success() {
+    echo "${green}✅ ${*}...${reset}"
+}
+
+warn() {
+    echo "${red}⚠️  ${*}...${reset}"
+}
+
+# A robust confirmation prompt.
+confirm() {
+    # Return true (0) automatically if in headless mode.
+    if $HEADLESS; then
+        return 0
+    fi
+    # Loop until a valid response is given.
+    local REPLY
+    while true; do
+        read -p "$1 [y/N]: " -n 1 -r REPLY
+        echo
+        case "$REPLY" in
+            [Yy]) return 0 ;;
+            [Nn]|"") return 1 ;; # Default to No on Enter
+            *) echo "Please answer y or n." ;;
+        esac
+    done
+}
+
+# --- Installation Functions ---
+install_xcode_tools() {
+    header "Checking for Xcode Command Line Tools"
+    if ! xcode-select -p &>/dev/null; then
+        echo "Xcode Command Line Tools not found. Installing..."
+        xcode-select --install
+        # In non-headless mode, wait for the user to complete the installation.
+        if ! $HEADLESS; then
+            read -p "Press [Enter] to continue after installation is complete."
+        fi
+    else
+        success "Xcode Command Line Tools already installed"
+    fi
+}
+
+install_homebrew() {
+    header "Checking for Homebrew"
+    if ! command -v brew &>/dev/null; then
+        echo "Installing Homebrew..."
+        # Run the official installer non-interactively.
+        CI=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        # Add Homebrew to the current shell's PATH for the rest of this script.
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+    else
+        success "Homebrew already installed"
+        header "Updating Homebrew"
+        brew update
+    fi
+}
+
+install_core_tools() {
+    header "Installing core tools via Homebrew Bundle"
+    # Use brew bundle with a here-doc for a clean, idempotent installation.
+    brew bundle --file=- <<EOF
+cask "iterm2"
+cask "pulsar"
+brew "git"
+brew "gh"
+brew "zsh"
+brew "coreutils"
+brew "topgrade"
+brew "bat"
+brew "pwgen"
+EOF
+    success "Core tools installed"
+}
+
+install_oh_my_zsh() {
+    header "Checking for Oh My Zsh"
+    if [[ ! -d "$HOME/.oh-my-zsh" ]]; then
+        # Use the --unattended flag for automated installation.
+        sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+    else
+        success "Oh My Zsh already installed"
+    fi
+}
+
+install_zsh_plugins() {
+    header "Installing Zsh plugins"
+    # Define plugins as a simple array of "name:url" strings.
+    # This is a robust pattern compatible with older versions of Bash.
+    local plugins_to_install=(
+        "zsh-syntax-highlighting:https://github.com/zsh-users/zsh-syntax-highlighting.git"
+        "zsh-autosuggestions:https://github.com/zsh-users/zsh-autosuggestions.git"
+    )
+
+    local plugins_dir="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins"
+    mkdir -p "$plugins_dir"
+
+    for plugin_data in "${plugins_to_install[@]}"; do
+        # Split the string on the colon ":" to get the name and URL.
+        local name="${plugin_data%%:*}"
+        local url="${plugin_data#*:}"
+
+        if [[ ! -d "$plugins_dir/$name" ]]; then
+            echo "Installing $name..."
+            git clone "$url" "$plugins_dir/$name"
+        else
+            success "$name already installed"
+        fi
+    done
+}
+
+setup_dotfiles() {
+    header "Setting up dotfiles and scripts"
+
+    # --- Copy static config files ---
+    echo "Copying static configuration files..."
+    local config_src="$DOTFILES_DIR/assets/topgrade.toml"
+    local config_dest="$HOME/.config/topgrade.toml"
+    if [[ -f "$config_src" ]]; then
+        mkdir -p "$(dirname "$config_dest")"
+        cp -f "$config_src" "$config_dest"
+    else
+        warn "topgrade.toml not found at $config_src, skipping."
+    fi
+
+    # --- Create symlinks for dotfiles ---
+    echo "Creating symlinks for dotfiles..."
+    local dotfiles_to_link=(".zshenv" ".zshrc" ".aliases" ".zprofile")
+    for file in "${dotfiles_to_link[@]}"; do
+        local src="$DOTFILES_DIR/dotfiles/$file"
+        local dest="$HOME/$file"
+        if [[ -f "$src" ]]; then
+            ln -sf "$src" "$dest"
+        else
+            warn "Source file not found for symlink: $src"
+        fi
+    done
+
+    # --- Link executable scripts ---
+    echo "Linking executable scripts..."
+    local scripts_src_dir="$DOTFILES_DIR/scripts"
+    local scripts_dest_dir="$HOME/.local/bin"
+    mkdir -p "$scripts_dest_dir"
+    # Find all executable files in the scripts dir, excluding install.sh and defaults.sh
+    find "$scripts_src_dir" -type f -perm +111 -not -name 'install.sh' -not -name 'defaults.sh' | while read -r script_path; do
+        local script_name
+        script_name=$(basename "$script_path")
+        ln -sf "$script_path" "$scripts_dest_dir/$script_name"
+    done
+    success "Dotfiles and scripts setup complete"
+}
+
+switch_to_zsh() {
+    header "Setting Homebrew Zsh as default shell"
+
+    # Determine Homebrew's prefix dynamically for Apple Silicon/Intel compatibility.
+    local brew_prefix
+    brew_prefix=$(brew --prefix)
+    local brew_zsh_path="$brew_prefix/bin/zsh"
+
+    # 1. Check if Homebrew Zsh is already the default shell.
+    if [[ "$SHELL" == "$brew_zsh_path" ]]; then
+        success "Default shell is already Homebrew Zsh."
+        return
+    fi
+
+    # 2. Check if Homebrew Zsh is installed.
+    if [[ ! -f "$brew_zsh_path" ]]; then
+        warn "Homebrew Zsh not found at $brew_zsh_path. Skipping shell change."
+        return
+    fi
+
+    # 3. Add Homebrew Zsh to the list of allowed shells if it's not already there.
+    if ! grep -qF "$brew_zsh_path" /etc/shells; then
+        echo "Adding $brew_zsh_path to /etc/shells. Sudo password may be required."
+        echo "$brew_zsh_path" | sudo tee -a /etc/shells
+    fi
+
+    # 4. Change the shell.
+    if chsh -s "$brew_zsh_path"; then
+        success "Default shell changed to Homebrew Zsh. Please restart your terminal."
+    else
+        warn "Failed to change shell. Please try running 'chsh -s $brew_zsh_path' manually."
+    fi
+}
+
+apply_macos_defaults() {
+    header "Applying macOS default settings"
+    local defaults_script="$DOTFILES_DIR/scripts/defaults.sh"
+
+    if [[ -f "$defaults_script" ]]; then
+        if confirm "Apply custom macOS settings from defaults.sh?"; then
+            # Prime sudo password timestamp.
+            sudo -v
+            # Keep sudo session alive while the script runs.
+            while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+            bash "$defaults_script"
+            success "macOS settings applied"
+        else
+            echo "Skipping macOS settings."
+        fi
+    else
+        warn "defaults.sh not found at $defaults_script, skipping."
+    fi
+}
+
+install_from_brewfile() {
+    if $SKIP_BREWFILE; then
+        warn "Skipping Brewfile installation as requested."
+        return
+    fi
+
+    local brewfile_path="$DOTFILES_DIR/assets/Brewfile"
+    if [[ ! -f "$brewfile_path" ]]; then
+        warn "Brewfile not found at $brewfile_path, skipping."
+        return
+    fi
+
+    header "Installing apps from Brewfile"
+    if confirm "Install all applications from Brewfile?"; then
+        brew bundle --file="$brewfile_path"
+        success "Brewfile installation complete"
+    else
+        echo "Skipping Brewfile installation."
+    fi
+}
+
+# --- Argument Parsing & Main Execution ---
+parse_args() {
+    for arg in "$@"; do
+        case "$arg" in
+            --yes)
+                HEADLESS=true
+                ;;
+            --skip-brewfile)
+                SKIP_BREWFILE=true
+                ;;
+            -h|--help)
+                echo "Usage: $(basename "$0") [--yes] [--skip-brewfile]"
+                exit 0
+                ;;
+        esac
+    done
+}
+
+main() {
+    parse_args "$@"
+
+    install_xcode_tools
+    install_homebrew
+    install_core_tools
+    install_oh_my_zsh
+    install_zsh_plugins
+    setup_dotfiles
+    switch_to_zsh
+    apply_macos_defaults
+    install_from_brewfile
+
+    echo
+    success "${bold}System setup complete! Please restart your terminal to apply all changes.${reset}"
+}
+
+# Run the main function with all passed arguments.
+main "$@"

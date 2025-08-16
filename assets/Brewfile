@@ -41,7 +41,6 @@ brew "zsh"
 # CLI Tools - Media
 brew "ffmpeg"
 brew "chromaprint"
-brew "handbrake"
 brew "sox"
 
 # Casks - General Applications & Utilities
@@ -69,7 +68,6 @@ cask "google-chrome"
 cask "google-drive"
 cask "gpg-suite-no-mail"
 cask "grandperspective"
-cask "handbrake"
 cask "ilok-license-manager"
 cask "iterm2"
 cask "joplin"

@@ -1,194 +1,123 @@
-#!/usr/bin/env bash
+```
+   __  ___      __  __   _____
+  /  |/  /___ _/ /_/ /__/ ___/____  ____ ______
+ / /|_/ / __ `/ __/ // /\__ \/ __ \/ __ `/ ___/
+/ /  / / /_/ / /_/ ,< ___/ / /_/ / /_/ (__  )
+/_/  /_/\__,_/\__/_/|_/____/ .___/\__,_/____/
+                          /_/
+        macOS Setup & Personalization (mrk1)
+```
 
-# --- Script Configuration & Safety ---
-#
-# Exit immediately if a command exits with a non-zero status.
-set -e
-# Treat unset variables as an error when substituting.
-set -u
-# Pipes fail if any command in the pipe fails.
-set -o pipefail
+# macOS Setup Script
 
-# --- Functions ---
+This repository contains a Bash script that configures macOS with a curated set of preferences for security, usability, and performance.
 
-# Prints a formatted header for each section.
-header() {
-  echo
-  echo "--- $1 ---"
-}
+The script automates changes such as:
+- Security & privacy hardening
+- Finder & Dock customization
+- Screenshot storage & behavior
+- General UI/UX tweaks
+- Activity Monitor settings
+- Automatic App Store updates
+- Time Machine preferences
 
-# --- Main Script ---
+---
 
-echo "This script will configure macOS with a set of custom defaults."
-read -p "Do you want to proceed? (y/n) " -n 1 -r
-echo
-if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-    echo "Operation cancelled."
-    exit 1
-fi
+## 🚀 Usage
 
-# Ask for the administrator password upfront and keep it alive.
-echo "Administrator privileges are required to change some system-wide settings."
-sudo -v
-while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+1. Clone or download this repository:
 
-# --- System & Security Settings ---
-header "Configuring Security & System"
+   ```bash
+   git clone https://github.com/YOUR-USERNAME/macos-setup.git
+   cd macos-setup
+   ```
 
-# Require password immediately after sleep or screen saver begins.
-defaults write com.apple.screensaver askForPassword -int 1
-defaults write com.apple.screensaver askForPasswordDelay -int 0
+2. Make the script executable:
 
-# Enable the system-level firewall.
-sudo defaults write /Library/Preferences/com.apple.alf globalstate -int 1
-sudo launchctl load /System/Library/LaunchDaemons/com.apple.alf.agent.plist 2>/dev/null || true
+   ```bash
+   chmod +x setup-macos.sh
+   ```
 
-# Show the ~/Library directory.
-chflags nohidden "${HOME}/Library"
+3. Run the script:
 
-# Show the /Volumes folder.
-sudo chflags nohidden /Volumes
+   ```bash
+   ./setup-macos.sh
+   ```
 
-# --- Finder ---
-header "Configuring Finder"
+You’ll be asked to confirm before changes are applied. The script requires **administrator privileges** for system-level settings.
 
-# Quit Finder via ⌘ + Q.
-defaults write com.apple.finder QuitMenuItem -bool true
+---
 
-# Set Desktop as the default location for new Finder windows.
-defaults write com.apple.finder NewWindowTarget -string "PfDe"
-defaults write com.apple.finder NewWindowTargetPath -string "file://${HOME}/Desktop/"
+## ⚙️ What It Does
 
-# Show status bar and path bar.
-defaults write com.apple.finder ShowStatusBar -bool true
-defaults write com.apple.finder ShowPathbar -bool true
+### Security & System
+- Require password immediately after sleep/screensaver
+- Enable the built-in firewall
+- Show hidden directories (`~/Library`, `/Volumes`)
 
-# Keep folders on top when sorting by name.
-defaults write com.apple.finder _FXSortFoldersFirst -bool true
+### Finder
+- Quit Finder with ⌘ + Q
+- Default new window location → Desktop
+- Show status bar & path bar
+- Keep folders on top when sorting by name
+- Avoid creating `.DS_Store` files on network/USB volumes
+- List view as default
+- Allow text selection in Quick Look
 
-# When performing a search, search the current folder by default.
-defaults write com.apple.finder FXDefaultSearchScope -string "SCcf"
+### Dock & Mission Control
+- Position Dock on the left
+- Set icon size to 36px
+- Minimize windows into app icon
+- Hide recent apps
 
-# Disable the warning when changing a file extension.
-defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
+### Screenshots
+- Save to `~/Pictures/Screenshots`
+- Disable floating thumbnail preview
 
-# Avoid creating .DS_Store files on network or USB volumes.
-defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
-defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
+### General UI/UX
+- Save to disk by default (not iCloud)
+- Always show scrollbars
+- Expand save/print panels
+- Enable fast keyboard repeat
+- Disable smart quotes/dashes
+- Enable full keyboard access
 
-# Use list view in all Finder windows by default.
-defaults write com.apple.finder FXPreferredViewStyle -string "Nlsv"
+### Activity Monitor
+- Show all processes
+- Sort by CPU usage
 
-# Show icons for hard drives, servers, and removable media on the desktop.
-defaults write com.apple.finder ShowExternalHardDrivesOnDesktop -bool true
-defaults write com.apple.finder ShowHardDrivesOnDesktop -bool true
-defaults write com.apple.finder ShowMountedServersOnDesktop -bool true
-defaults write com.apple.finder ShowRemovableMediaOnDesktop -bool true
+### App Store
+- Enable background update checks
+- Auto-download updates
+- Auto-install security updates
 
-# Disable the warning before emptying the Trash.
-defaults write com.apple.finder WarnOnEmptyTrash -bool false
+### Time Machine
+- Prevent prompts to use new drives for backup
 
-# Allow text selection in Quick Look windows. # <-- ADDED
-defaults write com.apple.finder QLEnableTextSelection -bool true
+---
 
-# --- Dock & Mission Control ---
-header "Configuring Dock & Mission Control"
+## 🛠 Notes
 
-# Position Dock on the left side of the screen.
-defaults write com.apple.dock orientation -string left
+- Some changes require **logout or restart** to take effect.
+- The script is idempotent: running it multiple times won’t break anything.
+- You can safely edit the script to suit your personal preferences.
 
-# Set the icon size of Dock items.
-defaults write com.apple.dock tilesize -int 36
+---
 
-# Set minimize/maximize window effect to "scale".
-defaults write com.apple.dock mineffect -string "scale"
+## ✅ Example Output
 
-# Minimize windows into their application’s icon.
-defaults write com.apple.dock minimize-to-application -bool true
+When running, you’ll see sections like:
 
-# Don’t show recent applications in Dock.
-defaults write com.apple.dock show-recents -bool false
+```
+--- Configuring Finder ---
+--- Configuring Dock & Mission Control ---
+--- Configuring Screenshots ---
+...
+✅ Done. Some changes may require a logout or restart to take full effect.
+```
 
-# --- Screenshots --- # <-- ADDED SECTION
-header "Configuring Screenshots"
+---
 
-# Create a dedicated folder for screenshots.
-mkdir -p "${HOME}/Pictures/Screenshots"
+## 📜 License
 
-# Save screenshots to the new folder.
-defaults write com.apple.screencapture location -string "${HOME}/Pictures/Screenshots"
-
-# Disable the floating thumbnail that appears after taking a screenshot.
-defaults write com.apple.screencapture show-thumbnail -bool false
-
-# --- General UI/UX ---
-header "Configuring General UI/UX"
-
-# Save to disk (not to iCloud) by default.
-defaults write NSGlobalDomain NSDocumentSaveNewDocumentsToCloud -bool false
-
-# Always show scrollbars.
-defaults write NSGlobalDomain AppleShowScrollBars -string "Always"
-
-# Expand save and print panels by default.
-defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode -bool true
-defaults write NSGlobalDomain PMPrintingExpandedStateForPrint -bool true
-
-# Disable press-and-hold for keys in favor of key repeat.
-defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
-
-# Set a fast, but standard, keyboard repeat rate.
-defaults write NSGlobalDomain KeyRepeat -int 2
-defaults write NSGlobalDomain InitialKeyRepeat -int 15
-
-# Disable smart quotes and dashes as they’re annoying when writing code.
-defaults write NSGlobalDomain NSAutomaticQuoteSubstitutionEnabled -bool false
-defaults write NSGlobalDomain NSAutomaticDashSubstitutionEnabled -bool false
-
-# Enable full keyboard access for all controls (e.g. enable Tab in modal dialogs). # <-- ADDED
-defaults write NSGlobalDomain AppleKeyboardUIMode -int 3
-
-# --- Activity Monitor ---
-header "Configuring Activity Monitor"
-
-# Show the main window when launching Activity Monitor.
-defaults write com.apple.ActivityMonitor OpenMainWindow -bool true
-
-# Show all processes in Activity Monitor.
-defaults write com.apple.ActivityMonitor ShowCategory -int 0
-
-# Sort Activity Monitor results by CPU usage.
-defaults write com.apple.ActivityMonitor SortColumn -string "CPUUsage"
-defaults write com.apple.ActivityMonitor SortDirection -int 0
-
-# --- App Store ---
-header "Configuring App Store Updates"
-
-# Enable automatic update check.
-defaults write com.apple.SoftwareUpdate AutomaticCheckEnabled -bool true
-
-# Download newly available updates in the background.
-defaults write com.apple.SoftwareUpdate AutomaticDownload -int 1
-
-# Install System data files & security updates.
-defaults write com.apple.SoftwareUpdate CriticalUpdateInstall -int 1
-
-# Turn on app auto-update.
-defaults write com.apple.commerce AutoUpdate -bool true
-
-# --- Time Machine ---
-header "Configuring Time Machine"
-
-# Prevent Time Machine from prompting to use new hard drives as backup volumes.
-defaults write com.apple.TimeMachine DoNotOfferNewDisksForBackup -bool true
-
-# --- Finalizing ---
-header "Applying Settings"
-
-# Restart affected applications to apply changes.
-for app in "Activity Monitor" "cfprefsd" "Dock" "Finder" "SystemUIServer" "Safari"; do
-    killall "${app}" > /dev/null 2>/dev/null || true
-done
-
-echo
-echo "✅ Done. Some changes may require a logout or restart to take full effect."
+MIT License. See [LICENSE](LICENSE) for details.

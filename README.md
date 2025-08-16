@@ -9,58 +9,121 @@
           #______________________________________________________________________________#
 ```
 
-This repository contains my personal configuration for quickly setting up a new Apple Silicon Mac with all my preferred tools and settings.
+This repository contains my personal configuration for quickly setting up a new **Apple Silicon Mac** with my preferred tools, dotfiles, applications, and macOS defaults.  
+
+It is powered by a single **idempotent installer script** — you can run it multiple times without breaking anything.
 
 ---
 
-## 🚀 Quick Start: Primary Setup
+## ⚡ Quick Start
 
-This process is designed to be as automated as possible. After a fresh macOS installation, open the Terminal and run the following commands in order.
+After a fresh macOS installation:
 
-### Step 1: Install Xcode Command Line Tools
-This is the only prerequisite. It will install `git` and other essential tools needed for the next step.
-
+### 1. Install Xcode Command Line Tools  
 ```bash
 xcode-select --install
 ```
-Follow the on-screen prompts to complete the installation before proceeding.
+Follow the on-screen prompts, then continue once installation completes.
 
-### Step 2: Clone the Repository
-Now that `git` is installed, you can clone this repository.
-
+### 2. Clone the Repository  
 ```bash
 git clone https://github.com/sevmorris/mrk1.git ~/mrk1
 ```
 
-### Step 3: Run the Bootstrap Installer
-This single script will handle the rest, including installing Homebrew, applications, and setting up your shell.
-
+### 3. Run the Installer  
 ```bash
 cd ~/mrk1 && ./install
 ```
 
 ---
 
-## 🤖 What the Installer Does
-
-The `./install` script is **idempotent**, meaning you can run it multiple times without breaking anything. It automates the following tasks:
-
-1.  **Installs Xcode Command Line Tools**: A prerequisite for Homebrew and Git.
-2.  **Installs Homebrew**: The package manager for macOS.
-3.  **Installs Core Tools**: Uses Homebrew to install `gh`, `zsh`, and other essentials.
-4.  **Sets Up Zsh**:
-    * Installs Oh My Zsh.
-    * Clones your preferred Zsh plugins.
-    * Sets Homebrew's `zsh` as your default shell automatically.
-5.  **Creates Symlinks**: Symlinks all the configuration files (`.zshrc`, `.aliases`, etc.) from this repository into your home directory.
-6.  **Installs Applications**: Prompts you to install all GUI and CLI applications listed in the `Brewfile`.
-
-## ✅ Optional Tweaks
-
-These commands are not included in the main installer but can be run manually for further customization.
-
-### Clear Default Dock Icons
-This removes all default app icons from a fresh macOS Dock, leaving only Finder and open applications.
+### 🚀 Alternative One-Line Bootstrap  
+If you’d like to skip the manual clone step, you can run this **direct installer**:
 
 ```bash
-defaults write com.apple.dock persistent-apps -array && killall Dock
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/sevmorris/mrk1/main/install)"
+```
+
+⚠️ **Note**: Running scripts directly from the internet is inherently risky.  
+Review the [`install`](install) script before using this method.
+
+---
+
+## 🤖 What the Installer Does
+
+The script automates a complete setup:
+
+1. **Xcode Command Line Tools** – Installs if not already present.  
+2. **Homebrew** – Installs if missing, and configures your shell to use it immediately.  
+3. **Core Tools** – Installs CLI essentials via Homebrew, including:  
+   - `iterm2`, `pulsar` (apps)  
+   - `git`, `gh`, `zsh`, `coreutils`, `topgrade`, `bat`, `pwgen` (formulae)  
+4. **Oh My Zsh** – Installs and configures your shell.  
+5. **Zsh Plugins** – Adds:  
+   - `zsh-syntax-highlighting`  
+   - `zsh-autosuggestions`  
+6. **Dotfiles Setup**  
+   - Creates symlinks for `.zshrc`, `.zshenv`, `.zprofile`, `.aliases`.  
+   - Copies configs like `topgrade.toml`.  
+7. **Executable Scripts** – Links helper scripts (`backup`, `restore`, `syncall`) into `~/.local/bin`.  
+8. **Default Shell** – Switches your login shell to Homebrew Zsh.  
+9. **macOS Defaults** – Applies system preferences via `scripts/macdefaults.sh` (if available).  
+10. **App Installations via Brewfile** – Interactive installation of:  
+    - CLI tools (formulae)  
+    - Mac App Store apps  
+    - GUI apps (casks), prompted one-by-one  
+
+---
+
+## 🛠️ Optional / Customization
+
+You can edit these before or after running the installer:
+
+- `dotfiles/` → Your personal Zsh and shell configs.  
+- `assets/Brewfile` → Add/remove apps and packages.  
+- `scripts/macdefaults.sh` → macOS defaults (trackpad, Dock, Finder, etc).  
+- `scripts/` → Custom helper scripts (linked into `~/.local/bin`).  
+
+---
+
+## 🔄 Running Again
+
+The installer is **idempotent**. Running it multiple times:  
+- Won’t reinstall things unnecessarily.  
+- Will safely re-link configs and re-apply updates.  
+
+---
+
+## ❌ Uninstall / Rollback
+
+This script does **not** provide an automatic rollback. If you want to undo:  
+- Remove symlinks in your home directory (`.zshrc`, `.aliases`, etc).  
+- Unlink/remove scripts in `~/.local/bin`.  
+- Uninstall apps with `brew uninstall` or `brew bundle cleanup`.  
+- Reset macOS defaults manually or with `defaults delete`.  
+
+---
+
+## 📦 Requirements
+
+- macOS 13 Ventura or newer (Apple Silicon).  
+- Internet connection.  
+- Basic familiarity with the Terminal.  
+
+---
+
+## ✨ Example Run
+
+```bash
+==> Checking for Xcode Command Line Tools...
+✅ Xcode Command Line Tools already installed
+
+==> Checking for Homebrew...
+Homebrew not found. Installing...
+✅ Homebrew already installed
+
+==> Installing core tools with Homebrew...
+✅ zsh already installed
+✅ iterm2 already installed
+...
+```

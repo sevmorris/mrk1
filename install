@@ -1,61 +1,64 @@
 #!/usr/bin/env bash
-
-# This script automates the entire setup process for a new macOS machine.
-# It's idempotent, meaning it can be run multiple times safely.
 set -euo pipefail
 
-# --- Color & Style Constants ---
-bold=$(tput bold)
-cyan=$(tput setaf 6)
-green=$(tput setaf 2)
-red=$(tput setaf 1)
-reset=$(tput sgr0)
+# ==============================
+#   Utility Functions
+# ==============================
+header() { echo -e "\n\033[1;34m==> $1\033[0m\n"; }
+success() { echo -e "\033[1;32m✔ $1\033[0m"; }
+warn() { echo -e "\033[1;33m⚠ $1\033[0m"; }
+error() { echo -e "\033[1;31m✖ $1\033[0m"; }
 
-# --- Functions ---
-
-header() {
-  echo
-  echo "${cyan}${bold}==> ${*}...${reset}"
+keep_sudo_alive() {
+  sudo -v
+  while true; do
+    sleep 60
+    sudo -n true
+    kill -0 "$$" || exit
+  done 2>/dev/null &
 }
 
-success() {
-  echo "${green}✅ ${*}...${reset}"
+check_network() {
+  if ! ping -c 1 github.com &>/dev/null; then
+    error "No internet connection detected. Exiting."
+    exit 1
+  fi
 }
 
-warn() {
-  echo "${red}⚠️  ${*}...${reset}"
-}
-
-# --- Installation Logic ---
-
-install_xcode_tools() {
-  header "Checking for Xcode Command Line Tools"
+# ==============================
+#   Install Steps
+# ==============================
+install_xcode_cli() {
   if ! xcode-select -p &>/dev/null; then
-    echo "Xcode Command Line Tools not found. Starting installation..."
-    xcode-select --install
-
-    # Add a pause to wait for the user to complete the installation
-    read -p "Press [Enter] to continue after the Xcode Tools installation is complete."
+    header "Installing Xcode Command Line Tools"
+    xcode-select --install || true
+    until xcode-select -p &>/dev/null; do
+      sleep 5
+    done
+    success "Xcode Command Line Tools installed"
   else
     success "Xcode Command Line Tools already installed"
   fi
 }
 
 install_homebrew() {
-  header "Checking for Homebrew"
   if ! command -v brew &>/dev/null; then
-    echo "Homebrew not found. Installing..."
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    # Add Homebrew to this script's PATH for immediate use
+    header "Installing Homebrew"
+    NONINTERACTIVE=1 /bin/bash -c \
+      "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     eval "$(/opt/homebrew/bin/brew shellenv)"
+    success "Homebrew installed"
   else
     success "Homebrew already installed"
+    eval "$(/opt/homebrew/bin/brew shellenv)"
   fi
 }
 
 install_core_tools() {
   header "Installing core tools with Homebrew"
-  brew bundle --file=- <<EOF
+  local core_brewfile
+  core_brewfile=$(mktemp)
+  cat <<EOF > "$core_brewfile"
 cask "iterm2"
 cask "pulsar"
 brew "git"
@@ -66,255 +69,114 @@ brew "topgrade"
 brew "bat"
 brew "pwgen"
 EOF
+  if ! brew bundle check --file="$core_brewfile" &>/dev/null; then
+    brew bundle install --file="$core_brewfile" --verbose
+  else
+    success "Core tools already installed"
+  fi
+  rm -f "$core_brewfile"
 }
 
-install_oh_my_zsh() {
-  header "Checking for Oh My Zsh"
+setup_zsh() {
+  header "Setting up Zsh"
   if [[ ! -d "$HOME/.oh-my-zsh" ]]; then
-    echo "Oh My Zsh not found. Installing..."
-    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+    export RUNZSH=no
+    export CHSH=no
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+    success "Oh My Zsh installed"
   else
     success "Oh My Zsh already installed"
   fi
-}
 
-install_zsh_plugins() {
-    header "Installing Zsh plugins"
-    local plugins_dir="$HOME/.oh-my-zsh/custom/plugins"
-    mkdir -p "$plugins_dir"
+  # Clone plugins
+  local plugins_dir="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins"
+  mkdir -p "$plugins_dir"
 
-    # Using simple indexed arrays for maximum shell compatibility.
-    local plugin_names=("zsh-syntax-highlighting" "zsh-autosuggestions")
-    local plugin_urls=(
-        "https://github.com/zsh-users/zsh-syntax-highlighting.git"
-        "https://github.com/zsh-users/zsh-autosuggestions.git"
-    )
-
-    for i in "${!plugin_names[@]}"; do
-        local name="${plugin_names[i]}"
-        local url="${plugin_urls[i]}"
-        if [[ ! -d "$plugins_dir/$name" ]]; then
-            echo "Installing $name..."
-            git clone "$url" "$plugins_dir/$name"
-        else
-            success "$name already installed"
-        fi
-    done
-}
-
-copy_config_files() {
-    header "Copying static configuration files"
-    mkdir -p "$HOME/.config"
-
-    local topgrade_src="$HOME/mrk1/assets/topgrade.toml"
-    local topgrade_dest="$HOME/.config/topgrade.toml"
-
-    if [[ -f "$topgrade_src" ]]; then
-        echo "Copying $topgrade_src -> $topgrade_dest"
-        cp -f "$topgrade_src" "$topgrade_dest"
+  for repo in \
+    https://github.com/zsh-users/zsh-syntax-highlighting \
+    https://github.com/zsh-users/zsh-autosuggestions; do
+    local name
+    name=$(basename "$repo")
+    if [[ ! -d "$plugins_dir/$name" ]]; then
+      git clone "$repo" "$plugins_dir/$name"
+      success "Installed $name"
     else
-        warn "topgrade.toml not found in assets, skipping copy."
+      success "$name already installed"
     fi
+  done
+
+  # Set default shell
+  if [[ "$SHELL" != "$(brew --prefix)/bin/zsh" ]]; then
+    chsh -s "$(brew --prefix)/bin/zsh"
+    success "Default shell set to Homebrew zsh"
+  fi
 }
 
 create_symlinks() {
-    header "Creating symlinks for dotfiles"
-    # This now correctly points to your dotfiles subdirectory
-    local dotfiles_repo_dir="$HOME/mrk1/dotfiles"
-
-    # List of files in your repo to symlink to the HOME directory.
-    local files_to_link=(
-        ".zshenv"
-        ".zshrc"
-        ".aliases"
-        ".zprofile"
-    )
-
-    for file in "${files_to_link[@]}"; do
-        local src="$dotfiles_repo_dir/$file"
-        local dest="$HOME/$file"
-
-        if [[ -f "$src" ]]; then
-            echo "Linking $dest -> $src"
-            ln -sf "$src" "$dest"
-        else
-            warn "Source file not found, skipping link: $src"
-        fi
-    done
-}
-
-link_executable_scripts() {
-    header "Linking executable scripts to ~/.local/bin"
-    local scripts_dir="$HOME/mrk1/scripts"
-    local dest_dir="$HOME/.local/bin"
-
-    mkdir -p "$dest_dir"
-
-    local scripts_to_link=(
-        "backup"
-        "restore"
-        "syncall"
-    )
-
-    for script in "${scripts_to_link[@]}"; do
-        local src="$scripts_dir/$script"
-        if [[ -f "$src" ]]; then
-            # Ensure the script is executable before linking
-            chmod +x "$src"
-            echo "Linking $dest_dir/$script -> $src"
-            ln -sf "$src" "$dest_dir/$script"
-        else
-            warn "Script not found, skipping link: $src"
-        fi
-    done
-}
-
-switch_to_zsh() {
-    header "Setting Homebrew Zsh as default shell"
-    local brew_zsh="/opt/homebrew/bin/zsh"
-    if ! grep -q "$brew_zsh" /etc/shells; then
-        echo "Adding $brew_zsh to /etc/shells..."
-        echo "$brew_zsh" | sudo tee -a /etc/shells
+  header "Creating symlinks for dotfiles"
+  local src_dir dest
+  src_dir="$(pwd)/dotfiles"
+  for file in "$src_dir"/.*; do
+    [[ "$(basename "$file")" =~ ^(\.|..|.git)$ ]] && continue
+    dest="$HOME/$(basename "$file")"
+    if [[ -f "$dest" && ! -L "$dest" ]]; then
+      mv "$dest" "${dest}.backup.$(date +%s)"
+      warn "Backed up $dest"
     fi
-    if [[ "$SHELL" != "$brew_zsh" ]]; then
-        echo "Changing default shell to $brew_zsh..."
-        chsh -s "$brew_zsh"
-        success "Shell changed! Please restart your terminal for it to take effect."
-    else
-        success "Default shell is already Homebrew Zsh"
-    fi
+    ln -sf "$file" "$dest"
+    success "Linked $(basename "$file")"
+  done
 }
 
-apply_macos_defaults() {
-    header "Applying macOS default settings"
-    local defaults_script="$HOME/mrk1/scripts/macdefaults.sh"
-
-    if [[ -f "$defaults_script" ]]; then
-        echo "Running macdefaults.sh..."
-        # Refresh sudo timestamp before running, as the script contains sudo commands.
-        sudo -v
-        bash "$defaults_script"
-    else
-        warn "macdefaults.sh not found, skipping."
-    fi
+install_apps() {
+  header "Installing additional applications"
+  if [[ -f Brewfile ]]; then
+    brew bundle --file=Brewfile --verbose --no-upgrade || true
+  else
+    warn "No Brewfile found, skipping"
+  fi
 }
 
-install_from_brewfile() {
-    header "Installing applications from Brewfile"
-    local brewfile_path="$HOME/mrk1/assets/Brewfile"
-    local REPLY
-
-    if [[ ! -f "$brewfile_path" ]]; then
-        warn "Brewfile not found at $brewfile_path, skipping installations."
-        return
-    fi
-
-    # --- CLI Tool (Formulae) Installations ---
-    header "Install CLI Tools (Homebrew Formulae)"
-    while true; do
-        read -p "Install all CLI tools from Brewfile? (y/n): " -n 1 -r REPLY
-        echo
-        case "$REPLY" in
-            [Yy])
-                local temp_brew_file
-                temp_brew_file=$(mktemp)
-                grep '^brew ' "$brewfile_path" > "$temp_brew_file"
-                if [[ -s "$temp_brew_file" ]]; then
-                    echo "Installing formulae..."
-                    brew bundle install --file="$temp_brew_file" --verbose
-                else
-                    echo "No formulae found in Brewfile."
-                fi
-                rm "$temp_brew_file"
-                break
-                ;;
-            [Nn])
-                echo "Skipping CLI tool installations."
-                break
-                ;;
-            *)
-                echo "Invalid input. Please enter 'y' or 'n'."
-                ;;
-        esac
-    done
-
-    # --- Mac App Store (MAS) Installations ---
-    header "Install Mac App Store Applications"
-    while true; do
-        read -p "Install all MAS apps from Brewfile? (y/n): " -n 1 -r REPLY
-        echo
-        case "$REPLY" in
-            [Yy])
-                local temp_mas_file
-                temp_mas_file=$(mktemp)
-                grep -E '^mas |^tap ' "$brewfile_path" > "$temp_mas_file"
-                if grep -q '^mas ' "$temp_mas_file"; then
-                    echo "Installing MAS apps..."
-                    brew bundle install --file="$temp_mas_file" --verbose
-                else
-                    echo "No MAS apps found in Brewfile."
-                fi
-                rm "$temp_mas_file"
-                break
-                ;;
-            [Nn])
-                echo "Skipping MAS app installations."
-                break
-                ;;
-            *)
-                echo "Invalid input. Please enter 'y' or 'n'."
-                ;;
-        esac
-    done
-
-    # --- Interactive Cask Installations ---
-    header "Install GUI Applications (Casks)"
-    local cask_list
-    cask_list=$(grep '^cask ' "$brewfile_path" | cut -d '"' -f 2)
-
-    for cask in $cask_list; do
-        while true; do
-            read -p "Install ${bold}${cask}${reset}? (y/n/q to quit): " -n 1 -r REPLY
-            echo
-            case "$REPLY" in
-                [Yy])
-                    brew install --cask "$cask"
-                    break
-                    ;;
-                [Nn])
-                    echo "Skipping $cask."
-                    break
-                    ;;
-                [Qq])
-                    echo "Quitting Cask installation."
-                    break 2 # Break out of both the while and for loops
-                    ;;
-                *)
-                    echo "Invalid input. Please enter 'y', 'n', or 'q'."
-                    ;;
-            esac
-        done
-    done
+update_brew() {
+  header "Updating Homebrew and cleaning up"
+  brew update
+  brew upgrade
+  brew cleanup
+  success "Homebrew updated and cleaned"
 }
 
+run_macdefaults() {
+  if [[ -f macdefaults.sh ]]; then
+    header "Applying macOS defaults"
+    chmod +x ./macdefaults.sh
+    ./macdefaults.sh
+    success "macOS defaults applied"
+  else
+    warn "No macdefaults.sh found, skipping"
+  fi
+}
 
-# --- Main Execution ---
-
+# ==============================
+#   Main Execution
+# ==============================
 main() {
-  install_xcode_tools
-  install_homebrew
-  install_core_tools
-  install_oh_my_zsh
-  install_zsh_plugins
-  copy_config_files
-  create_symlinks
-  link_executable_scripts
-  switch_to_zsh
-  apply_macos_defaults
-  install_from_brewfile
+  # Logging
+  mkdir -p ~/mrk1
+  exec > >(tee -a "$HOME/mrk1/install.log") 2>&1
 
-  echo
-  echo "${green}${bold}✅ All done! Please restart your terminal to apply all changes.${reset}"
+  check_network
+  keep_sudo_alive
+
+  install_xcode_cli
+  install_homebrew
+  update_brew
+  install_core_tools
+  setup_zsh
+  create_symlinks
+  install_apps
+  run_macdefaults
+
+  success "Setup complete! 🎉 Restart your terminal to load the new shell."
 }
 
 main "$@"

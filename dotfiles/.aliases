@@ -56,7 +56,6 @@ alias dump='brew bundle dump --force --file=~/mrk1/assets/Brewfile && cp -fv ~/m
 # Renamed 'f' to a safer, more descriptive name.
 alias fixbrewperms='sudo chown -R $(whoami) /opt/homebrew'
 
-# Ultimate update alias
 alias update='topgrade' # Topgrade already runs `brew update` and more.
 
 # ==============================================================================

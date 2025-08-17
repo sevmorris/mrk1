@@ -27,12 +27,6 @@ defaults write com.apple.dock tilesize -int 36
 defaults write com.apple.dock minimize-to-application -bool true
 defaults write com.apple.dock show-recents -bool false
 
-# Screenshots
-echo "Configuring Screenshots..."
-mkdir -p "${HOME}/Pictures/Screenshots"
-defaults write com.apple.screencapture location -string "${HOME}/Pictures/Screenshots"
-defaults write com.apple.screencapture show-thumbnail -bool false
-
 # General UI/UX
 echo "Configuring general UI/UX..."
 defaults write NSGlobalDomain NSDocumentSaveNewDocumentsToCloud -bool false

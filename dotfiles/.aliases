@@ -16,6 +16,7 @@ alias cat='bat'                      # Use `bat` for 'cat' with syntax highlight
 alias netcheck='networkQuality'      # Measure network responsiveness.
 alias s='pmset displaysleepnow'      # Put the display to sleep immediately.
 alias v='source .venv/bin/activate'  # Activate a Python virtual environment.
+alias zmount='sudo zfs mount -a'
 
 # ==============================================================================
 #  Productivity & Fun Aliases

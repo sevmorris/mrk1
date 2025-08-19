@@ -1,20 +1,13 @@
 #!/usr/bin/env bash
 
 # --- Safety & Strict Mode ---
-# Exit immediately if a command exits with a non-zero status.
 set -e
-# Treat unset variables as an error when substituting.
 set -u
-# Pipes fail if any command in the pipe fails.
 set -o pipefail
 
 # --- Configuration ---
-
-# The single source directory for the restore operation.
-backup_dir="$HOME/.backups"
-
-# An array of the final destination paths for the restore.
-# This list should match the source list in your backup script.
+local_backup_dir="$HOME/.backups"
+external_backup_dir="/Volumes/Personal Backup/scripted_backup"
 declare -a restore_destinations=(
     "$HOME/Library/Saved Application State"
     "$HOME/Library/Preferences"
@@ -29,56 +22,69 @@ bold=$(tput bold); red=$(tput setaf 1); green=$(tput setaf 2); yellow=$(tput set
 arrow() { echo; echo "${green}${bold}>>> ${reset}$*"; }
 
 run_restore() {
-    local dest_path="$1"
+    local source_base_dir="$1"
+    local dest_path="$2"
     local source_basename
     local source_path
-
-    # Derive the source directory name from the destination path.
     source_basename=$(basename "$dest_path")
-    source_path="$backup_dir/$source_basename/"
-
-    arrow "Restoring to ${cyan}${dest_path}${reset}"
-
-    # Check if the specific backup we need to restore from actually exists.
+    source_path="$source_base_dir/$source_basename/"
+    arrow "Restoring ${cyan}$(basename "$dest_path")${reset} from ${cyan}$source_base_dir${reset}"
     if [ ! -d "$source_path" ]; then
-        echo "⚠️  ${yellow}Warning: Backup source not found, skipping:${reset} $source_path"
-        return 0 # Return success to not halt the script for a missing item.
+        echo "ℹ️  ${yellow}Info: Source not found, skipping:${reset} $source_path"
+        return 0
     fi
 
-    # Using sudo to write files to system-managed Library folders.
-    # --delete ensures the destination matches the backup exactly.
-    if sudo rsync -av --delete "$source_path" "$dest_path/"; then
-        echo "✅ Restore of ${cyan}${source_basename}${reset} successful."
+    # The -u flag ensures rsync only overwrites older files.
+    # --delete is removed to prevent deleting files unique to one backup.
+    if sudo rsync -avu "$source_path" "$dest_path/"; then
+        echo "✅ Restore successful."
         return 0
     else
-        echo "❌ ${bold}${red}Restore of ${cyan}${source_basename}${reset} failed!${reset}"
+        echo "❌ ${bold}${red}Restore failed!${reset}"
         return 1
     fi
 }
 
 # --- Main Script ---
+# --- Determine All Available Restore Sources ---
+declare -a restore_sources=()
+echo "🔎 Searching for backup sources..."
+if [ -d "$local_backup_dir" ]; then
+    echo "  ${green}Found:${reset} Local backup at ${cyan}$local_backup_dir${reset}"
+    restore_sources+=("$local_backup_dir")
+fi
+if [ -d "$external_backup_dir" ]; then
+    echo "  ${green}Found:${reset} External backup at ${cyan}$external_backup_dir${reset}"
+    restore_sources+=("$external_backup_dir")
+fi
 
-# SAFETY CHECK: Confirm with the user before proceeding.
-echo "${yellow}This script will overwrite existing files with data from your backup."
-echo "${yellow}The backup location is: ${cyan}${backup_dir}${reset}"
-read -p "${bold}Are you sure you want to continue? (y/n) ${reset}" -n 1 -r
+if [ ${#restore_sources[@]} -eq 0 ]; then
+    echo "❌ ${red}Error: No backup sources found. Aborting.${reset}"
+    exit 1
+fi
+
+# --- Safety Check ---
+echo
+echo "${yellow}This script will restore files using the following sources ${bold}in order:${reset}"
+for src in "${restore_sources[@]}"; do
+    echo "  - ${cyan}$src${reset}"
+done
+echo "${yellow}${bold}Only newer files will be copied from the backup locations.${reset}"
+read -p "Are you sure you want to continue? (y/n) " -n 1 -r
 echo
 if [[ ! $REPLY =~ ^[Yy]$ ]]; then
     echo "Restore cancelled."
     exit 1
 fi
 
-# Check if the main backup directory exists.
-if [ ! -d "$backup_dir" ]; then
-    echo "❌ ${red}Error: Backup directory not found at ${cyan}${backup_dir}${reset}"
-    exit 1
-fi
-
+# --- Run Restore ---
 overall_status=0
 for dest in "${restore_destinations[@]}"; do
-    if ! run_restore "$dest"; then
-        overall_status=1
-    fi
+    for source_dir in "${restore_sources[@]}"; do
+        if ! run_restore "$source_dir" "$dest"; then
+            overall_status=1
+        fi
+    done
 done
 
 echo

@@ -9,8 +9,12 @@ set -o pipefail
 
 # --- Configuration ---
 
-# The backup destination is set to the local .backups directory.
+# The primary backup destination is set to the local .backups directory.
 backup_dir="$HOME/.backups"
+
+# The secondary, optional backup destination.
+# Backups will be made here ONLY if this directory exists (i.e., drive is connected).
+external_backup_dir="/Volumes/Personal Backup/scripted_backup"
 
 # Add the full paths of directories you want to back up to this array.
 declare -a source_dirs=(
@@ -46,20 +50,38 @@ run_backup() {
 
 # --- Main Script ---
 
-echo "Using backup location: ${cyan}$backup_dir${reset}"
+# --- Prepare backup destinations ---
+# Start with the default local backup directory.
+declare -a backup_destinations=("$backup_dir")
 
-# Create the backup directory if it doesn't exist.
-# Use sudo in case parent directory permissions require it.
-sudo mkdir -p "$backup_dir"
-# Ensure the current user owns the top-level backup directory.
-sudo chown "$USER" "$backup_dir"
+# If the external drive is connected, add it to our list of destinations.
+# Note: We check for the parent directory's existence, as the script will create the final one.
+if [ -d "/Volumes/Personal Backup" ]; then
+    arrow "External backup drive found: ${cyan}$external_backup_dir${reset}"
+    backup_destinations+=("$external_backup_dir")
+else
+    echo "ℹ️  ${yellow}Optional external drive not found. Skipping.${reset}"
+fi
+
+# Create all backup destination directories if they don't exist.
+for dest in "${backup_destinations[@]}"; do
+    echo "Preparing backup location: ${cyan}$dest${reset}"
+    # Use sudo in case parent directory permissions require it.
+    sudo mkdir -p "$dest"
+    # Ensure the current user owns the top-level backup directory.
+    sudo chown "$USER" "$dest"
+done
 
 overall_status=0
+# Loop through each source directory we want to back up.
 for src in "${source_dirs[@]}"; do
     if [ -d "$src" ]; then
-        if ! run_backup "$src" "$backup_dir"; then
-            overall_status=1
-        fi
+        # Loop through each destination (local and external if connected).
+        for dest in "${backup_destinations[@]}"; do
+            if ! run_backup "$src" "$dest"; then
+                overall_status=1
+            fi
+        done
     else
         echo "⚠️  ${yellow}Warning: Source directory not found, skipping:${reset} $src"
     fi
@@ -69,7 +91,10 @@ echo
 echo "${cyan}–––––––––––––––––––––––––––${reset}"
 if [ $overall_status -eq 0 ]; then
     echo "🎉 ${bold}${green}All backups completed successfully!${reset}"
-    date +"Last backup: %Y-%m-%d %r" > "$backup_dir/last_backup.log"
+    # Write a log file to each backup destination.
+    for dest in "${backup_destinations[@]}"; do
+        date +"Last backup: %Y-%m-%d %r" > "$dest/last_backup.log"
+    done
 else
     echo "🔥 ${bold}${red}Some backups failed. Please review the output above.${reset}"
 fi

@@ -95,23 +95,6 @@ This script does **not** provide an automatic rollback. If you want to undo:
 
 ---
 
-## ✨ Example Run
-
-```bash
-==> Checking for Xcode Command Line Tools...
-✅ Xcode Command Line Tools already installed
-
-==> Checking for Homebrew...
-✅ Homebrew already installed
-
-==> Installing core tools via Homebrew Bundle...
-✅ zsh already installed
-✅ iterm2 already installed
-...
-```
-
----
-
 ## 🧰 Make Targets
 
 This project uses a Makefile for common workflows. Run:

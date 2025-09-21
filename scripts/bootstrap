@@ -92,8 +92,13 @@ run_defaults() {
 }
 
 run_doctor() {
-  [[ -x "${SCRIPTS_DIR}/doctor" ]] && "${SCRIPTS_DIR}/doctor" "$@" || warn "no doctor script"
+  if [[ -x "${SCRIPTS_DIR}/doctor" ]]; then
+    "${SCRIPTS_DIR}/doctor" "$@" || warn "doctor reported issues (non-fatal during bootstrap)"
+  else
+    warn "no doctor script"
+  fi
 }
+
 
 cmd="${1:-help}"
 case "$cmd" in

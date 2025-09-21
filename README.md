@@ -31,7 +31,7 @@ If you’d like to skip the manual clone step, you can run this **direct install
 ```
 
 ⚠️ **Note**: Running scripts directly from the internet is inherently risky.  
-Review the [`install.sh`](scripts/install) script before using this method.
+Review the [`install`](scripts/install) script before using this method.
 
 ---
 

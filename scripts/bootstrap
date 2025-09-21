@@ -1,0 +1,115 @@
+#!/usr/bin/env bash
+set -euo pipefail
+IFS=$'\n\t'
+
+ok()   { printf '\033[32m✓ %s\033[0m\n' "$*"; }
+warn() { printf '\033[33m⚠ %s\033[0m\n' "$*"; }
+err()  { printf '\033[31m✗ %s\033[0m\n' "$*" >&2; }
+
+REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+ASSETS_DIR="${REPO_DIR}/assets"
+DOTFILES_DIR="${REPO_DIR}/dotfiles"
+SCRIPTS_DIR="${REPO_DIR}/scripts"
+LOCAL_BIN="${HOME}/.local/bin"
+
+usage() {
+  cat <<EOF
+Usage: $(basename "$0") <command>
+
+Commands:
+  bootstrap   Run: brew -> dotfiles -> tools -> defaults -> doctor
+  brew        Run brew bundle from assets/Brewfile* or ./Brewfile
+  dotfiles    Symlink dotfiles/* into $HOME (backs up conflicts)
+  tools       Link shebang'd scripts/* into ~/.local/bin
+  defaults    Run scripts/defaults.sh if present
+  doctor      Run scripts/doctor
+  heal        Run scripts/doctor --fix
+EOF
+}
+
+ensure_local_bin() { mkdir -p "${LOCAL_BIN}"; }
+
+run_brew_bundle() {
+  if ! command -v brew >/dev/null 2>&1; then
+    warn "brew not found; skipping brew bundle."
+    return
+  fi
+  shopt -s nullglob
+  local ran=0
+  for f in "${ASSETS_DIR}"/Brewfile*; do
+    if [[ -f "$f" ]]; then
+      echo "+ brew bundle --file $f"
+      brew bundle --file "$f" || warn "brew bundle issues: $f"
+      ran=1
+    fi
+  done
+  if [[ "$ran" -eq 0 && -f "${REPO_DIR}/Brewfile" ]]; then
+    echo "+ brew bundle"
+    brew bundle || warn "brew bundle issues"
+    ran=1
+  fi
+  shopt -u nullglob
+  [[ "$ran" -eq 0 ]] && warn "No Brewfile found."
+}
+
+link_dotfiles() {
+  [[ -d "$DOTFILES_DIR" ]] || { warn "dotfiles/ not found"; return; }
+  shopt -s dotglob nullglob
+  for src in "${DOTFILES_DIR}"/*; do
+    [[ -e "$src" ]] || continue
+    dest="${HOME}/$(basename "$src")"
+    if [[ -L "$dest" ]]; then
+      ok "symlink exists: $dest"
+      continue
+    fi
+    if [[ -e "$dest" ]]; then
+      mv "$dest" "${dest}.bak.$(date +%Y%m%d-%H%M%S)"
+      echo "backup: $dest"
+    fi
+    ln -s "$src" "$dest"
+    ok "linked: $dest -> $src"
+  done
+  shopt -u dotglob nullglob
+}
+
+link_tools() {
+  ensure_local_bin
+  if [[ -x "${SCRIPTS_DIR}/link-tools" ]]; then
+    "${SCRIPTS_DIR}/link-tools"
+    return
+  fi
+  while IFS= read -r -d '' src; do
+    if head -n1 "$src" | grep -q '^#!'; then
+      chmod +x "$src" || true
+      ln -sf "$src" "${LOCAL_BIN}/$(basename "$src")"
+      echo "linked: ${LOCAL_BIN}/$(basename "$src") -> $src"
+    fi
+  done < <(find "${SCRIPTS_DIR}" -maxdepth 1 -type f -not -name 'doctor' -not -name 'bootstrap' -not -name 'link-tools' -print0)
+}
+
+run_defaults() {
+  if [[ -x "${SCRIPTS_DIR}/defaults.sh" ]]; then
+    "${SCRIPTS_DIR}/defaults.sh"
+  elif [[ -f "${SCRIPTS_DIR}/defaults.sh" ]]; then
+    bash "${SCRIPTS_DIR}/defaults.sh"
+  else
+    warn "no defaults.sh"
+  fi
+}
+
+run_doctor() {
+  [[ -x "${SCRIPTS_DIR}/doctor" ]] && "${SCRIPTS_DIR}/doctor" "$@" || warn "no doctor script"
+}
+
+cmd="${1:-help}"
+case "$cmd" in
+  bootstrap) run_brew_bundle; link_dotfiles; link_tools; run_defaults; run_doctor ;;
+  brew)      run_brew_bundle ;;
+  dotfiles)  link_dotfiles ;;
+  tools)     link_tools ;;
+  defaults)  run_defaults ;;
+  doctor)    run_doctor ;;
+  heal)      run_doctor --fix ;;
+  help|-h|--help) usage ;;
+  *) err "unknown command: $cmd"; usage; exit 1 ;;
+esac

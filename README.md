@@ -1,17 +1,11 @@
 ```
           #_______________//macOS Setup & Personalization with mrk1//____________________#
-          #______      ______                                           _           _____#
-          #_____      / ____ \________ _   ______ ___  ____  __________(_)____       ____#
-          #____      / / __ `/ ___/ _ \ | / / __ `__ \/ __ \/ ___/ ___/ / ___/      _____#
-          #___      / / /_/ (__  )  __/ |/ / / / / / / /_/ / /  / /  / (__  )      ______#
-          #____     \ \__,_/____/\___/|___/_/ /_/ /_/\____/_/  /_/  /_/____/      _______#
-          #_____     \____/                                                      ________#
-          #______________________________________________________________________________#
 ```
 
 This repository contains my personal configuration for quickly setting up a new **Apple Silicon Mac** with my preferred tools, dotfiles, applications, and macOS defaults.
 
 It is powered by a single **idempotent installer script** — you can run it multiple times without breaking anything.
+
 
 ---
 
@@ -36,7 +30,7 @@ cd ~/mrk1/scripts && ./install
 If you’d like to skip the manual clone step, you can run this **direct installer**:
 
 ```bash
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/sevmorris/mrk1/main/scripts/install.sh)"
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/sevmorris/mrk1/main/scripts/install)"
 ```
 
 ⚠️ **Note**: Running scripts directly from the internet is inherently risky.
@@ -117,4 +111,34 @@ This script does **not** provide an automatic rollback. If you want to undo:
 ✅ zsh already installed
 ✅ iterm2 already installed
 ...
+```
+
+
+## Bootstrap commands
+
+Helpers live in `scripts/bootstrap`:
+
+```bash
+# One-shot setup (brew -> dotfiles -> tools -> defaults -> doctor)
+./scripts/bootstrap bootstrap
+
+# Individual steps
+./scripts/bootstrap brew       # Brew Bundle from assets/Brewfile* or ./Brewfile
+./scripts/bootstrap dotfiles   # Link dotfiles/* into $HOME (backs up originals)
+./scripts/bootstrap tools      # Link shebang'd scripts into ~/.local/bin
+./scripts/bootstrap defaults   # Run scripts/defaults.sh if present
+./scripts/bootstrap doctor     # Run health checks
+./scripts/bootstrap heal       # Attempt automatic fixes (doctor --fix)
+```
+
+Using make (same commands under the hood):
+
+```bash
+make bootstrap
+make brew
+make dotfiles
+make tools
+make defaults
+make doctor
+make heal
 ```

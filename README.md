@@ -1,4 +1,4 @@
-#_______________//macOS Setup & Personalization with mrk1//____________________#
+//macOS Setup & Personalization with mrk1//
 
 This repository contains my personal configuration for quickly setting up a new **Apple Silicon Mac** with my preferred tools, dotfiles, applications, and macOS defaults.
 

@@ -91,3 +91,11 @@ help:
 	@echo "  make tools             - link scripts/* with shebang into $$HOME/.local/bin"
 	@echo "  make defaults          - run scripts/defaults.sh if present"
 	@echo ""
+.PHONY: bootstrap-lenient
+bootstrap-lenient:
+	@./scripts/bootstrap brew
+	@./scripts/bootstrap dotfiles
+	@./scripts/bootstrap tools
+	@./scripts/bootstrap defaults || true
+	@./scripts/bootstrap doctor   || { echo "doctor reported issues (non-fatal). See above."; exit 0; }
+

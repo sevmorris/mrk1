@@ -1,6 +1,10 @@
-#!/usr/bin/env bash
-set -euo pipefail
-IFS=$'\n\t'
+\1
+# Better error reporting
+set -E -o errtrace
+trap 'err \"Failed at ${FUNCNAME[0]:-main} line $LINENO: $BASH_COMMAND\"' ERR
+
+# Optional debug tracing: DEBUG=1 ./scripts/bootstrap bootstrap
+[ \"${DEBUG:-0}\" = \"1\" ] && set -x
 
 ok()   { printf '\033[32m✓ %s\033[0m\n' "$*"; }
 warn() { printf '\033[33m⚠ %s\033[0m\n' "$*"; }
@@ -102,12 +106,14 @@ run_doctor() {
 
 cmd="${1:-help}"
 case "$cmd" in
-  bootstrap) run_brew_bundle; link_dotfiles; link_tools; run_defaults; run_doctor ;;
+  bootstrap) run_brew_bundle; link_dotfiles; link_tools; \
+if [ "$(uname -s)" = "Darwin" ]; then run_defaults; else warn "Skipping macOS defaults on $(uname -s)"; fi; \
+if [ -x "${SCRIPTS_DIR}/doctor" ]; then "${SCRIPTS_DIR}/doctor"; else warn "no doctor script"; fi ;;
   brew)      run_brew_bundle ;;
   dotfiles)  link_dotfiles ;;
   tools)     link_tools ;;
   defaults)  run_defaults ;;
-  doctor)    run_doctor ;;
+  doctor) if [ -x "${SCRIPTS_DIR}/doctor" ]; then "${SCRIPTS_DIR}/doctor"; else warn "no doctor script"; fi ;;
   heal)      run_doctor --fix ;;
   help|-h|--help) usage ;;
   *) err "unknown command: $cmd"; usage; exit 1 ;;

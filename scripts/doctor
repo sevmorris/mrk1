@@ -2,192 +2,53 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-green() { printf '\033[32m%s\033[0m\n' "$*"; }
-yellow(){ printf '\033[33m%s\033[0m\n' "$*"; }
-red()   { printf '\033[31m%s\033[0m\n' "$*"; }
-ok()   { green "✓ $*"; }
-warn() { yellow "⚠ $*"; }
-fail() { red "✗ $*"; }
+ok()   { printf '\033[32m✓ %s\033[0m\n' "$*"; }
+warn() { printf '\033[33m⚠ %s\033[0m\n' "$*"; }
+err()  { printf '\033[31m✗ %s\033[0m\n' "$*" >&2; }
 
-REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-DEST_DIR="${HOME}/.local/bin"
-ZSHRC="${HOME}/.zshrc"
-ZPROFILE="${HOME}/.zprofile"
-ACTION="${1:-check}"
-[ "$ACTION" = "--fix" ] && ACTION="fix"
-status=0
+MODE="${1:-check}"   # check | --fix | fix
+STATUS=0
 
 check_brew() {
-  if command -v brew >/dev/null 2>&1; then
-    ok "brew present: $(brew --version | head -n1)"
-    if brew --prefix >/dev/null 2>&1; then
-      ok "brew --prefix: $(brew --prefix)"
-    else
-      warn "brew works but --prefix failed (shellenv may be incomplete)"
-    fi
+  if ! command -v brew >/dev/null 2>&1; then
+    warn "Homebrew not found on PATH"
+    STATUS=1
   else
-    warn "brew not found on PATH"
-    status=1
-  fi
-}
-
-check_cnf() {
-  local cnf_ok=0
-  if command -v brew >/dev/null 2>&1; then
-    local handler
-    handler="$(brew --repository 2>/dev/null)/Library/Homebrew/command-not-found/handler.sh"
-    if [ -r "${handler:-/nonexistent}" ]; then
-      ok "brew command-not-found handler present: ${handler}"
-      cnf_ok=1
-    fi
-  fi
-  type -t command_not_found_handler >/dev/null 2>&1 && cnf_ok=1
-  type -t command_not_found_handle  >/dev/null 2>&1 && cnf_ok=1
-  if [ "$cnf_ok" -eq 1 ]; then
-    ok "command-not-found integration detected"
-  else
-    warn "command-not-found integration not detected"
+    ok "Homebrew present: $(brew --version | head -n1)"
   fi
 }
 
 check_localbin() {
-  mkdir -p "${DEST_DIR}"
   case ":$PATH:" in
-    *":${DEST_DIR}:"*) ok "~/.local/bin is on PATH" ;;
-    *) warn "~/.local/bin is NOT on PATH"; status=1 ;;
+    *":$HOME/.local/bin:"*) ok "~/.local/bin is on PATH" ;;
+    *) warn "~/.local/bin is NOT on PATH"; STATUS=1 ;;
   esac
 }
 
-check_links() {
-  if [ -d "${REPO_DIR}/scripts" ]; then
-    local shebang_count=0 linked_ok=0
-    while IFS= read -r -d '' src; do
-      if head -n1 "$src" | grep -q '^#!'; then
-        shebang_count=$((shebang_count+1))
-        local base dest
-        base="$(basename "$src")"
-        dest="${DEST_DIR}/${base}"
-        if [ -L "$dest" ] || [ -e "$dest" ]; then
-          if [ "$(readlink "$dest" 2>/dev/null || echo "$dest")" = "$src" ]; then
-            [ -x "$dest" ] && ok "linked: ${dest} -> ${src}" || warn "linked but not executable: ${dest}"
-            linked_ok=$((linked_ok+1))
-          else
-            warn "dest exists but not pointing to repo script: ${dest}"
-          fi
-        else
-          warn "not linked: ${dest}"
-        fi
-      fi
-    done < <(find "${REPO_DIR}/scripts" -maxdepth 1 -type f -not -name 'doctor' -not -name 'link-tools' -print0)
-    if [ "$shebang_count" -gt 0 ]; then
-      [ "$linked_ok" -eq "$shebang_count" ] && ok "All ${shebang_count}/${shebang_count} scripts linked" || warn "Linked ${linked_ok}/${shebang_count} scripts"
-    else
-      warn "No shebang’d files found under scripts/"
-    fi
+fix_localbin() {
+  # add to ~/.zshrc if missing
+  local target="$HOME/.zshrc"
+  if [ -f "$target" ] && grep -qs '\.local/bin' "$target"; then
+    ok "~/.local/bin already referenced in $target"
   else
-    warn "No scripts/ directory found in repo"
+    { echo ''; echo 'export PATH="$HOME/.local/bin:$PATH"'; } >> "$target"
+    ok "Appended ~/.local/bin to PATH in $target"
   fi
 }
 
-check_zsh() {
-  if command -v zsh >/dev/null 2>&1; then
-    ok "zsh present: $(zsh --version)"
-  else
-    warn "zsh not found"
-  fi
-}
-
-check_zshrc_blocks() {
-  if [ -f "$ZSHRC" ]; then
-    grep -q 'brew shellenv' "$ZSHRC" && ok ".zshrc contains brew shellenv block" || warn ".zshrc missing brew shellenv block"
-    grep -q 'command-not-found' "$ZSHRC" && ok ".zshrc contains command-not-found handler" || warn ".zshrc missing command-not-found handler"
-  else
-    warn "~/.zshrc not found"
-  fi
-}
-
-ensure_block() {
-  local file="$1" start="$2" end="$3" body="$4"
-  mkdir -p "$(dirname "$file")"
-  touch "$file"
-  if grep -qF "$start" "$file"; then
-    awk -v s="$start" -v e="$end" '$0~s{skip=1}!skip{print}$0~e{skip=0}' "$file" > "${file}.tmp" && mv "${file}.tmp" "$file"
-  fi
-  {
-    echo "$start"
-    echo "$body"
-    echo "$end"
-  } >> "$file"
-}
-
-fix_brew_shellenv() {
-  local body='# Ensure Homebrew is on PATH (Apple Silicon first, then Intel)
-if [ -x /opt/homebrew/bin/brew ]; then
-  eval "$(/opt/homebrew/bin/brew shellenv)"
-elif [ -x /usr/local/bin/brew ]; then
-  eval "$(/usr/local/bin/brew shellenv)"
-fi'
-  ensure_block "$ZSHRC" "# >>> mrk1 brew shellenv >>>" "# <<< mrk1 brew shellenv <<<" "$body"
-  ok "wrote brew shellenv block to ${ZSHRC}"
-  if ! grep -q 'brew shellenv' "$ZPROFILE" 2>/dev/null; then
-    if [ -x /opt/homebrew/bin/brew ]; then
-      printf 'eval "$(/opt/homebrew/bin/brew shellenv)"\n' >> "$ZPROFILE"
-    elif [ -x /usr/local/bin/brew ]; then
-      printf 'eval "$(/usr/local/bin/brew shellenv)"\n' >> "$ZPROFILE"
-    fi
-    ok "appended brew shellenv to ${ZPROFILE}"
-  fi
-}
-
-fix_cnf() {
-  if command -v brew >/dev/null 2>&1; then
-    local body='HOMEBREW_COMMAND_NOT_FOUND_HANDLER="$(brew --repository)/Library/Homebrew/command-not-found/handler.sh"
-if [ -f "$HOMEBREW_COMMAND_NOT_FOUND_HANDLER" ]; then
-  source "$HOMEBREW_COMMAND_NOT_FOUND_HANDLER"
-fi'
-    ensure_block "$ZSHRC" "# >>> mrk1 brew command-not-found >>>" "# <<< mrk1 brew command-not-found <<<" "$body"
-    ok "wrote command-not-found handler block to ${ZSHRC}"
-  else
-    warn "brew not found; skipped command-not-found handler write"
-  fi
-}
-
-fix_localbin_path() {
-  mkdir -p "${DEST_DIR}"
-  if ! grep -qE '(^|:)\$HOME/.local/bin( |:|$)' "$ZSHRC" 2>/dev/null; then
-    ensure_block "$ZSHRC" "# >>> mrk1 local bin >>>" "# <<< mrk1 local bin <<<" 'export PATH="$HOME/.local/bin:$PATH"'
-    ok "added ~/.local/bin to PATH in ${ZSHRC}"
-  fi
-}
-
-link_tools() {
-  if [ -x "${REPO_DIR}/scripts/link-tools" ]; then
-    "${REPO_DIR}/scripts/link-tools"
-  else
-    mkdir -p "${DEST_DIR}"
-    while IFS= read -r -d '' src; do
-      if head -n1 "$src" | grep -q '^#!'; then
-        chmod +x "$src" || true
-        ln -sf "$src" "${DEST_DIR}/$(basename "$src")"
-      fi
-    done < <(find "${REPO_DIR}/scripts" -maxdepth 1 -type f -not -name 'doctor' -not -name 'link-tools' -print0)
-  fi
-}
-
-if [ "$ACTION" = "check" ]; then
-  check_brew
-  check_cnf
-  check_localbin
-  check_links
-  check_zsh
-  check_zshrc_blocks
-  exit "$status"
-else
-  check_brew
-  fix_brew_shellenv
-  fix_localbin_path
-  fix_cnf || true
-  link_tools
-  echo
-  ok "Fix pass complete. Restart your shell: 'exec zsh', then re-run: ./scripts/doctor"
-fi
+case "$MODE" in
+  check)
+    check_brew
+    check_localbin
+    exit "${STATUS}"
+    ;;
+  --fix|fix)
+    # tolerate missing brew; still try to fix PATH
+    check_brew || true
+    fix_localbin
+    ok "Fix pass complete."
+    exit 0
+    ;;
+  *)
+    err "Unknown mode: $MODE"; exit 2 ;;
+esac

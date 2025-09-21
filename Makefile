@@ -6,7 +6,7 @@ brew brew-install brew-clean dotfiles tools defaults
 # Quality
 # --------------------------
 lint:
-	@shellcheck install.sh scripts/* bin/* 2>/dev/null || true
+	@shellcheck scripts/* bin/* 2>/dev/null || true
 
 format:
 	@shfmt -d -i 2 -bn -ci .

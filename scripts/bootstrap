@@ -1,120 +1,149 @@
-\1
-# Better error reporting
-set -E -o errtrace
-trap 'err \"Failed at ${FUNCNAME[0]:-main} line $LINENO: $BASH_COMMAND\"' ERR
+#!/usr/bin/env bash
+# mrk1 bootstrap (regenerated)
+# - Safe on macOS/Linux (skips macOS-only steps on non-Darwin)
+# - Clear errors with trap; optional tracing: DEBUG=1 ./scripts/bootstrap bootstrap
+# - Avoids Bash process substitution; portable find | while loop
+set -euo pipefail
+IFS=$'\n\t'
 
-# Optional debug tracing: DEBUG=1 ./scripts/bootstrap bootstrap
-[ \"${DEBUG:-0}\" = \"1\" ] && set -x
-
+# ---- UI helpers ----
 ok()   { printf '\033[32m✓ %s\033[0m\n' "$*"; }
 warn() { printf '\033[33m⚠ %s\033[0m\n' "$*"; }
 err()  { printf '\033[31m✗ %s\033[0m\n' "$*" >&2; }
 
+# Better error reporting
+set -E -o errtrace
+trap 'err "Failed at ${FUNCNAME[0]:-main} line $LINENO: $BASH_COMMAND"' ERR
+
+# Optional debug tracing
+[ "${DEBUG:-0}" = "1" ] && set -x
+
+# ---- Paths ----
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 ASSETS_DIR="${REPO_DIR}/assets"
 DOTFILES_DIR="${REPO_DIR}/dotfiles"
 SCRIPTS_DIR="${REPO_DIR}/scripts"
-LOCAL_BIN="${HOME}/.local/bin"
+DEST_DIR="${HOME}/.local/bin"
 
 usage() {
   cat <<EOF
-Usage: $(basename "$0") <command>
+mrk1 bootstrap
 
-Commands:
-  bootstrap   Run: brew -> dotfiles -> tools -> defaults -> doctor
-  brew        Run brew bundle from assets/Brewfile* or ./Brewfile
-  dotfiles    Symlink dotfiles/* into \$HOME (backs up conflicts)
-  tools       Link shebang'd scripts/* into ~/.local/bin
-  defaults    Run scripts/defaults.sh if present
-  doctor      Run scripts/doctor
-  heal        Run scripts/doctor --fix
+Usage:
+  ${0##*/} bootstrap   # full flow
+  ${0##*/} brew        # brew bundle only
+  ${0##*/} dotfiles    # link dotfiles from dotfiles/
+  ${0##*/} tools       # link executable scripts into ~/.local/bin
+  ${0##*/} defaults    # apply macOS defaults (Darwin only)
+  ${0##*/} doctor      # run doctor if present (non-fatal if missing)
+  ${0##*/} help        # show this help
 EOF
 }
 
-ensure_local_bin() { mkdir -p "${LOCAL_BIN}"; }
+ensure_dirs() {
+  mkdir -p "${DEST_DIR}"
+}
 
 run_brew_bundle() {
-  if ! command -v brew >/dev/null 2>&1; then
-    warn "brew not found; skipping brew bundle."
-    return
-  fi
-  shopt -s nullglob
   local ran=0
-  for f in "${ASSETS_DIR}"/Brewfile*; do
-    if [[ -f "$f" ]]; then
-      echo "+ brew bundle --file $f"
-      brew bundle --file "$f" || warn "brew bundle issues: $f"
+  shopt -s nullglob
+  for bf in "${ASSETS_DIR}/Brewfile" "${REPO_DIR}/Brewfile"; do
+    if [[ -f "$bf" ]]; then
+      ok "Using Brewfile: $bf"
+      brew bundle --file "$bf"
       ran=1
+      break
     fi
   done
-  if [[ "$ran" -eq 0 && -f "${REPO_DIR}/Brewfile" ]]; then
-    echo "+ brew bundle"
-    brew bundle || warn "brew bundle issues"
-    ran=1
-  fi
   shopt -u nullglob
-  [[ "$ran" -eq 0 ]] && warn "No Brewfile found."
+
+  if [[ "$ran" -eq 0 ]]; then
+    err "No Brewfile found (searched: ${ASSETS_DIR}/Brewfile, ${REPO_DIR}/Brewfile)"
+    exit 1
+  fi
 }
 
 link_dotfiles() {
-  [[ -d "$DOTFILES_DIR" ]] || { warn "dotfiles/ not found"; return; }
-  shopt -s dotglob nullglob
-  for src in "${DOTFILES_DIR}"/*; do
-    [[ -e "$src" ]] || continue
-    dest="${HOME}/$(basename "$src")"
-    if [[ -L "$dest" ]]; then
-      ok "symlink exists: $dest"
-      continue
+  if [[ ! -d "${DOTFILES_DIR}" ]]; then
+    warn "No dotfiles directory at ${DOTFILES_DIR}"
+    return 0
+  fi
+
+  while IFS= read -r -d '' src; do
+    local base dest
+    base="$(basename "$src")"
+    dest="${HOME}/.${base}"
+    if [[ -L "$dest" || -e "$dest" ]]; then
+      if [[ "$(readlink "$dest" 2>/dev/null || true)" == "$src" ]]; then
+        ok "symlink exists: $dest"
+      else
+        if [[ -f "$dest" || -d "$dest" ]]; then
+          warn "backup: $dest"
+          mv "$dest" "${dest}.bak.$(date +%s)"
+        fi
+        ln -s "$src" "$dest"
+        ok "linked: $dest -> $src"
+      fi
+    else
+      ln -s "$src" "$dest"
+      ok "linked: $dest -> $src"
     fi
-    if [[ -e "$dest" ]]; then
-      mv "$dest" "${dest}.bak.$(date +%Y%m%d-%H%M%S)"
-      echo "backup: $dest"
-    fi
-    ln -s "$src" "$dest"
-    ok "linked: $dest -> $src"
-  done
-  shopt -u dotglob nullglob
+  done < <(find "${DOTFILES_DIR}" -maxdepth 1 -type f -print0)
 }
 
 link_tools() {
-  ensure_local_bin
-  if [[ -x "${SCRIPTS_DIR}/link-tools" ]]; then
-    "${SCRIPTS_DIR}/link-tools"
-    return
-  fi
-  while IFS= read -r -d '' src; do
-    if head -n1 "$src" | grep -q '^#!'; then
-      chmod +x "$src" || true
-      ln -sf "$src" "${LOCAL_BIN}/$(basename "$src")"
-      echo "linked: ${LOCAL_BIN}/$(basename "$src") -> $src"
-    fi
-  done < <(find "${SCRIPTS_DIR}" -maxdepth 1 -type f -not -name 'doctor' -not -name 'bootstrap' -print0)
+  ensure_dirs
+  # portable loop; no process substitution
+  find "${SCRIPTS_DIR}" -maxdepth 1 -type f ! -name 'doctor' ! -name 'bootstrap' -print0   | while IFS= read -r -d '' src; do
+      if head -n1 "$src" | grep -q '^#!'; then
+        local base dest
+        base="$(basename "$src")"
+        dest="${DEST_DIR}/${base}"
+        if [[ -L "$dest" || -e "$dest" ]]; then
+          if [[ "$(readlink "$dest" 2>/dev/null || true)" == "$src" ]]; then
+            ok "symlink exists: $dest"
+          else
+            warn "backup: $dest"
+            mv "$dest" "${dest}.bak.$(date +%s)"
+            ln -sf "$src" "$dest"
+            ok "linked: $dest -> $src"
+          fi
+        else
+          ln -sf "$src" "$dest"
+          ok "linked: $dest -> $src"
+        fi
+      fi
+    done
 }
 
 run_defaults() {
-  [[ -x "${SCRIPTS_DIR}/defaults.sh" ]] && "${SCRIPTS_DIR}/defaults.sh" || warn "no defaults.sh"
+  if [[ "$(uname -s)" != "Darwin" ]]; then
+    warn "Skipping macOS defaults on $(uname -s)"
+    return 0
+  fi
+  if [[ -x "${SCRIPTS_DIR}/defaults.sh" ]]; then
+    "${SCRIPTS_DIR}/defaults.sh"
+  else
+    warn "defaults.sh not found; skipping"
+  fi
 }
 
 run_doctor() {
   if [[ -x "${SCRIPTS_DIR}/doctor" ]]; then
-    "${SCRIPTS_DIR}/doctor" "$@" || warn "doctor reported issues (non-fatal during bootstrap)"
+    "${SCRIPTS_DIR}/doctor" || { warn "doctor reported issues; continuing"; return 0; }
   else
     warn "no doctor script"
   fi
 }
 
-
 cmd="${1:-help}"
 case "$cmd" in
-  bootstrap) run_brew_bundle; link_dotfiles; link_tools; \
-if [ "$(uname -s)" = "Darwin" ]; then run_defaults; else warn "Skipping macOS defaults on $(uname -s)"; fi; \
-if [ -x "${SCRIPTS_DIR}/doctor" ]; then "${SCRIPTS_DIR}/doctor"; else warn "no doctor script"; fi ;;
+  bootstrap) run_brew_bundle; link_dotfiles; link_tools; run_defaults; run_doctor ;;
   brew)      run_brew_bundle ;;
   dotfiles)  link_dotfiles ;;
   tools)     link_tools ;;
   defaults)  run_defaults ;;
-  doctor) if [ -x "${SCRIPTS_DIR}/doctor" ]; then "${SCRIPTS_DIR}/doctor"; else warn "no doctor script"; fi ;;
-  heal)      run_doctor --fix ;;
+  doctor)    run_doctor ;;
   help|-h|--help) usage ;;
   *) err "unknown command: $cmd"; usage; exit 1 ;;
 esac

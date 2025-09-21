@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-# mrk1-maintenance.sh — mrk1 maintenance commands for macOS (Catalina → Sequoia)
+# mrk1-maint.sh — mrk1 maintenance commands for macOS (Catalina → Sequoia)
 #
 # Usage examples:
-#   chmod +x mrk1-maintenance.sh
-#   ./mrk1-maintenance.sh --menu        # interactive menu
-#   ./mrk1-maintenance.sh clean-caches  # run a specific task
-#   ./mrk1-maintenance.sh --dry-run full-tuneup
+#   chmod +x mrk1-maint.sh
+#   ./mrk1-maint.sh --menu        # interactive menu
+#   ./mrk1-maint.sh clean-caches  # run a specific task
+#   ./mrk1-maint.sh --dry-run full-tuneup
 #
 # ⚠️  Notes
 # - Close apps first. Some tasks kill services (Finder/Dock/CFPrefs) briefly.
@@ -355,7 +355,7 @@ dispatch() {
 
 usage() {
   cat <<USAGE
-$(bold)mrk1-maintenance.sh$(reset) — mrk1 tasks from the command line
+$(bold)mrk1-maint.sh$(reset) — mrk1 tasks from the command line
 
 Commands:
   verify-disk               Run Disk Utility-style verification on all volumes (read-only)

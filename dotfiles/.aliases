@@ -100,15 +100,18 @@ mc() {
   )
 }
 
-# Push current directory to GitHub with a commit message.
 pushit() {
   local commit_message
-  # Use the first argument as a commit message, or default to a timestamp.
   commit_message="${1:-Auto-commit on $(date '+%Y-%m-%d %H:%M')}"
 
   echo "Syncing with remote..."
-  git pull --rebase && \
-  git add . && \
-  git commit -m "$commit_message" && \
-  git push
+  git pull --rebase || return 1
+
+  git add .
+  if git diff --cached --quiet; then
+    echo "No changes to commit."
+  else
+    git commit -m "$commit_message"
+    git push
+  fi
 }

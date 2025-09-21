@@ -1,11 +1,8 @@
-```
-          #_______________//macOS Setup & Personalization with mrk1//____________________#
-```
+#_______________//macOS Setup & Personalization with mrk1//____________________#
 
 This repository contains my personal configuration for quickly setting up a new **Apple Silicon Mac** with my preferred tools, dotfiles, applications, and macOS defaults.
 
 It is powered by a single **idempotent installer script** — you can run it multiple times without breaking anything.
-
 
 ---
 
@@ -33,7 +30,7 @@ If you’d like to skip the manual clone step, you can run this **direct install
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/sevmorris/mrk1/main/scripts/install)"
 ```
 
-⚠️ **Note**: Running scripts directly from the internet is inherently risky.
+⚠️ **Note**: Running scripts directly from the internet is inherently risky.  
 Review the [`install.sh`](scripts/install) script before using this method.
 
 ---
@@ -113,32 +110,27 @@ This script does **not** provide an automatic rollback. If you want to undo:
 ...
 ```
 
+---
 
-## Bootstrap commands
+## 🧰 Make Targets
 
-Helpers live in `scripts/bootstrap`:
-
-```bash
-# One-shot setup (brew -> dotfiles -> tools -> defaults -> doctor)
-./scripts/bootstrap bootstrap
-
-# Individual steps
-./scripts/bootstrap brew       # Brew Bundle from assets/Brewfile* or ./Brewfile
-./scripts/bootstrap dotfiles   # Link dotfiles/* into $HOME (backs up originals)
-./scripts/bootstrap tools      # Link shebang'd scripts into ~/.local/bin
-./scripts/bootstrap defaults   # Run scripts/defaults.sh if present
-./scripts/bootstrap doctor     # Run health checks
-./scripts/bootstrap heal       # Attempt automatic fixes (doctor --fix)
-```
-
-Using make (same commands under the hood):
+This project uses a Makefile for common workflows. Run:
 
 ```bash
-make bootstrap
-make brew
-make dotfiles
-make tools
-make defaults
-make doctor
-make heal
+make help
 ```
+
+to see a list. The main targets are:
+
+- `make help` — show this help  
+- `make bootstrap` — full bootstrap (brew → dotfiles → tools → defaults → doctor)  
+- `make brew-install` — apply Homebrew bundle (`assets/Brewfile`)  
+- `make brew-clean` — remove extras, autoremove deps, cleanup cache, doctor/missing  
+- `make doctor` — run `scripts/doctor` health check  
+- `make lint` — run ShellCheck on scripts  
+- `make format` — check formatting with shfmt (no writes)  
+- `make fix` — format scripts in-place with shfmt  
+- `make ci` — run lint + format (CI checks)  
+- `make dotfiles` — link dotfiles/* into `$HOME` (backs up originals)  
+- `make tools` — link scripts/* with shebang into `~/.local/bin`  
+- `make defaults` — run `scripts/defaults.sh` if present  

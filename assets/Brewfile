@@ -1,5 +1,4 @@
 # Taps
-tap "homebrew/command-not-found"
 
 # CLI Tools - General Utilities & Power User Tools
 brew "bash"

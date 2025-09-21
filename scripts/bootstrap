@@ -19,7 +19,7 @@ Usage: $(basename "$0") <command>
 Commands:
   bootstrap   Run: brew -> dotfiles -> tools -> defaults -> doctor
   brew        Run brew bundle from assets/Brewfile* or ./Brewfile
-  dotfiles    Symlink dotfiles/* into $HOME (backs up conflicts)
+  dotfiles    Symlink dotfiles/* into \$HOME (backs up conflicts)
   tools       Link shebang'd scripts/* into ~/.local/bin
   defaults    Run scripts/defaults.sh if present
   doctor      Run scripts/doctor
@@ -84,17 +84,11 @@ link_tools() {
       ln -sf "$src" "${LOCAL_BIN}/$(basename "$src")"
       echo "linked: ${LOCAL_BIN}/$(basename "$src") -> $src"
     fi
-  done < <(find "${SCRIPTS_DIR}" -maxdepth 1 -type f -not -name 'doctor' -not -name 'bootstrap' -not -name 'link-tools' -print0)
+  done < <(find "${SCRIPTS_DIR}" -maxdepth 1 -type f -not -name 'doctor' -not -name 'bootstrap' -print0)
 }
 
 run_defaults() {
-  if [[ -x "${SCRIPTS_DIR}/defaults.sh" ]]; then
-    "${SCRIPTS_DIR}/defaults.sh"
-  elif [[ -f "${SCRIPTS_DIR}/defaults.sh" ]]; then
-    bash "${SCRIPTS_DIR}/defaults.sh"
-  else
-    warn "no defaults.sh"
-  fi
+  [[ -x "${SCRIPTS_DIR}/defaults.sh" ]] && "${SCRIPTS_DIR}/defaults.sh" || warn "no defaults.sh"
 }
 
 run_doctor() {

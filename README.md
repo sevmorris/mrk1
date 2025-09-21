@@ -121,13 +121,24 @@ to see a list. The main targets are:
 
 ---
 
-## 🧰 Maintenance Tools (`mrk1-maintenance.sh`)
+## 🧰 Maintenance Tools (`mrk1-maint`)
 
 An Onyx-like toolkit of safe, macOS-focused maintenance commands. It cleans caches, resets indexes/databases, and provides presets for browsers and editing apps. Most tasks are reversible (caches rebuild automatically).
 
-**Location:** `scripts/mrk1-maintenance.sh`  
+**Location:** `scripts/mrk1-maint`  
 **Install to PATH:** either `./scripts/link-tools` or `make tools`  
-**Run:** `mrk1-maintenance.sh --menu` (interactive) or call a task directly.
+**Run:** `mrk1-maint --menu` (interactive) or call a task directly.
+
+### Shell function passthrough (recommended)
+
+Add this to your shell aliases (this repo ships it in `dotfiles/.aliases`):
+
+```bash
+# Passthrough so you can run: maint clean-caches, maint flush-dns, etc.
+maint() {
+  command mrk1-maint "$@"
+}
+```
 
 ### Safety & notes
 - Close apps first; some tasks briefly restart Finder/Dock/QuickLook/CFPrefs.
@@ -137,13 +148,13 @@ An Onyx-like toolkit of safe, macOS-focused maintenance commands. It cleans cach
 ### Quick usage
 ```bash
 # Interactive menu
-mrk1-maintenance.sh --menu
+mrk1-maint --menu
 
 # Dry-run any task (prints commands, executes nothing)
-mrk1-maintenance.sh --dry-run full-tuneup
+mrk1-maint --dry-run full-tuneup
 
 # Run a specific task
-mrk1-maintenance.sh clean-caches
+mrk1-maint clean-caches
 ```
 
 ### Commands

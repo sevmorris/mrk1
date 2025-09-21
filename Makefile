@@ -99,3 +99,9 @@ bootstrap-lenient:
 	@./scripts/bootstrap defaults || true
 	@./scripts/bootstrap doctor   || { echo "doctor reported issues (non-fatal). See above."; exit 0; }
 
+
+maint:
+	@mrk1-maint --menu
+
+maint-full:
+	@mrk1-maint full-tuneup

@@ -115,3 +115,7 @@ pushit() {
     git push
   fi
 }
+
+
+# --- mrk1 maintenance passthrough ---
+maint() { command mrk1-maint "$@"; }

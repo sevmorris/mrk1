@@ -134,3 +134,67 @@ to see a list. The main targets are:
 - `make dotfiles` — link dotfiles/* into `$HOME` (backs up originals)  
 - `make tools` — link scripts/* with shebang into `~/.local/bin`  
 - `make defaults` — run `scripts/defaults.sh` if present  
+
+
+---
+
+## 🧰 Maintenance Tools (`mrk1-maintenance.sh`)
+
+An Onyx-like toolkit of safe, macOS-focused maintenance commands. It cleans caches, resets indexes/databases, and provides presets for browsers and editing apps. Most tasks are reversible (caches rebuild automatically).
+
+**Location:** `scripts/mrk1-maintenance.sh`  
+**Install to PATH:** either `./scripts/link-tools` or `make tools`  
+**Run:** `mrk1-maintenance.sh --menu` (interactive) or call a task directly.
+
+### Safety & notes
+- Close apps first; some tasks briefly restart Finder/Dock/QuickLook/CFPrefs.
+- You may be prompted for `sudo` (the script keeps it alive for long runs).
+- After cleaning, macOS may feel slower while caches rebuild.
+
+### Quick usage
+```bash
+# Interactive menu
+mrk1-maintenance.sh --menu
+
+# Dry-run any task (prints commands, executes nothing)
+mrk1-maintenance.sh --dry-run full-tuneup
+
+# Run a specific task
+mrk1-maintenance.sh clean-caches
+```
+
+### Commands
+
+**Core**
+- `verify-disk` — Disk Utility-style verification (read-only) on all volumes  
+- `run-periodic` — Run macOS daily/weekly/monthly maintenance scripts  
+- `rebuild-spotlight` — Erase & rebuild Spotlight index on all volumes  
+- `flush-dns` — Flush DNS & directory caches  
+- `reset-launchservices` — Rebuild Launch Services (Open With…)  
+- `clear-user-caches` — Remove `~/Library/Caches/*`  
+- `clear-system-caches` — Remove `/Library/Caches/*` (sudo)  
+- `clear-font-caches` — Reset ATS/font caches (sudo)  
+- `reset-quicklook` — Reset Quick Look cache  
+- `rebuild-iconservices` — Rebuild Finder icon caches  
+- `repair-permissions-user` — Reset Home directory permissions/ACLs (sudo)  
+- `vacuum-logs` — Trim unified logging live store (sudo)  
+- `safari-cleanup` — Clear Safari caches  
+- `mail-reindex` — Remove Mail envelope index (rebuilds on launch)  
+- `rebuild-spelling` — Clear spelling caches  
+- `purge-memory` — Attempt memory purge (limited on modern macOS)
+
+**App-specific**
+- `chrome-cleanup` — Clear Chrome caches (safe dirs only)  
+- `firefox-cleanup` — Clear Firefox caches  
+- `logic-au-reset` — Reset Audio Unit cache (forces rescan)  
+- `logic-cleanup` — Clear Logic Pro caches + AU reset  
+- `finalcut-cleanup` — Clear Final Cut Pro user caches  
+- `adobe-premiere-cleanup` — Clear Premiere media caches  
+- `adobe-aftereffects-cleanup` — Clear After Effects caches  
+- `fcpx-purge-library-renders` — Delete FCPX Render Files/Peaks (per-library confirm)
+
+**Presets**
+- `clean-caches` — Consolidated cache cleanup (user/system/font/Quick Look, etc.)  
+- `preset-browsers` — Safari + Chrome + Firefox cleanup + DNS flush  
+- `preset-editing` — Logic AU reset/cleanup, FCP, Premiere, After Effects caches  
+- `full-tuneup` — A sensible sequence (verify, periodic, spotlight, cache resets, etc.)

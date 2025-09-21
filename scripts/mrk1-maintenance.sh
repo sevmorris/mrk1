@@ -1,0 +1,405 @@
+#!/usr/bin/env bash
+# mrk1-maintenance.sh — mrk1 maintenance commands for macOS (Catalina → Sequoia)
+#
+# Usage examples:
+#   chmod +x mrk1-maintenance.sh
+#   ./mrk1-maintenance.sh --menu        # interactive menu
+#   ./mrk1-maintenance.sh clean-caches  # run a specific task
+#   ./mrk1-maintenance.sh --dry-run full-tuneup
+#
+# ⚠️  Notes
+# - Close apps first. Some tasks kill services (Finder/Dock/CFPrefs) briefly.
+# - You may be prompted for sudo. Script keeps sudo alive for long runs.
+# - Focuses on user/system caches and indexes; avoids /System.
+# - After cleaning, macOS may feel slower while caches rebuild.
+
+set -euo pipefail
+
+### Styling
+bold() { tput bold 2>/dev/null || true; }
+reset() { tput sgr0 2>/dev/null || true; }
+info()  { printf "\n%s==>%s %s\n" "$(bold)" "$(reset)" "$*"; }
+ok()    { printf "%s✅%s %s\n" "$(bold)" "$(reset)" "$*"; }
+warn()  { printf "%s⚠️ %s %s\n" "$(bold)" "$(reset)" "$*"; }
+
+### Helpers
+need_sudo() {
+  if [[ ${EUID:-$(id -u)} -ne 0 ]]; then
+    sudo -v
+    while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+  fi
+}
+
+# Global dry-run support
+DRYRUN=0
+if [[ ${1:-} == "--dry-run" ]]; then
+  DRYRUN=1
+  shift
+fi
+
+_do() { # echo then run
+  if [[ $DRYRUN -eq 1 ]]; then
+    printf "[dry-run] %s\n" "$*"
+    return 0
+  fi
+  eval "$@"
+}
+
+confirm() {
+  read -r -p "Proceed? [y/N] " ans || true
+  [[ ${ans:-} =~ ^[Yy]$ ]]
+}
+
+kill_if_running() {
+  local name="$1"
+  if pgrep -x "$name" >/dev/null 2>&1; then
+    _do killall "$name" || true
+  fi
+}
+
+macos_major() {
+  sw_vers -productVersion | awk -F. '{print $1}'
+}
+
+### Tasks (core mrk1)
+verify-disk() {
+  info "Running First Aid (read-only) on all volumes"
+  need_sudo
+  diskutil list | awk '/^\//{print $1}' | while read -r vol; do
+    _do diskutil verifyVolume "$vol" || true
+  done
+  ok "Disk verification complete (use Disk Utility GUI for repairs if needed)."
+}
+
+run-periodic() {
+  info "Running periodic maintenance scripts (daily, weekly, monthly)"
+  need_sudo
+  _do sudo periodic daily weekly monthly || true
+  ok "Periodic scripts invoked."
+}
+
+rebuild-spotlight() {
+  info "Rebuilding Spotlight index for all mounted, indexable volumes"
+  need_sudo
+  _do mdutil -a -i on || true
+  _do mdutil -a -E || true
+  ok "Spotlight reindex started (will take time in background)."
+}
+
+flush-dns() {
+  info "Flushing DNS caches"
+  _do sudo dscacheutil -flushcache || true
+  _do sudo killall -HUP mDNSResponder || true
+  _do sudo killall mDNSResponderHelper 2>/dev/null || true
+  _do sudo killall Discoveryd 2>/dev/null || true
+  ok "DNS cache flushed."
+}
+
+reset-launchservices() {
+  info "Resetting Launch Services (Open With… menu rebuild)"
+  local LS_BIN="/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister"
+  if [[ -x "$LS_BIN" ]]; then
+    _do "$LS_BIN" -kill -r -domain local -domain system -domain user
+    ok "Launch Services database rebuilt."
+  else
+    warn "lsregister not found on this macOS version."
+  fi
+}
+
+clear-user-caches() {
+  info "Clearing user caches (~/Library/Caches)"
+  local target="$HOME/Library/Caches"
+  _do find "$target" -mindepth 1 -maxdepth 1 -exec rm -rf {} + || true
+  kill_if_running cfprefsd
+  ok "User caches cleared. Some apps may rebuild on next launch."
+}
+
+clear-system-caches() {
+  info "Clearing system caches (/Library/Caches)"
+  need_sudo
+  _do sudo find /Library/Caches -mindepth 1 -maxdepth 1 -exec rm -rf {} + || true
+  ok "System caches cleared."
+}
+
+clear-font-caches() {
+  info "Resetting font caches"
+  need_sudo
+  _do atsutil databases -remove || true
+  _do atsutil server -shutdown || true
+  _do atsutil server -ping || true
+  ok "Font caches cleared. If text looks odd, reboot."
+}
+
+reset-quicklook() {
+  info "Resetting Quick Look cache"
+  _do qlmanage -r cache || true
+  _do qlmanage -r || true
+  ok "Quick Look cache reset."
+}
+
+rebuild-iconservices() {
+  info "Rebuilding IconServices cache (Finder icons)"
+  need_sudo
+  _do sudo find /private/var/folders -name "com.apple.iconservices*" -exec rm -rf {} + || true
+  kill_if_running Finder
+  kill_if_running Dock
+  _do sudo killall -u "$USER" iconservicesagent 2>/dev/null || true
+  _do sudo killall -u "$USER" iconservicesd 2>/dev/null || true
+  ok "Icon services caches cleared. Finder will rebuild icons."
+}
+
+repair-permissions-user() {
+  info "Resetting permissions on your home directory (ACL cleanup)"
+  need_sudo
+  _do sudo diskutil resetUserPermissions / "$(id -u)" || true
+  ok "User permissions reset (may require logout/login)."
+}
+
+vacuum-logs() {
+  info "Vacuuming unified log (rotating viewable data)"
+  need_sudo
+  _do sudo log config --mode "level:default" 2>/dev/null || true
+  _do sudo log erase --all 2>/dev/null || true
+  ok "Live log store trimmed."
+}
+
+safari-cleanup() {
+  info "Cleaning common Safari caches (user level)"
+  kill_if_running Safari
+  _do rm -rf "$HOME/Library/Caches/com.apple.Safari" 2>/dev/null || true
+  _do rm -rf "$HOME/Library/Caches/Metadata/Safari" 2>/dev/null || true
+  _do rm -rf "$HOME/Library/Safari/Template Icons*" 2>/dev/null || true
+  _do rm -rf "$HOME/Library/Safari/Favicon*" 2>/dev/null || true
+  ok "Safari caches removed. History/cookies not touched."
+}
+
+mail-reindex() {
+  info "Reindexing Apple Mail (can take a long time)"
+  kill_if_running Mail
+  _do rm -rf "$HOME/Library/Mail/V"*/MailData/Envelope\ Index* 2>/dev/null || true
+  ok "Mail index removed. Launch Mail to trigger a rebuild."
+}
+
+rebuild-spelling() {
+  info "Rebuilding spelling dictionaries cache"
+  _do rm -rf "$HOME/Library/Spelling/*" 2>/dev/null || true
+  kill_if_running AppleSpell
+  ok "Spelling cache cleared."
+}
+
+purge-memory() {
+  info "Triggering memory purge (inactive memory pressure relief)"
+  need_sudo
+  _do sudo pmset -g assertions >/dev/null 2>&1 || true
+  sync; _do sudo purge 2>/dev/null || true
+  ok "Requested memory purge (effect varies by version)."
+}
+
+### App-specific cache tasks
+chrome-cleanup() {
+  info "Cleaning Chrome caches (safe: Cache, Code Cache, GPUCache)"
+  kill_if_running "Google Chrome"
+  _do rm -rf "$HOME/Library/Caches/Google/Chrome" 2>/dev/null || true
+  _do find "$HOME/Library/Application Support/Google/Chrome" -maxdepth 2 \
+    -type d \( -name Cache -o -name "Code Cache" -o -name GPUCache \) -exec rm -rf {} + 2>/dev/null || true
+  ok "Chrome caches cleared; profiles/history/cookies untouched."
+}
+
+firefox-cleanup() {
+  info "Cleaning Firefox caches"
+  kill_if_running "firefox"
+  _do rm -rf "$HOME/Library/Caches/Firefox" 2>/dev/null || true
+  _do rm -rf "$HOME/Library/Application Support/Firefox/Profiles"/*/cache2 2>/dev/null || true
+  ok "Firefox caches cleared; profiles untouched."
+}
+
+logic-au-reset() {
+  info "Resetting Audio Unit cache (Logic/DAWs)"
+  _do rm -rf "$HOME/Library/Caches/AudioUnitCache" 2>/dev/null || true
+  _do rm -f "$HOME/Library/Preferences/com.apple.audio.InfoHelper.plist" 2>/dev/null || true
+  _do killall -9 AudioComponentRegistrar 2>/dev/null || true
+  ok "Audio Unit cache reset; rescan on next DAW launch."
+}
+
+logic-cleanup() {
+  info "Cleaning Logic Pro caches"
+  _do rm -rf "$HOME/Library/Caches/com.apple.logic10" 2>/dev/null || true
+  logic-au-reset
+  ok "Logic Pro caches cleared."
+}
+
+finalcut-cleanup() {
+  info "Cleaning Final Cut Pro user caches (not libraries)"
+  _do rm -rf "$HOME/Library/Caches/com.apple.FinalCut" 2>/dev/null || true
+  ok "FCP user caches cleared. Use fcpx-purge-library-renders for renders/peaks."
+}
+
+adobe-premiere-cleanup() {
+  info "Cleaning Adobe Premiere Pro media caches"
+  _do rm -rf "$HOME/Library/Application Support/Adobe/Common/Media Cache" 2>/dev/null || true
+  _do rm -rf "$HOME/Library/Application Support/Adobe/Common/Media Cache Files" 2>/dev/null || true
+  ok "Premiere media caches cleared."
+}
+
+adobe-aftereffects-cleanup() {
+  info "Cleaning After Effects disk cache"
+  _do rm -rf "$HOME/Library/Application Support/Adobe/Common/Media Cache" 2>/dev/null || true
+  _do rm -rf "$HOME/Library/Caches/Adobe/After Effects" 2>/dev/null || true
+  ok "After Effects caches cleared."
+}
+
+# Confirm per library before deleting render/peaks
+fcpx-purge-library-renders() {
+  info "Scanning for .fcpbundle to purge Render Files & Peaks Data"
+  local IFS=$'\n'
+  for lib in $(find "$HOME/Movies" -name "*.fcpbundle" -type d 2>/dev/null); do
+    echo "Found: $lib"
+    read -r -p "Delete Render Files & Peaks Data in this library? [y/N] " ans || true
+    if [[ $ans =~ ^[Yy]$ ]]; then
+      _do rm -rf "$lib/Render Files" 2>/dev/null || true
+      _do rm -rf "$lib/Peaks Data" 2>/dev/null || true
+      ok "Purged renders/peaks in: $lib"
+    else
+      warn "Skipped: $lib"
+    fi
+  done
+}
+
+### Presets
+clean-caches() {
+  clear-user-caches
+  clear-system-caches
+  clear-font-caches
+  reset-quicklook
+  rebuild-iconservices
+  flush-dns
+}
+
+full-tuneup() {
+  run-periodic
+  clean-caches
+  rebuild-spotlight
+  reset-launchservices
+  vacuum-logs
+}
+
+preset-browsers() { chrome-cleanup; firefox-cleanup; safari-cleanup; }
+
+preset-editing() {
+  logic-cleanup
+  finalcut-cleanup
+  adobe-premiere-cleanup
+  adobe-aftereffects-cleanup
+  fcpx-purge-library-renders
+}
+
+### Menu
+menu() {
+  PS3=$'Select a task (or 0 to quit):\n> '
+  select opt in \
+    verify-disk run-periodic rebuild-spotlight flush-dns reset-launchservices \
+    clear-user-caches clear-system-caches clear-font-caches reset-quicklook \
+    rebuild-iconservices repair-permissions-user vacuum-logs safari-cleanup \
+    chrome-cleanup firefox-cleanup mail-reindex rebuild-spelling purge-memory \
+    clean-caches preset-browsers preset-editing full-tuneup
+  do
+    [[ -z ${opt:-} ]] && break
+    info "You chose: $opt"
+    if confirm; then
+      dispatch "$opt"
+    else
+      warn "Skipped $opt"
+    fi
+  done
+}
+
+### Dispatcher & Usage
+dispatch() {
+  case "${1:-}" in
+    # core
+    verify-disk)              verify-disk ;;
+    run-periodic)             run-periodic ;;
+    rebuild-spotlight)        rebuild-spotlight ;;
+    flush-dns)                flush-dns ;;
+    reset-launchservices)     reset-launchservices ;;
+    clear-user-caches)        clear-user-caches ;;
+    clear-system-caches)      clear-system-caches ;;
+    clear-font-caches)        clear-font-caches ;;
+    reset-quicklook)          reset-quicklook ;;
+    rebuild-iconservices)     rebuild-iconservices ;;
+    repair-permissions-user)  repair-permissions-user ;;
+    vacuum-logs)              vacuum-logs ;;
+    safari-cleanup)           safari-cleanup ;;
+    mail-reindex)             mail-reindex ;;
+    rebuild-spelling)         rebuild-spelling ;;
+    purge-memory)             purge-memory ;;
+    # apps
+    chrome-cleanup)           chrome-cleanup ;;
+    firefox-cleanup)          firefox-cleanup ;;
+    logic-au-reset)           logic-au-reset ;;
+    logic-cleanup)            logic-cleanup ;;
+    finalcut-cleanup)         finalcut-cleanup ;;
+    adobe-premiere-cleanup)   adobe-premiere-cleanup ;;
+    adobe-aftereffects-cleanup) adobe-aftereffects-cleanup ;;
+    fcpx-purge-library-renders) fcpx-purge-library-renders ;;
+    # presets
+    clean-caches)             clean-caches ;;
+    preset-browsers)          preset-browsers ;;
+    preset-editing)           preset-editing ;;
+    full-tuneup)              full-tuneup ;;
+    --menu)                   menu ;;
+    ""|--help|-h)            usage ;;
+    *)                        usage; exit 1 ;;
+  esac
+}
+
+usage() {
+  cat <<USAGE
+$(bold)mrk1-maintenance.sh$(reset) — mrk1 tasks from the command line
+
+Commands:
+  verify-disk               Run Disk Utility-style verification on all volumes (read-only)
+  run-periodic              Invoke macOS periodic daily/weekly/monthly scripts
+  rebuild-spotlight         Erase and rebuild Spotlight index on all volumes
+  flush-dns                 Flush DNS and directory caches
+  reset-launchservices      Rebuild the Launch Services database (Open With…)
+  clear-user-caches         Remove ~/Library/Caches/*
+  clear-system-caches       Remove /Library/Caches/* (sudo)
+  clear-font-caches         Reset ATS/Font caches (sudo)
+  reset-quicklook           Reset Quick Look cache
+  rebuild-iconservices      Rebuild Finder icon caches
+  repair-permissions-user   Reset Home directory permissions/ACLs (sudo)
+  vacuum-logs               Trim the unified logging live store (sudo)
+  safari-cleanup            Clear Safari caches
+  mail-reindex              Remove Mail envelope index (rebuilds on launch)
+  rebuild-spelling          Clear spelling caches
+  purge-memory              Attempt memory purge (limited effect on modern macOS)
+
+  chrome-cleanup            Clear Chrome caches (safe dirs only)
+  firefox-cleanup           Clear Firefox caches
+  logic-au-reset            Reset Audio Unit cache (forces rescan)
+  logic-cleanup             Clear Logic Pro caches + AU reset
+  finalcut-cleanup          Clear Final Cut Pro user caches
+  adobe-premiere-cleanup    Clear Premiere media caches
+  adobe-aftereffects-cleanup Clear After Effects caches
+  fcpx-purge-library-renders Delete FCPX Render Files/Peaks (per-library confirm)
+
+  clean-caches              Convenience: user+system+font+QL+icons+DNS
+  preset-browsers           Convenience: Safari + Chrome + Firefox
+  preset-editing            Convenience: Logic + FCP + Adobe caches + optional FCPX renders
+  full-tuneup               Convenience: periodic + clean-caches + Spotlight + LS + logs
+
+  --menu                    Interactive menu
+  --help                    This help text
+
+Flags:
+  --dry-run                 Print commands instead of executing (works with all tasks)
+USAGE
+}
+
+# Entry
+if [[ ${1:-} == "--menu" ]]; then
+  menu
+else
+  dispatch "${1:-}"
+fi

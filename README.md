@@ -51,7 +51,6 @@ The script automates a complete setup:
 6.  **Dotfiles Setup**
     - Creates symlinks for `.zshrc`, `.zshenv`, `.zprofile`, `.aliases`.
     - Copies configs like `topgrade.toml`.
-7.  **Executable Scripts** – Links helper scripts (`backup`, `restore`, `syncall`) into `~/.local/bin`.
 8.  **Default Shell** – Switches your login shell to Homebrew Zsh.
 9.  **macOS Defaults** – Applies system preferences via `scripts/defaults.sh` (if available).
 10. **App Installations via Brewfile** – After a single confirmation prompt, it installs all CLI tools, Mac App Store apps, and GUI apps (casks) listed in your `Brewfile`.
@@ -192,3 +191,5 @@ mrk1-maint clean-caches
 - `preset-browsers` — Safari + Chrome + Firefox cleanup + DNS flush  
 - `preset-editing` — Logic AU reset/cleanup, FCP, Premiere, After Effects caches  
 - `full-tuneup` — A sensible sequence (verify, periodic, spotlight, cache resets, etc.)
+
+> Note: **backup**/**restore** tooling moved to [mrk1-backup](https://github.com/sevmorris/mrk1-backup). `syncall` remains in **mrk1**.

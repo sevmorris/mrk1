@@ -78,7 +78,6 @@ link_dotfiles() {
         ok "symlink exists: $dest"
       else
         if [[ -f "$dest" || -d "$dest" ]]; then
-          warn "backup: $dest"
           mv "$dest" "${dest}.bak.$(date +%s)"
         fi
         ln -s "$src" "$dest"
@@ -103,7 +102,6 @@ link_tools() {
           if [[ "$(readlink "$dest" 2>/dev/null || true)" == "$src" ]]; then
             ok "symlink exists: $dest"
           else
-            warn "backup: $dest"
             mv "$dest" "${dest}.bak.$(date +%s)"
             ln -sf "$src" "$dest"
             ok "linked: $dest -> $src"
@@ -147,3 +145,5 @@ case "$cmd" in
   help|-h|--help) usage ;;
   *) err "unknown command: $cmd"; usage; exit 1 ;;
 esac
+
+> Note: **backup**/**restore** tooling moved to [mrk1-backup](https://github.com/sevmorris/mrk1-backup). `syncall` remains in **mrk1**.

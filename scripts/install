@@ -155,7 +155,6 @@ setup_dotfiles_and_scripts() {
         if [[ "$(readlink "$dest" 2>/dev/null || true)" == "$src" ]]; then
           ok "symlink exists: $dest"
         else
-          warn "backup: $dest"
           mv "$dest" "${dest}.bak.$(date +%s)"
           ln -s "$src" "$dest"
           ok "linked: $dest -> $src"
@@ -180,7 +179,6 @@ setup_dotfiles_and_scripts() {
           if [[ "$(readlink "$dest" 2>/dev/null || true)" == "$src" ]]; then
             ok "symlink exists: $dest"
           else
-            warn "backup: $dest"
             mv "$dest" "${dest}.bak.$(date +%s)"
             ln -sf "$src" "$dest"
             ok "linked: $dest -> $src"
@@ -208,3 +206,5 @@ main() {
 }
 
 main "$@"
+
+> Note: **backup**/**restore** tooling moved to [mrk1-backup](https://github.com/sevmorris/mrk1-backup). `syncall` remains in **mrk1**.

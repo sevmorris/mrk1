@@ -191,5 +191,3 @@ mrk1-maint clean-caches
 - `preset-browsers` — Safari + Chrome + Firefox cleanup + DNS flush  
 - `preset-editing` — Logic AU reset/cleanup, FCP, Premiere, After Effects caches  
 - `full-tuneup` — A sensible sequence (verify, periodic, spotlight, cache resets, etc.)
-
-> Note: **backup**/**restore** tooling moved to [mrk1-backup](https://github.com/sevmorris/mrk1-backup). `syncall` remains in **mrk1**.

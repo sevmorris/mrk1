@@ -170,9 +170,19 @@ setup_dotfiles_and_scripts() {
 
   echo "Creating symlinks for dotfiles..."
   if [[ -d "${DOTFILES_DIR}" ]]; then
+    # Helper: map "aliases" -> "~/.aliases", ".aliases" -> "~/.aliases"
+    dotlink_dest() {
+      local name="$1"
+      if [[ "$name" == .* ]]; then
+        printf "%s/%s" "$HOME_DIR" "$name"
+      else
+        printf "%s/.%s" "$HOME_DIR" "$name"
+      fi
+    }
+
     find "${DOTFILES_DIR}" -maxdepth 1 -type f -print0 | while IFS= read -r -d '' src; do
       base="$(basename "$src")"
-      dest="${HOME_DIR}/.${base}"
+      dest="$(dotlink_dest "$base")"
       if [[ "$(readlink "$dest" 2>/dev/null || true)" == "$src" ]]; then
         ok "symlink exists: $dest"
       else
@@ -188,10 +198,11 @@ setup_dotfiles_and_scripts() {
   echo "Marking repo scripts executable..."
   if [[ -d "${SCRIPTS_DIR}" ]]; then
     # chmod +x only shebang-marked, non-empty files
-    while IFS= read -r -d '' src; do
-      chmod +x "$src" || warn "chmod +x failed on $src"
-    done < <(find "${SCRIPTS_DIR}" -maxdepth 1 -type f -size +0c -print0 \
-             | xargs -0 -I{} sh -c 'head -n1 "{}" | grep -q "^#!" && printf "%s\0" "{}"' sh)
+    find "${SCRIPTS_DIR}" -maxdepth 1 -type f -print0 | while IFS= read -r -d '' src; do
+      if [[ -s "$src" ]] && head -n1 "$src" | grep -q '^#!'; then
+        chmod +x "$src" || warn "chmod +x failed on $src"
+      fi
+    done
     ok "Scripts marked executable."
   fi
 
@@ -236,6 +247,7 @@ main() {
   echo
   ok "Install complete."
   echo "• ~/.local/bin ensured on PATH (added to ~/.zprofile and ~/.zshrc if missing)"
+  echo "• Dotfiles linked without double-dots (e.g., .aliases)"
   echo "• Scripts marked executable and linked into ~/.local/bin"
   echo "• Shell command cache refreshed"
   echo "Open a new terminal, or run:  source ~/.zprofile && exec zsh"

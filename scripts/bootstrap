@@ -145,5 +145,3 @@ case "$cmd" in
   help|-h|--help) usage ;;
   *) err "unknown command: $cmd"; usage; exit 1 ;;
 esac
-
-> Note: **backup**/**restore** tooling moved to [mrk1-backup](https://github.com/sevmorris/mrk1-backup). `syncall` remains in **mrk1**.

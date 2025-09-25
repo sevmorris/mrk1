@@ -158,8 +158,8 @@ setup_dotfiles_and_scripts() {
       if [[ "$(readlink "$dest" 2>/dev/null || true)" == "$src" ]]; then
         ok "symlink exists: $dest"
       else
-        rm -rf -- "$dest"
-        ln -s -- "$src" "$dest"
+        rm -rf "$dest"
+        ln -s "$src" "$dest"
         ok "linked: $dest -> $src"
       fi
     done
@@ -178,8 +178,8 @@ setup_dotfiles_and_scripts() {
         if [[ "$(readlink "$dest" 2>/dev/null || true)" == "$src" ]]; then
           ok "symlink exists: $dest"
         else
-          rm -rf -- "$dest"
-          ln -sf -- "$src" "$dest"
+          rm -rf "$dest"
+          ln -sf "$src" "$dest"
           ok "linked: $dest -> $src"
         fi
       fi
@@ -201,3 +201,5 @@ main() {
 }
 
 main "$@"
+
+# Note: backup/restore tooling moved to mrk1-backup. `syncall` remains in mrk1.

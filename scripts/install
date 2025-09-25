@@ -247,7 +247,6 @@ main() {
   echo
   ok "Install complete."
   echo "• ~/.local/bin ensured on PATH (added to ~/.zprofile and ~/.zshrc if missing)"
-  echo "• Dotfiles linked without double-dots (e.g., .aliases)"
   echo "• Scripts marked executable and linked into ~/.local/bin"
   echo "• Shell command cache refreshed"
   echo "Open a new terminal, or run:  source ~/.zprofile && exec zsh"

@@ -3,11 +3,12 @@
 # Usage:
 #   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/sevmorris/mrk1/main/scripts/install)"
 #
-# Key fixes:
-# - BASH_SOURCE fallback to $0 to avoid "unbound variable" under `set -u`
-# - Robust REPO_DIR resolution (uses local clone if present, else clones)
-# - Never resolves to /Users (missing username); always uses $HOME
-# - Portable loops (no process substitution); clear, idempotent linking
+# Guarantees after install:
+# - All shebang-marked files in repo/scripts are +x
+# - ~/.local/bin contains symlinks to scripts
+# - ~/.local/bin is on PATH (zsh login + interactive)
+# - Shell command cache refreshed
+
 set -euo pipefail
 IFS=$'\n\t'
 
@@ -29,7 +30,6 @@ DEST_DIR="${HOME_DIR}/.local/bin"
 CHECKOUT_DIR="${HOME_DIR}/mrk1"
 
 # Try to determine script directory if running from local file (not via curl)
-# BASH_SOURCE may be unset under set -u in some shells; fall back to $0 and then PWD.
 SCRIPT_PATH="${BASH_SOURCE[0]:-${0:-}}"
 if [[ -n "${SCRIPT_PATH}" && -f "${SCRIPT_PATH}" ]]; then
   SCRIPT_DIR="$(cd "$(dirname "${SCRIPT_PATH}")" && pwd)"
@@ -37,7 +37,7 @@ else
   SCRIPT_DIR="$PWD"
 fi
 
-# Prefer an existing local repo at ~/mrk1; otherwise clone/update it
+# ---------- repo ----------
 ensure_repo() {
   if [[ -d "${CHECKOUT_DIR}/.git" ]]; then
     ok "Using existing repo at ${CHECKOUT_DIR}"
@@ -48,6 +48,7 @@ ensure_repo() {
   fi
 }
 
+# ---------- platform prereqs ----------
 ensure_xcode_tools() {
   echo
   echo "==> Checking for Xcode Command Line Tools..."
@@ -64,7 +65,6 @@ ensure_homebrew() {
   echo "==> Checking for Homebrew..."
   if ! command -v brew >/dev/null 2>&1; then
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    # shellenv
     if [[ -f /opt/homebrew/bin/brew ]]; then
       eval "$(/opt/homebrew/bin/brew shellenv)"
     elif [[ -f /usr/local/bin/brew ]]; then
@@ -131,6 +131,33 @@ install_zsh_plugins() {
   fi
 }
 
+# ---------- PATH management ----------
+ensure_local_bin_on_path() {
+  # Idempotent snippet
+  local SNIPPET='[ -d "$HOME/.local/bin" ] && case ":$PATH:" in *":$HOME/.local/bin:"*) ;; *) export PATH="$HOME/.local/bin:$PATH";; esac'
+  local MARK_OPEN="# >>> mrk1 PATH >>>"
+  local MARK_CLOSE="# <<< mrk1 PATH <<<"
+
+  ensure_snippet() {
+    local file="$1"
+    [[ -f "$file" ]] || touch "$file"
+    if ! grep -Fq "$MARK_OPEN" "$file"; then
+      {
+        echo ""
+        echo "$MARK_OPEN"
+        echo "$SNIPPET"
+        echo "$MARK_CLOSE"
+      } >> "$file"
+      ok "Added ~/.local/bin to PATH in ${file/$HOME_DIR/\~}"
+    fi
+  }
+
+  # zsh login (macOS Terminal/iTerm default) & interactive shells
+  ensure_snippet "${HOME_DIR}/.zprofile"
+  ensure_snippet "${HOME_DIR}/.zshrc"
+}
+
+# ---------- dotfiles & scripts ----------
 setup_dotfiles_and_scripts() {
   echo
   echo "==> Setting up dotfiles and scripts..."
@@ -154,7 +181,6 @@ setup_dotfiles_and_scripts() {
     find "${DOTFILES_DIR}" -maxdepth 1 -type f -print0 | while IFS= read -r -d '' src; do
       base="$(basename "$src")"
       dest="${HOME_DIR}/.${base}"
-      # If already correct link, keep; otherwise replace without backup
       if [[ "$(readlink "$dest" 2>/dev/null || true)" == "$src" ]]; then
         ok "symlink exists: $dest"
       else
@@ -167,7 +193,16 @@ setup_dotfiles_and_scripts() {
     warn "dotfiles directory not found at ${DOTFILES_DIR}; skipping..."
   fi
 
-  echo "Linking executable scripts..."
+  echo "Marking repo scripts executable..."
+  if [[ -d "${SCRIPTS_DIR}" ]]; then
+    # Only mark shebang files executable
+    while IFS= read -r -d '' src; do
+      chmod +x "$src" || warn "chmod +x failed on $src"
+    done < <(find "${SCRIPTS_DIR}" -maxdepth 1 -type f -size +0c -print0 | xargs -0 -I{} sh -c 'head -n1 "{}" | grep -q "^#!" && printf "%s\0" "{}"' sh)
+    ok "Scripts marked executable."
+  fi
+
+  echo "Linking executable scripts into ~/.local/bin..."
   mkdir -p "${DEST_DIR}"
   if [[ -d "${SCRIPTS_DIR}" ]]; then
     find "${SCRIPTS_DIR}" -maxdepth 1 -type f ! -name 'doctor' ! -name 'bootstrap' -print0 | while IFS= read -r -d '' src; do
@@ -189,6 +224,14 @@ setup_dotfiles_and_scripts() {
   fi
 }
 
+# ---------- post install ----------
+refresh_shell_cache() {
+  # Make newly linked commands discoverable without a full restart
+  hash -r 2>/dev/null || true
+  if command -v rehash >/dev/null 2>&1; then rehash || true; fi
+}
+
+# ---------- main ----------
 main() {
   ensure_xcode_tools
   ensure_homebrew
@@ -196,10 +239,14 @@ main() {
   install_ohmyzsh
   install_zsh_plugins
   setup_dotfiles_and_scripts
+  ensure_local_bin_on_path
+  refresh_shell_cache
   echo
-  ok "Install complete. Open a new terminal (or 'exec zsh') to pick up changes."
+  ok "Install complete."
+  echo "• ~/.local/bin ensured on PATH (added to ~/.zprofile and ~/.zshrc if missing)"
+  echo "• Scripts marked executable and linked into ~/.local/bin"
+  echo "• Shell command cache refreshed"
+  echo "Open a new terminal, or run:  source ~/.zprofile && exec zsh"
 }
 
 main "$@"
-
-# Note: backup/restore tooling moved to mrk1-backup. `syncall` remains in mrk1.

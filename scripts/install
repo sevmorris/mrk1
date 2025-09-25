@@ -1,13 +1,7 @@
 #!/usr/bin/env bash
-# mrk1 single-command installer (hardened for curl | bash)
+# mrk1 single-command installer (curl | bash safe)
 # Usage:
 #   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/sevmorris/mrk1/main/scripts/install)"
-#
-# Guarantees after install:
-# - All shebang-marked files in repo/scripts are +x
-# - ~/.local/bin contains symlinks to scripts
-# - ~/.local/bin is on PATH (zsh login + interactive)
-# - Shell command cache refreshed
 
 set -euo pipefail
 IFS=$'\n\t'
@@ -29,7 +23,7 @@ HOME_DIR="${HOME:-$PWD}"
 DEST_DIR="${HOME_DIR}/.local/bin"
 CHECKOUT_DIR="${HOME_DIR}/mrk1"
 
-# Try to determine script directory if running from local file (not via curl)
+# Determine script dir if run from a local file
 SCRIPT_PATH="${BASH_SOURCE[0]:-${0:-}}"
 if [[ -n "${SCRIPT_PATH}" && -f "${SCRIPT_PATH}" ]]; then
   SCRIPT_DIR="$(cd "$(dirname "${SCRIPT_PATH}")" && pwd)"
@@ -133,7 +127,6 @@ install_zsh_plugins() {
 
 # ---------- PATH management ----------
 ensure_local_bin_on_path() {
-  # Idempotent snippet
   local SNIPPET='[ -d "$HOME/.local/bin" ] && case ":$PATH:" in *":$HOME/.local/bin:"*) ;; *) export PATH="$HOME/.local/bin:$PATH";; esac'
   local MARK_OPEN="# >>> mrk1 PATH >>>"
   local MARK_CLOSE="# <<< mrk1 PATH <<<"
@@ -152,7 +145,6 @@ ensure_local_bin_on_path() {
     fi
   }
 
-  # zsh login (macOS Terminal/iTerm default) & interactive shells
   ensure_snippet "${HOME_DIR}/.zprofile"
   ensure_snippet "${HOME_DIR}/.zshrc"
 }
@@ -195,10 +187,11 @@ setup_dotfiles_and_scripts() {
 
   echo "Marking repo scripts executable..."
   if [[ -d "${SCRIPTS_DIR}" ]]; then
-    # Only mark shebang files executable
+    # chmod +x only shebang-marked, non-empty files
     while IFS= read -r -d '' src; do
       chmod +x "$src" || warn "chmod +x failed on $src"
-    done < <(find "${SCRIPTS_DIR}" -maxdepth 1 -type f -size +0c -print0 | xargs -0 -I{} sh -c 'head -n1 "{}" | grep -q "^#!" && printf "%s\0" "{}"' sh)
+    done < <(find "${SCRIPTS_DIR}" -maxdepth 1 -type f -size +0c -print0 \
+             | xargs -0 -I{} sh -c 'head -n1 "{}" | grep -q "^#!" && printf "%s\0" "{}"' sh)
     ok "Scripts marked executable."
   fi
 
@@ -206,7 +199,7 @@ setup_dotfiles_and_scripts() {
   mkdir -p "${DEST_DIR}"
   if [[ -d "${SCRIPTS_DIR}" ]]; then
     find "${SCRIPTS_DIR}" -maxdepth 1 -type f ! -name 'doctor' ! -name 'bootstrap' -print0 | while IFS= read -r -d '' src; do
-      # Guard against empty files; only link shebang-marked files
+      # Only link shebang-marked, non-empty files
       if [[ -s "$src" ]] && head -n1 "$src" | grep -q '^#!'; then
         base="$(basename "$src")"
         dest="${DEST_DIR}/${base}"
@@ -226,7 +219,6 @@ setup_dotfiles_and_scripts() {
 
 # ---------- post install ----------
 refresh_shell_cache() {
-  # Make newly linked commands discoverable without a full restart
   hash -r 2>/dev/null || true
   if command -v rehash >/dev/null 2>&1; then rehash || true; fi
 }

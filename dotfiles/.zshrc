@@ -62,3 +62,7 @@ elif [ -x /usr/local/bin/brew ]; then
   eval "$(/usr/local/bin/brew shellenv)"
 fi
 # <<< mrk1 brew shellenv <<<
+
+# >>> mrk1 PATH >>>
+[ -d "$HOME/.local/bin" ] && case ":$PATH:" in *":$HOME/.local/bin:"*) ;; *) export PATH="$HOME/.local/bin:$PATH";; esac
+# <<< mrk1 PATH <<<

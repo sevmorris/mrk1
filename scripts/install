@@ -41,7 +41,7 @@ fi
 ensure_repo() {
   if [[ -d "${CHECKOUT_DIR}/.git" ]]; then
     ok "Using existing repo at ${CHECKOUT_DIR}"
-    (cd "${CHECKOUT_DIR}" && git fetch --all -q && git pull -q) || true
+    (cd "${CHECKOUT_DIR}" && git fetch --all -q && git pull -q) || warn "Could not update repo at ${CHECKOUT_DIR}"
   else
     ok "Cloning ${REPO_SLUG} to ${CHECKOUT_DIR}"
     git clone -q "${REPO_URL}" "${CHECKOUT_DIR}"
@@ -75,7 +75,7 @@ ensure_homebrew() {
     ok "Homebrew already installed..."
   fi
   echo "==> Updating Homebrew..."
-  brew update || true
+  brew update || warn "brew update failed (continuing)"
 }
 
 brew_core_tools() {
@@ -94,8 +94,11 @@ brew "pwgen"
 cask "iterm2"
 cask "pulsar"
 BREW
-  brew bundle --file "${bf_core}" || true
-  ok "Core tools installed..."
+  if ! brew bundle --file "${bf_core}"; then
+    warn "brew bundle core tools failed (continuing)"
+  else
+    ok "Core tools installed..."
+  fi
 }
 
 install_ohmyzsh() {
@@ -104,7 +107,7 @@ install_ohmyzsh() {
   if [[ -d "${HOME_DIR}/.oh-my-zsh" ]]; then
     ok "Oh My Zsh already installed..."
   else
-    RUNZSH=no CHSH=no KEEP_ZSHRC=yes       sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+    RUNZSH=no CHSH=no KEEP_ZSHRC=yes sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
     ok "Oh My Zsh installed..."
   fi
 }
@@ -148,19 +151,15 @@ setup_dotfiles_and_scripts() {
 
   echo "Creating symlinks for dotfiles..."
   if [[ -d "${DOTFILES_DIR}" ]]; then
-    find "${DOTFILES_DIR}" -maxdepth 1 -type f -print0 |     while IFS= read -r -d '' src; do
+    find "${DOTFILES_DIR}" -maxdepth 1 -type f -print0 | while IFS= read -r -d '' src; do
       base="$(basename "$src")"
       dest="${HOME_DIR}/.${base}"
-      if [[ -L "$dest" || -e "$dest" ]]; then
-        if [[ "$(readlink "$dest" 2>/dev/null || true)" == "$src" ]]; then
-          ok "symlink exists: $dest"
-        else
-          mv "$dest" "${dest}.bak.$(date +%s)"
-          ln -s "$src" "$dest"
-          ok "linked: $dest -> $src"
-        fi
+      # If already correct link, keep; otherwise replace without backup
+      if [[ "$(readlink "$dest" 2>/dev/null || true)" == "$src" ]]; then
+        ok "symlink exists: $dest"
       else
-        ln -s "$src" "$dest"
+        rm -rf -- "$dest"
+        ln -s -- "$src" "$dest"
         ok "linked: $dest -> $src"
       fi
     done
@@ -171,20 +170,16 @@ setup_dotfiles_and_scripts() {
   echo "Linking executable scripts..."
   mkdir -p "${DEST_DIR}"
   if [[ -d "${SCRIPTS_DIR}" ]]; then
-    find "${SCRIPTS_DIR}" -maxdepth 1 -type f ! -name 'doctor' ! -name 'bootstrap' -print0 |     while IFS= read -r -d '' src; do
-      if head -n1 "$src" | grep -q '^#!'; then
+    find "${SCRIPTS_DIR}" -maxdepth 1 -type f ! -name 'doctor' ! -name 'bootstrap' -print0 | while IFS= read -r -d '' src; do
+      # Guard against empty files; only link shebang-marked files
+      if [[ -s "$src" ]] && head -n1 "$src" | grep -q '^#!'; then
         base="$(basename "$src")"
         dest="${DEST_DIR}/${base}"
-        if [[ -L "$dest" || -e "$dest" ]]; then
-          if [[ "$(readlink "$dest" 2>/dev/null || true)" == "$src" ]]; then
-            ok "symlink exists: $dest"
-          else
-            mv "$dest" "${dest}.bak.$(date +%s)"
-            ln -sf "$src" "$dest"
-            ok "linked: $dest -> $src"
-          fi
+        if [[ "$(readlink "$dest" 2>/dev/null || true)" == "$src" ]]; then
+          ok "symlink exists: $dest"
         else
-          ln -sf "$src" "$dest"
+          rm -rf -- "$dest"
+          ln -sf -- "$src" "$dest"
           ok "linked: $dest -> $src"
         fi
       fi
@@ -206,5 +201,3 @@ main() {
 }
 
 main "$@"
-
-> Note: **backup**/**restore** tooling moved to [mrk1-backup](https://github.com/sevmorris/mrk1-backup). `syncall` remains in **mrk1**.

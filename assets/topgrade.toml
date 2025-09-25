@@ -18,11 +18,7 @@ cleanup = true
 # Show progress notifications
 notify_each_step = true  # Consider setting to false later
 
-# === New additions ===
-# Continue even if a step fails, but still report the error
-skip_errors = true
-
-# Save all output to a log file for review / failure summary
+# Save all output to a log file for review
 log_file = "/tmp/topgrade.log"
 
 [pre_commands]

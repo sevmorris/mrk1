@@ -44,18 +44,15 @@ alias decrypt='gpg --decrypt ' # Trailing space enables filename completion.
 # ==============================================================================
 
 alias dempty='~/.local/bin/remove_empty_dirs.sh '  # Trailing space enables path completion
-# Use the more efficient -delete flag for find.
-alias dsx='find ~/Documents/Floppy_Letters -name ".DS_Store" -depth -delete'
 
 # ==============================================================================
 #  Homebrew & Development Aliases
 # ==============================================================================
 
-alias bruses='brew uses --installed '
+alias brewses='brew uses --installed '
 alias dump='brew bundle dump --force --file=~/mrk1/assets/Brewfile && cp -fv ~/mrk1/assets/Brewfile ~/'
 alias fixbrewperms='echo "⚠️  Fixing Homebrew permissions..." && sudo chown -R $(whoami) -- /opt/homebrew'
-
-alias update='topgrade --skip-errors' # Topgrade already runs `brew update` and more.
+alias update='topgrade'
 
 # ==============================================================================
 #  Utility Functions

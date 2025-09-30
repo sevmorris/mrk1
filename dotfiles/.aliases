@@ -118,30 +118,78 @@ pushit() {
 maint() { command mrk1-maint "$@"; }
 
 
-# --- Empty Directory Utilities (recursive) ---
+# --- Empty Directory Utilities (loops until fully pruned) ---
 
-# Preview empty directories (recursive)
+__resolve_trash() {
+  local tbin
+  tbin="$(command -v trash || true)"
+  [[ -z "$tbin" && -x /opt/homebrew/opt/trash/bin/trash ]] && tbin=/opt/homebrew/opt/trash/bin/trash
+  [[ -z "$tbin" && -x /usr/local/opt/trash/bin/trash    ]] && tbin=/usr/local/opt/trash/bin/trash
+  if [[ -z "$tbin" ]]; then
+    echo "❌ 'trash' not found. Install with: brew install trash" >&2
+    return 1
+  fi
+  echo "$tbin"
+}
+
+# Preview (no deletion)
 showempties() {
   local target="${1:-.}"
   echo "🔍 Searching recursively for empty directories under: $target"
   find "$target" -depth -type d -empty -print
 }
 
-# Trash empty directories (recursive, with confirmation)
+# Clean (recursive, cycles). Use: `ce [path]` or `ce -f [path]` to skip prompt.
 cleanempties() {
-  local target="${1:-.}"
-  echo "🔍 Empty directories found under: $target"
-  find "$target" -depth -type d -empty -print
+  set -o pipefail
+  local force="" target="${1:-.}"
+  if [[ "$1" == "-f" ]]; then force=1; target="${2:-.}"; fi
 
-  echo
-  read -r "reply?Move these to Trash? [y/N] "
-  if [[ "$reply" =~ ^[Yy]$ ]]; then
-    # -depth ensures child dirs are processed before parents
-    find "$target" -depth -type d -empty -exec /opt/homebrew/opt/trash/bin/trash {} +
-    echo "🗑️  Empty directories moved to Trash."
-  else
-    echo "❌ Cancelled."
+  local TRASH_BIN; TRASH_BIN="$(__resolve_trash)" || return 1
+  local iter=0
+
+  echo "🧹 Cleaning under: $target"
+
+  # Remove ignorable files first (so dirs can become empty)
+  echo "• Removing macOS cruft (.DS_Store, ._*, .localized, .gitkeep, Icon^M)"
+  find "$target" -depth \( \
+    -name ".DS_Store" -o -name "._*" -o -name ".localized" -o -name ".gitkeep" -o -name "Icon"$'\r' \
+  \) -type f -exec "$TRASH_BIN" {} + 2>/dev/null || true
+
+  # First preview & (optional) confirmation
+  local count
+  count="$(find "$target" -depth -mindepth 1 -type d -empty | wc -l | tr -d ' ')"
+  if [[ "$count" == "0" ]]; then
+    echo "✅ No empty directories found."
+    return 0
   fi
+
+  if [[ -z "$force" ]]; then
+    echo "• Found $count empty director$( [[ $count -eq 1 ]] && echo y || echo ies ):"
+    find "$target" -depth -mindepth 1 -type d -empty -print
+    echo
+    read -r "reply?Move these and any newly-empty parents to Trash? [y/N] "
+    [[ "$reply" =~ ^[Yy]$ ]] || { echo "❌ Cancelled."; return 0; }
+  fi
+
+  # Cycle until nothing left
+  while :; do
+    # (Re)trash ignorable files that may appear as parents become candidates
+    find "$target" -depth \( \
+      -name ".DS_Store" -o -name "._*" -o -name ".localized" -o -name ".gitkeep" -o -name "Icon"$'\r' \
+    \) -type f -exec "$TRASH_BIN" {} + 2>/dev/null || true
+
+    # Check if any empty dirs remain
+    if ! find "$target" -depth -mindepth 1 -type d -empty -print -quit | grep -q .; then
+      break
+    fi
+
+    # Trash all currently-empty dirs (children first thanks to -depth)
+    find "$target" -depth -mindepth 1 -type d -empty -exec "$TRASH_BIN" {} + 2>/dev/null || true
+    ((iter++))
+  done
+
+  echo "🗑️  Done. Fully pruned after $iter pass$( [[ $iter -eq 1 ]] && echo "" || echo "es")."
 }
 
 # Short aliases

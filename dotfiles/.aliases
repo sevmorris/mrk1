@@ -114,6 +114,13 @@ pushit() {
   fi
 }
 
+gpush() {
+  msg="${*:-update}"
+  git add .
+  git commit -m "$msg"
+  git push origin main
+}
+
 # --- mrk1 maintenance passthrough ---
 maint() { command mrk1-maint "$@"; }
 

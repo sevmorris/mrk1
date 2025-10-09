@@ -199,6 +199,59 @@ cleanempties() {
   echo "🗑️  Done. Fully pruned after $iter pass$( [[ $iter -eq 1 ]] && echo "" || echo "es")."
 }
 
+# Push WaxOn and WaxOff repos to GutHub
+alias waxup='
+  echo "🔄 WaxOn → pushing to GitHub...";
+  cd ~/WaxOn && git add . && git commit -m "Update WaxOn" --allow-empty && git push origin main;
+  echo "";
+  echo "🔄 WaxOff → pushing to GitHub...";
+  cd ~/WaxOff && git add . && git commit -m "Update WaxOff" --allow-empty && git push origin main;
+  echo "";
+  echo "✅ WaxOn + WaxOff pushed successfully.";
+  cd - >/dev/null
+'
+
+alias waxsync='
+  echo "🌐 Checking network..."
+  if ! ping -q -c1 github.com >/dev/null 2>&1; then
+    echo "❌ Offline or GitHub unreachable. Aborting."
+    return 1
+  fi
+
+  sync_repo() {
+    local dir="$1"
+    local name="$2"
+
+    if [ ! -d "$dir/.git" ]; then
+      echo "⚠️  $name repo not found at $dir — skipping."
+      return
+    fi
+
+    cd "$dir" || return
+    branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
+    if [ "$branch" != "main" ]; then
+      echo "⚠️  $name not on main (currently: $branch) — skipping push."
+      cd - >/dev/null
+      return
+    fi
+
+    echo "🔄 Syncing $name..."
+    git pull --rebase --quiet && \
+    git add . && \
+    git commit -m "Sync $name" --allow-empty --quiet && \
+    git push origin main --quiet && \
+    echo "✅ $name synced successfully." || \
+    echo "⚠️  $name sync failed."
+    cd - >/dev/null
+  }
+
+  sync_repo "$HOME/WaxOn" "WaxOn"
+  echo ""
+  sync_repo "$HOME/WaxOff" "WaxOff"
+  echo ""
+  echo "🎉 All done — WaxOn & WaxOff sync complete."
+'
+
 # Short aliases
 alias se='showempties'
 alias ce='cleanempties'

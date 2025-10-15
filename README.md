@@ -13,12 +13,12 @@ After a fresh macOS installation:
 ### 1. Clone the Repository
 The installer script will automatically prompt you to install Xcode Command Line Tools if they are missing.
 ```bash
-git clone https://github.com/sevmorris/mrk1.git ~/mrk1
+git clone https://github.com/sevmorris/mrk1.git ${HOME}/mrk1
 ```
 
 ### 2. Run the Installer
 ```bash
-cd ~/mrk1/scripts && ./install
+cd ${HOME}/mrk1/scripts && ./install
 ```
 
 ---
@@ -64,7 +64,7 @@ You can edit these before or after running the installer:
 - `dotfiles/` → Your personal Zsh and shell configs.
 - `assets/Brewfile` → Add/remove apps and packages.
 - `scripts/defaults.sh` → macOS defaults (trackpad, Dock, Finder, etc).
-- `scripts/` → Custom helper scripts (linked into `~/.local/bin`).
+- `scripts/` → Custom helper scripts (linked into `${HOME}/.local/bin`).
 
 ---
 
@@ -80,7 +80,7 @@ The installer is **idempotent**. Running it multiple times:
 
 This script does **not** provide an automatic rollback. If you want to undo:
 - Remove symlinks in your home directory (`.zshrc`, `.aliases`, etc).
-- Unlink/remove scripts in `~/.local/bin`.
+- Unlink/remove scripts in `${HOME}/.local/bin`.
 - Uninstall apps with `brew uninstall` or `brew bundle cleanup`.
 - Reset macOS defaults manually or with `defaults delete`.
 
@@ -114,7 +114,7 @@ to see a list. The main targets are:
 - `make fix` — format scripts in-place with shfmt  
 - `make ci` — run lint + format (CI checks)  
 - `make dotfiles` — link dotfiles/* into `$HOME` (backs up originals)  
-- `make tools` — link scripts/* with shebang into `~/.local/bin`  
+- `make tools` — link scripts/* with shebang into `${HOME}/.local/bin`  
 - `make defaults` — run `scripts/defaults.sh` if present  
 
 
@@ -164,7 +164,7 @@ mrk1-maint clean-caches
 - `rebuild-spotlight` — Erase & rebuild Spotlight index on all volumes  
 - `flush-dns` — Flush DNS & directory caches  
 - `reset-launchservices` — Rebuild Launch Services (Open With…)  
-- `clear-user-caches` — Remove `~/Library/Caches/*`  
+- `clear-user-caches` — Remove `${HOME}/Library/Caches/*`  
 - `clear-system-caches` — Remove `/Library/Caches/*` (sudo)  
 - `clear-font-caches` — Reset ATS/font caches (sudo)  
 - `reset-quicklook` — Reset Quick Look cache  
@@ -191,3 +191,11 @@ mrk1-maint clean-caches
 - `preset-browsers` — Safari + Chrome + Firefox cleanup + DNS flush  
 - `preset-editing` — Logic AU reset/cleanup, FCP, Premiere, After Effects caches  
 - `full-tuneup` — A sensible sequence (verify, periodic, spotlight, cache resets, etc.)
+
+## Portability
+- No hardcoded usernames — paths use `${HOME}`.
+- Scripts aim to be idempotent and safe if re-run.
+- This repo intentionally does **not** include any features that hide network or Time Machine volumes from the Desktop.
+
+## CI
+[![CI](https://github.com/USER/REPO/actions/workflows/ci.yml/badge.svg)](https://github.com/USER/REPO/actions/workflows/ci.yml)

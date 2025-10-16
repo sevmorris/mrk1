@@ -20,19 +20,19 @@ check_brew() {
 
 check_localbin() {
   case ":$PATH:" in
-    *":$HOME/.local/bin:"*) ok "~/.local/bin is on PATH" ;;
-    *) warn "~/.local/bin is NOT on PATH"; STATUS=1 ;;
+    *":$HOME/.local/bin:"*) ok "${HOME}/.local/bin is on PATH" ;;
+    *) warn "${HOME}/.local/bin is NOT on PATH"; STATUS=1 ;;
   esac
 }
 
 fix_localbin() {
-  # add to ~/.zshrc if missing
+  # add to ${HOME}/.zshrc if missing
   local target="$HOME/.zshrc"
   if [ -f "$target" ] && grep -qs '\.local/bin' "$target"; then
-    ok "~/.local/bin already referenced in $target"
+    ok "${HOME}/.local/bin already referenced in $target"
   else
     { echo ''; echo 'export PATH="$HOME/.local/bin:$PATH"'; } >> "$target"
-    ok "Appended ~/.local/bin to PATH in $target"
+    ok "Appended ${HOME}/.local/bin to PATH in $target"
   fi
 }
 

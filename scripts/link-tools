@@ -15,8 +15,8 @@ into: ${DEST_DIR}
 
 Actions:
   - chmod +x on shebang'd files in scripts/
-  - ln -sf for each shebang'd script into ~/.local/bin
-  - --prune: remove links in ~/.local/bin that point into this repo but no longer exist
+  - ln -sf for each shebang'd script into ${HOME}/.local/bin
+  - --prune: remove links in ${HOME}/.local/bin that point into this repo but no longer exist
 EOF
 }
 

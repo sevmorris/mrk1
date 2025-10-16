@@ -107,7 +107,7 @@ reset-launchservices() {
 }
 
 clear-user-caches() {
-  info "Clearing user caches (~/Library/Caches)"
+  info "Clearing user caches (${HOME}/Library/Caches)"
   local target="$HOME/Library/Caches"
   _do find "$target" -mindepth 1 -maxdepth 1 -exec rm -rf {} + || true
   kill_if_running cfprefsd
@@ -363,7 +363,7 @@ Commands:
   rebuild-spotlight         Erase and rebuild Spotlight index on all volumes
   flush-dns                 Flush DNS and directory caches
   reset-launchservices      Rebuild the Launch Services database (Open With…)
-  clear-user-caches         Remove ~/Library/Caches/*
+  clear-user-caches         Remove ${HOME}/Library/Caches/*
   clear-system-caches       Remove /Library/Caches/* (sudo)
   clear-font-caches         Reset ATS/Font caches (sudo)
   reset-quicklook           Reset Quick Look cache

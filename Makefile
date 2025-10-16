@@ -16,3 +16,9 @@ defaults:
 fix-exec:
 	@echo "Fixing executable permissions..."
 	@bash scripts/fix-exec.sh
+
+
+.PHONY: uninstall
+uninstall:
+	@echo "Uninstalling..."
+	@bash scripts/uninstall.sh

@@ -33,7 +33,7 @@ Usage:
   ${0##*/} bootstrap   # full flow
   ${0##*/} brew        # brew bundle only
   ${0##*/} dotfiles    # link dotfiles from dotfiles/
-  ${0##*/} tools       # link executable scripts into ~/.local/bin
+  ${0##*/} tools       # link executable scripts into ${HOME}/.local/bin
   ${0##*/} defaults    # apply macOS defaults (Darwin only)
   ${0##*/} doctor      # run doctor if present (non-fatal if missing)
   ${0##*/} help        # show this help

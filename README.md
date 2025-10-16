@@ -235,3 +235,40 @@ To uninstall (if supported by your setup):
 ```bash
 make uninstall
 ```
+
+### Bootstrap usage
+
+`make bootstrap` runs the **full flow** (equivalent to `scripts/bootstrap bootstrap`).  
+You can also run individual steps:
+
+```bash
+make bootstrap-brew       # Homebrew bundle only
+make bootstrap-dotfiles   # link dotfiles from dotfiles/
+make bootstrap-tools      # link executables into ~/.local/bin
+make bootstrap-defaults   # apply macOS defaults (Darwin only)
+make bootstrap-doctor     # run doctor if present
+make bootstrap-help       # show bootstrap help
+```
+
+### Debug & dry-run
+
+- Enable verbose tracing for bootstrap:
+  ```bash
+  DEBUG=1 make bootstrap
+  # or
+  DEBUG=1 bash scripts/bootstrap bootstrap
+  ```
+
+- Preview actions without making changes:
+  ```bash
+  make bootstrap-help
+  make bootstrap -- --dry-run        # full flow, no writes
+  make bootstrap-dotfiles -- --dry-run
+  make bootstrap-tools -- --dry-run
+  make bootstrap-brew -- --dry-run
+  make bootstrap-defaults -- --dry-run
+  ```
+  You can also use the environment variable:
+  ```bash
+  DRY_RUN=1 make bootstrap
+  ```

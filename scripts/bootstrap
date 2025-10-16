@@ -1,9 +1,27 @@
 #!/usr/bin/env bash
+
+# --- Dry-run support ---
+DRY_RUN="${DRY_RUN:-0}"
+if [[ "${1:-}" == "--dry-run" ]]; then
+  DRY_RUN=1
+  shift
+fi
+
+run() {
+  # Echo and execute unless in DRY_RUN mode
+  if [[ "${DRY_RUN}" == "1" ]]; then
+    echo "DRY-RUN: $*"
+  else
+    echo "+ $*"
+    eval "$@"
+  fi
+}
 # mrk1 bootstrap (regenerated)
 # - Safe on macOS/Linux (skips macOS-only steps on non-Darwin)
 # - Clear errors with trap; optional tracing: DEBUG=1 ./scripts/bootstrap bootstrap
 # - Avoids Bash process substitution; portable find | while loop
 set -euo pipefail
+[[ -n "${DEBUG:-}" ]] && set -x
 IFS=$'\n\t'
 
 # ---- UI helpers ----
@@ -41,7 +59,7 @@ EOF
 }
 
 ensure_dirs() {
-  mkdir -p "${DEST_DIR}"
+run "mkdir -p "${DEST_DIR}""
 }
 
 run_brew_bundle() {
@@ -50,7 +68,7 @@ run_brew_bundle() {
   for bf in "${ASSETS_DIR}/Brewfile" "${REPO_DIR}/Brewfile"; do
     if [[ -f "$bf" ]]; then
       ok "Using Brewfile: $bf"
-      brew bundle --file "$bf"
+run "brew bundle --file "$bf""
       ran=1
       break
     fi
@@ -72,7 +90,10 @@ link_dotfiles() {
   while IFS= read -r -d '' src; do
     local base dest
     base="$(basename "$src")"
-    dest="${HOME}/.${base}"
+    case "$base" in
+  .*) dest="${HOME}/${base}" ;;
+  *)  dest="${HOME}/.${base}" ;;
+ esac
     if [[ -L "$dest" || -e "$dest" ]]; then
       if [[ "$(readlink "$dest" 2>/dev/null || true)" == "$src" ]]; then
         ok "symlink exists: $dest"
@@ -80,11 +101,11 @@ link_dotfiles() {
         if [[ -f "$dest" || -d "$dest" ]]; then
           mv "$dest" "${dest}.bak.$(date +%s)"
         fi
-        ln -s "$src" "$dest"
+run "ln -s "$src" "$dest""
         ok "linked: $dest -> $src"
       fi
     else
-      ln -s "$src" "$dest"
+run "ln -s "$src" "$dest""
       ok "linked: $dest -> $src"
     fi
   done < <(find "${DOTFILES_DIR}" -maxdepth 1 -type f -print0)
@@ -103,11 +124,11 @@ link_tools() {
             ok "symlink exists: $dest"
           else
             mv "$dest" "${dest}.bak.$(date +%s)"
-            ln -sf "$src" "$dest"
+run "ln -sf "$src" "$dest""
             ok "linked: $dest -> $src"
           fi
         else
-          ln -sf "$src" "$dest"
+run "ln -sf "$src" "$dest""
           ok "linked: $dest -> $src"
         fi
       fi
@@ -116,10 +137,14 @@ link_tools() {
 
 run_defaults() {
   if [[ "$(uname -s)" != "Darwin" ]]; then
-    warn "Skipping macOS defaults on $(uname -s)"
-    return 0
+    warn "defaults only supported on macOS (Darwin)"; return 0
   fi
-  if [[ -x "${SCRIPTS_DIR}/defaults.sh" ]]; then
+  if [[ -f "${SCRIPTS_DIR}/defaults.sh" ]]; then
+    run "bash ${SCRIPTS_DIR}/defaults.sh"
+  else
+    warn "defaults.sh not found; skipping"
+  fi
+}/defaults.sh" ]]; then
     "${SCRIPTS_DIR}/defaults.sh"
   else
     warn "defaults.sh not found; skipping"
@@ -127,7 +152,12 @@ run_defaults() {
 }
 
 run_doctor() {
-  if [[ -x "${SCRIPTS_DIR}/doctor" ]]; then
+  if [[ -f "${SCRIPTS_DIR}/doctor" ]]; then
+    run "bash ${SCRIPTS_DIR}/doctor"
+  else
+    warn "no doctor script"
+  fi
+}/doctor" ]]; then
     "${SCRIPTS_DIR}/doctor" || { warn "doctor reported issues; continuing"; return 0; }
   else
     warn "no doctor script"

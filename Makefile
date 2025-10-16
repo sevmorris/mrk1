@@ -21,9 +21,6 @@ ci: lint format
 # --------------------------
 test: doctor
 
-doctor:
-	@./scripts/doctor
-
 heal:
 	@if [ -x ./scripts/doctor ]; then ./scripts/doctor --fix; else echo "scripts/doctor not found"; fi
 
@@ -31,14 +28,6 @@ heal:
 # Bootstrap
 # --------------------------
 # Lenient: run all steps; don't fail build if doctor warns.
-bootstrap:
-	@./scripts/bootstrap brew
-	@./scripts/bootstrap dotfiles
-	@./scripts/bootstrap tools
-	@./scripts/bootstrap defaults
-	@./scripts/bootstrap doctor || echo "⚠ doctor reported issues; continuing"
-
-# Strict: single-call orchestrator; fails if any step (incl. doctor) fails.
 bootstrap-strict:
 	@./scripts/bootstrap bootstrap
 

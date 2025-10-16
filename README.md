@@ -199,3 +199,26 @@ mrk1-maint clean-caches
 
 ## CI
 [![CI](https://github.com/USER/REPO/actions/workflows/ci.yml/badge.svg)](https://github.com/USER/REPO/actions/workflows/ci.yml)
+
+## Executable permissions
+
+If you see `permission denied` when running scripts after a fresh clone or unzip, fix executable bits:
+
+```bash
+# One-shot fixer
+bash mrk1/scripts/fix-exec.sh
+
+# Or manually
+chmod +x mrk1/scripts/install mrk1/scripts/defaults.sh
+find mrk1/scripts -type f -name "*.sh" -exec chmod +x {} \;
+```
+
+## Makefile usage
+
+This project includes a simple `Makefile` for convenience:
+
+```bash
+make fix-exec      # Ensure all scripts are executable
+make install       # Run the main installer
+make defaults      # Apply macOS defaults configuration
+```

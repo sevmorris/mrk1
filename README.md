@@ -1,4 +1,196 @@
-# mrk1
+// macOS Setup & Personalization with mrk1 //
+
+This repository contains my personal configuration for quickly setting up a new **Apple Silicon Mac** with my preferred tools, dotfiles, applications, and macOS defaults.
+
+It is powered by a single **idempotent installer script** — you can run it multiple times without breaking anything.
+
+---
+
+## ⚡ Quick Start
+
+After a fresh macOS installation:
+
+### 1. Clone the Repository
+The installer script will automatically prompt you to install Xcode Command Line Tools if they are missing.
+```bash
+git clone https://github.com/sevmorris/mrk1.git ~/mrk1
+```
+
+### 2. Run the Installer
+```bash
+cd ~/mrk1/scripts && ./install
+```
+
+---
+
+### 🚀 Alternative One-Line Bootstrap
+If you’d like to skip the manual clone step, you can run this **direct installer**:
+
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/sevmorris/mrk1/main/scripts/install)"
+```
+
+⚠️ **Note**: Running scripts directly from the internet is inherently risky.  
+Review the [`install`](scripts/install) script before using this method.
+
+---
+
+## 🤖 What the Installer Does
+
+The script automates a complete setup:
+
+1.  **Xcode Command Line Tools** – Installs if not already present.
+2.  **Homebrew** – Installs if missing and configures your shell to use it immediately.
+3.  **Core Tools** – Installs CLI essentials via Homebrew, including:
+    - `iterm2`, `pulsar` (apps)
+    - `git`, `gh`, `zsh`, `coreutils`, `topgrade`, `bat`, `pwgen` (formulae)
+4.  **Oh My Zsh** – Installs and configures your shell.
+5.  **Zsh Plugins** – Adds:
+    - `zsh-syntax-highlighting`
+    - `zsh-autosuggestions`
+6.  **Dotfiles Setup**
+    - Creates symlinks for `.zshrc`, `.zshenv`, `.zprofile`, `.aliases`.
+    - Copies configs like `topgrade.toml`.
+8.  **Default Shell** – Switches your login shell to Homebrew Zsh.
+9.  **macOS Defaults** – Applies system preferences via `scripts/defaults.sh` (if available).
+10. **App Installations via Brewfile** – After a single confirmation prompt, it installs all CLI tools, Mac App Store apps, and GUI apps (casks) listed in your `Brewfile`.
+
+---
+
+## 🛠️ Optional / Customization
+
+You can edit these before or after running the installer:
+
+- `dotfiles/` → Your personal Zsh and shell configs.
+- `assets/Brewfile` → Add/remove apps and packages.
+- `scripts/defaults.sh` → macOS defaults (trackpad, Dock, Finder, etc).
+- `scripts/` → Custom helper scripts (linked into `~/.local/bin`).
+
+---
+
+## 🔄 Running Again
+
+The installer is **idempotent**. Running it multiple times:
+- Won’t reinstall things unnecessarily.
+- Will safely re-link configs and re-apply updates.
+
+---
+
+## ❌ Uninstall / Rollback
+
+This script does **not** provide an automatic rollback. If you want to undo:
+- Remove symlinks in your home directory (`.zshrc`, `.aliases`, etc).
+- Unlink/remove scripts in `~/.local/bin`.
+- Uninstall apps with `brew uninstall` or `brew bundle cleanup`.
+- Reset macOS defaults manually or with `defaults delete`.
+
+---
+
+## 📦 Requirements
+
+- macOS 13 Ventura or newer (Apple Silicon).
+- Internet connection.
+- Basic familiarity with the Terminal.
+
+---
+
+## 🧰 Make Targets
+
+This project uses a Makefile for common workflows. Run:
+
+```bash
+make help
+```
+
+to see a list. The main targets are:
+
+- `make help` — show this help  
+- `make bootstrap` — full bootstrap (brew → dotfiles → tools → defaults → doctor)  
+- `make brew-install` — apply Homebrew bundle (`assets/Brewfile`)  
+- `make brew-clean` — remove extras, autoremove deps, cleanup cache, doctor/missing  
+- `make doctor` — run `scripts/doctor` health check  
+- `make lint` — run ShellCheck on scripts  
+- `make format` — check formatting with shfmt (no writes)  
+- `make fix` — format scripts in-place with shfmt  
+- `make ci` — run lint + format (CI checks)  
+- `make dotfiles` — link dotfiles/* into `$HOME` (backs up originals)  
+- `make tools` — link scripts/* with shebang into `~/.local/bin`  
+- `make defaults` — run `scripts/defaults.sh` if present  
+
+
+---
+
+## 🧰 Maintenance Tools (`mrk1-maint`)
+
+An Onyx-like toolkit of safe, macOS-focused maintenance commands. It cleans caches, resets indexes/databases, and provides presets for browsers and editing apps. Most tasks are reversible (caches rebuild automatically).
+
+**Location:** `scripts/mrk1-maint`  
+**Install to PATH:** either `./scripts/link-tools` or `make tools`  
+**Run:** `mrk1-maint --menu` (interactive) or call a task directly.
+
+### Shell function passthrough (recommended)
+
+Add this to your shell aliases (this repo ships it in `dotfiles/.aliases`):
+
+```bash
+# Passthrough so you can run: maint clean-caches, maint flush-dns, etc.
+maint() {
+  command mrk1-maint "$@"
+}
+```
+
+### Safety & notes
+- Close apps first; some tasks briefly restart Finder/Dock/QuickLook/CFPrefs.
+- You may be prompted for `sudo` (the script keeps it alive for long runs).
+- After cleaning, macOS may feel slower while caches rebuild.
+
+### Quick usage
+```bash
+# Interactive menu
+mrk1-maint --menu
+
+# Dry-run any task (prints commands, executes nothing)
+mrk1-maint --dry-run full-tuneup
+
+# Run a specific task
+mrk1-maint clean-caches
+```
+
+### Commands
+
+**Core**
+- `verify-disk` — Disk Utility-style verification (read-only) on all volumes  
+- `run-periodic` — Run macOS daily/weekly/monthly maintenance scripts  
+- `rebuild-spotlight` — Erase & rebuild Spotlight index on all volumes  
+- `flush-dns` — Flush DNS & directory caches  
+- `reset-launchservices` — Rebuild Launch Services (Open With…)  
+- `clear-user-caches` — Remove `~/Library/Caches/*`  
+- `clear-system-caches` — Remove `/Library/Caches/*` (sudo)  
+- `clear-font-caches` — Reset ATS/font caches (sudo)  
+- `reset-quicklook` — Reset Quick Look cache  
+- `rebuild-iconservices` — Rebuild Finder icon caches  
+- `repair-permissions-user` — Reset Home directory permissions/ACLs (sudo)  
+- `vacuum-logs` — Trim unified logging live store (sudo)  
+- `safari-cleanup` — Clear Safari caches  
+- `mail-reindex` — Remove Mail envelope index (rebuilds on launch)  
+- `rebuild-spelling` — Clear spelling caches  
+- `purge-memory` — Attempt memory purge (limited on modern macOS)
+
+**App-specific**
+- `chrome-cleanup` — Clear Chrome caches (safe dirs only)  
+- `firefox-cleanup` — Clear Firefox caches  
+- `logic-au-reset` — Reset Audio Unit cache (forces rescan)  
+- `logic-cleanup` — Clear Logic Pro caches + AU reset  
+- `finalcut-cleanup` — Clear Final Cut Pro user caches  
+- `adobe-premiere-cleanup` — Clear Premiere media caches  
+- `adobe-aftereffects-cleanup` — Clear After Effects caches  
+- `fcpx-purge-library-renders` — Delete FCPX Render Files/Peaks (per-library confirm)
+
+**Presets**
+- `clean-caches` — Consolidated cache cleanup (user/system/font/Quick Look, etc.)  
+- `preset-browsers` — Safari + Chrome + Firefox cleanup + DNS flush  
+- `preset-editing` — Logic AU reset/cleanup, FCP, Premiere, After Effects caches  
+- `full-tuneup` — A sensible sequence (verify, periodic, spotlight, cache resets, etc.)
 
 ## Quick start
 
@@ -9,84 +201,14 @@ make fix-exec && make install
 make defaults
 ```
 
-Utilities and scripts for setting up and maintaining a macOS workstation.
-
-## Installation
-
-Clone the repo and run the setup via `make`:
-
-```bash
-git clone https://github.com/sevmorris/mrk1.git
-cd mrk1
-make fix-exec && make install
-```
-
-To apply macOS defaults afterward:
-
-To uninstall (if supported by your setup):
-
-```bash
-make uninstall
-```
-
-```bash
-make defaults
-```
-
-## Executable permissions
-
-If you see `permission denied` when running scripts after a fresh clone or unzip, fix executable bits:
-
-```bash
-# One-shot fixer
-bash mrk1/scripts/fix-exec.sh
-
-# Or manually
-chmod +x mrk1/scripts/install mrk1/scripts/defaults.sh
-find mrk1/scripts -type f -name "*.sh" -exec chmod +x {} \;
-```
-
-## Makefile usage
-
-```bash
-make fix-exec      # Ensure all scripts are executable
-make install       # Run the main installer
-make defaults      # Apply macOS defaults configuration
-```
-
-## Portability
-
-- No hardcoded usernames — paths use `${HOME}`.
-- Scripts aim to be idempotent and safe if re-run.
-
-## CI
-
-[![CI](https://github.com/sevmorris/mrk1/actions/workflows/ci.yml/badge.svg)](https://github.com/sevmorris/mrk1/actions/workflows/ci.yml)
-
-
 ## Built-in utilities
 
 From the repo root, you can run these via `make` or directly from `scripts/`:
 
-- `make fix-exec` — ensure all scripts are executable (covers `.sh` files **and** common entrypoints without an extension, and any file with a shebang).
+- `make fix-exec` — ensure all scripts are executable (covers `.sh`, common entrypoints without an extension, **and** files with a shebang).
 - `make install` — run the main installer (`scripts/install`).
 - `make defaults` — apply macOS defaults (`scripts/defaults.sh`).
 - `make uninstall` — run the uninstaller (`scripts/uninstall.sh`, which delegates to `scripts/uninstall-defaults.sh` if present).
-
-> Tip: If you add new helpers under `scripts/` without `.sh` extensions, make sure they either have a shebang (`#!/usr/bin/env bash`) or are named like one of the common entrypoints listed above so `make fix-exec` will mark them executable.
-
-### Utilities via `make`
-
-Run the built-in utilities with friendly targets:
-
-```bash
-make doctor         # scripts/doctor
-make syncall        # scripts/syncall
-make link-tools     # scripts/link-tools
-make bootstrap      # scripts/bootstrap
-make mrk1-maint     # scripts/mrk1-maint
-make brew-cleanup   # scripts/brew-cleanup.sh
-```
 
 ### Generic `make <script>` runner
 
@@ -104,4 +226,12 @@ make brew-cleanup
 make my-new-helper
 ```
 
-> If a helper doesn’t end in `.sh`, that’s fine. Ensure it has a shebang (`#!/usr/bin/env bash`) or run `make fix-exec` after adding it so permissions are correct.
+> Ensure new helpers have a shebang (`#!/usr/bin/env bash`) or run `make fix-exec` to set executable bits.
+
+## Uninstall
+
+To uninstall (if supported by your setup):
+
+```bash
+make uninstall
+```

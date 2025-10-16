@@ -1,14 +1,11 @@
 #!/usr/bin/env bash
-set -Eeuo pipefail
-
-# macOS defaults configuration (portable; no hardcoded usernames)
-# NOTE: This script intentionally does NOT include any network drive hiding.
+# macOS defaults configuration
 
 # Security & System
 echo "Configuring security & system..."
 defaults write com.apple.screensaver askForPassword -int 1
-defaults write com.apple.screensaver askForPasswordDelay -int 0 || true
-sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setglobalstate on || true
+defaults write com.apple.screensaver askForPasswordDelay -int 0
+sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setglobalstate on
 
 # Finder
 echo "Configuring Finder..."
@@ -22,6 +19,9 @@ defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
 defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
 defaults write com.apple.finder FXPreferredViewStyle -string "Nlsv"
 defaults write com.apple.finder QLEnableTextSelection -bool true
+
+# Hide network (remote) Time Machine volumes from the Desktop
+defaults write com.apple.finder ShowMountedServersOnDesktop -bool false
 
 # Dock
 echo "Configuring Dock..."
@@ -58,7 +58,7 @@ echo "Configuring Time Machine..."
 defaults write com.apple.TimeMachine DoNotOfferNewDisksForBackup -bool true
 
 # Apply Finder & Dock changes
-killall Finder >/dev/null 2>&1 || true
-killall Dock >/dev/null 2>&1 || true
+killall Finder >/dev/null 2>&1
+killall Dock >/dev/null 2>&1
 
 echo "✅ Done. Some changes may require a logout or restart."

@@ -22,7 +22,6 @@ done < <(find "${scripts_dir}" -type f \
 
 # Finally, make any file with a shebang executable
 while IFS= read -r -d '' f; do
-  # Check first line for shebang
   if head -n 1 "$f" | grep -q '^#!'; then
     chmod +x "$f"
   fi

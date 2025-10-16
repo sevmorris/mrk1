@@ -66,7 +66,57 @@ run_brew_bundle() {
   for bf in "${ASSETS_DIR}/Brewfile" "${REPO_DIR}/Brewfile"; do
     if [[ -f "$bf" ]]; then
       ok "Using Brewfile: $bf"
-      run brew bundle --file "$bf"
+      if [[ "${DRY_RUN}" == "1" ]]; then
+        run brew bundle --file "$bf"
+      else
+        local log; log="$(mktemp -t mrk1-brew.XXXXXX)"
+        # Capture stdout+stderr so we can search for common failure patterns
+        if brew bundle --file "$bf" > >(tee -a "$log") 2>&1; then
+          :
+        else
+          warn "brew bundle exited with non-zero status (continuing)"
+        fi
+
+        # Parse for SHA-256 mismatch blocks and 404s and print guidance
+        if grep -q 'SHA-256 mismatch' "$log"; then
+          # Try to extract the last 'Installing <cask>' line to name the cask
+          local cask="the-cask"
+          local install_line
+          install_line="$(grep -E '^(Installing|==> Installing) ' "$log" | tail -n1)"
+          if [[ -n "$install_line" ]]; then
+            cask="${install_line##* }"
+          fi
+
+          local cache_path
+          cache_path="$(grep -E 'File:\s*/.*/Library/Caches/Homebrew/downloads/.*' "$log" | awk -F'File: ' '{print $2}' | tail -n1)"
+          local BOLD="\033[1m" YELLOW="\033[33m" DIM="\033[2m" RESET="\033[0m"
+          printf "%b%b\n" "$BOLD$YELLOW" "Brew reported a SHA-256 mismatch (continuing)."
+          printf "%b%s\n" "$DIM" "This usually means the vendor replaced the DMG or the local cache is stale."
+          printf "%s\n" "To fix:"
+          if [[ -n "$cache_path" ]]; then
+            printf "  rm -f %q\n" "$cache_path"
+          else
+            printf "  rm -f \"\$HOME/Library/Caches/Homebrew/downloads/<filename>.dmg\"\n"
+          fi
+          printf "  brew fetch --cask %s --force --retry\n" "$cask"
+          printf "  brew install --cask %s\n" "$cask"
+          printf "%b\n" "$RESET"
+        fi
+
+        if grep -q 'curl: (22) The requested URL returned error: 404' "$log"; then
+          local BOLD="\033[1m" YELLOW="\033[33m" DIM="\033[2m" RESET="\033[0m"
+          printf "%b%b\n" "$BOLD$YELLOW" "Brew encountered a 404 while fetching a cask (continuing)."
+          printf "%b%s\n" "$DIM" "This can happen when upstream renames an artifact or a release is moved."
+          printf "%s\n" "Try:"
+          printf "  brew update\n"
+          printf "  brew update-reset\n"
+          printf "  brew fetch --cask <caskname> --force --retry\n"
+          printf "  brew install --cask <caskname>\n"
+          printf "%b\n" "$RESET"
+        fi
+
+        rm -f "$log"
+      fi
       ran=1
       break
     fi
@@ -77,6 +127,7 @@ run_brew_bundle() {
     return 1
   fi
 }
+
 
 link_dotfiles() {
   if [[ ! -d "${DOTFILES_DIR}" ]]; then

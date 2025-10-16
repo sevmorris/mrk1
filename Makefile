@@ -122,8 +122,8 @@ link-tools:
 	@echo "Running link-tools..."
 	@bash scripts/link-tools
 bootstrap:
-	@echo "Running bootstrap..."
-	@bash scripts/bootstrap bootstrap
+	echo "Running bootstrap..."
+	bash scripts/bootstrap $(filter-out $@,$(MAKECMDGOALS))
 mrk1-maint:
 	@echo "Running mrk1-maint..."
 	@bash scripts/mrk1-maint
@@ -134,6 +134,7 @@ brew-cleanup:
 # ---- Generic script runner (fallback) ----
 # Usage: `make <scriptname>` runs `scripts/<scriptname>` if it exists and is executable.
 %:
+	@if echo "$@" | grep -q '^-'; then exit 0; fi
 	@if [ -x "scripts/$@" ]; then \
 	  echo "Running $@..."; \
 	  bash "scripts/$@"; \
@@ -141,28 +142,3 @@ brew-cleanup:
 	  echo "make: *** No rule to make target '$@' (and scripts/$@ is not executable). Stop."; \
 	  exit 2; \
 	fi
-
-.PHONY: bootstrap-brew bootstrap-dotfiles bootstrap-tools bootstrap-defaults bootstrap-doctor bootstrap-help
-
-bootstrap-brew:
-	@echo "Running bootstrap brew..."
-	@bash scripts/bootstrap brew
-
-bootstrap-dotfiles:
-	@echo "Running bootstrap dotfiles..."
-	@bash scripts/bootstrap dotfiles
-
-bootstrap-tools:
-	@echo "Running bootstrap tools..."
-	@bash scripts/bootstrap tools
-
-bootstrap-defaults:
-	@echo "Running bootstrap defaults..."
-	@bash scripts/bootstrap defaults
-
-bootstrap-doctor:
-	@echo "Running bootstrap doctor..."
-	@bash scripts/bootstrap doctor
-
-bootstrap-help:
-	@bash scripts/bootstrap help

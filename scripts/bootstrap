@@ -13,26 +13,13 @@ trap 'err "Failed at ${FUNCNAME[0]:-main} line $LINENO: $BASH_COMMAND"' ERR
 [[ -n "${DEBUG:-}" ]] && set -x
 
 # Dry-run support
-DRY_RUN="${DRY_RUN:-0}"
-declare -a DRY_ACTIONS=()
-if [[ "${1:-}" == "--dry-run" ]]; then
-  DRY_RUN=1
-  shift
-fi
 
 run() {
-  if [[ "${DRY_RUN}" == "1" ]]; then
-    printf "DRY-RUN: "
-    printf "%q " "$@"
-    printf "\n"
-    # record a shell-escaped form
-    local q=""; for a in "$@"; do printf -v q "%s%q " "$q" "$a"; done
-    DRY_ACTIONS+=("${q% }")
-  else
-    printf "+ "; printf "%q " "$@"; printf "\n"
-    "$@"
-  fi
+  printf "+ "; printf "%q " "$@"; printf "
+"
+  "$@"
 }
+
 
 usage() {
   cat <<'USAGE'
@@ -216,69 +203,3 @@ case "$cmd" in
   *) err "unknown command: $cmd"; usage; exit 1 ;;
 esac
 
-# --- Dry-run summary (if enabled) ---
-if [[ "${DRY_RUN}" == "1" ]]; then
-  # Colors (no emojis)
-  BOLD="$(printf '\033[1m')"
-  DIM="$(printf '\033[2m')"
-  RESET="$(printf '\033[0m')"
-  WHITE="$(printf '\033[37m')"
-  BLUE="$(printf '\033[34m')"
-  YELLOW="$(printf '\033[33m')"
-  CYAN="$(printf '\033[36m')"
-  MAGENTA="$(printf '\033[35m')"
-
-  # Buckets
-  declare -a DRY_BREW=() DRY_DEFAULTS=() DRY_DOTFILES=() DRY_TOOLS=() DRY_LINKS_MISC=() DRY_BACKUPS=() DRY_MKDIR=() DRY_OTHER=()
-
-  # Categorize
-  for cmdline in "${DRY_ACTIONS[@]}"; do
-    if [[ "$cmdline" =~ ^brew[[:space:]]+bundle ]]; then
-      DRY_BREW+=("$cmdline")
-    elif [[ "$cmdline" =~ ^bash[[:space:]]+scripts/defaults\.sh ]] || [[ "$cmdline" =~ defaults[[:space:]]+write ]]; then
-      DRY_DEFAULTS+=("$cmdline")
-    elif [[ "$cmdline" =~ ^ln[[:space:]]+-s ]]; then
-      if [[ "$cmdline" == *"${HOME}/."* ]]; then
-        DRY_DOTFILES+=("$cmdline")
-      elif [[ "$cmdline" == *"${HOME}/.local/bin/"* ]]; then
-        DRY_TOOLS+=("$cmdline")
-      else
-        DRY_LINKS_MISC+=("$cmdline")
-      fi
-    elif [[ "$cmdline" =~ ^mv[[:space:]]+- ]]; then
-      DRY_BACKUPS+=("$cmdline")
-    elif [[ "$cmdline" =~ ^mkdir[[:space:]]+-p ]]; then
-      DRY_MKDIR+=("$cmdline")
-    else
-      DRY_OTHER+=("$cmdline")
-    fi
-  done
-
-  # Print sections
-  print_section () {
-    local title="$1" color="$2"; shift 2
-    local -n arr=$1
-    if ((${#arr[@]})); then
-      printf "%s%s%s\n" "$BOLD$color" "$title" "$RESET"
-      for item in "${arr[@]}"; do
-        printf "  %s\n" "$item"
-      done
-      echo
-    fi
-  }
-
-  echo
-  printf "%sDRY-RUN SUMMARY (no changes)%s\n\n" "$BOLD$WHITE" "$RESET"
-  print_section "BREW"          "$MAGENTA" DRY_BREW
-  print_section "DEFAULTS"      "$WHITE"   DRY_DEFAULTS
-  print_section "DOTFILES"      "$BLUE"    DRY_DOTFILES
-  print_section "TOOLS"         "$CYAN"    DRY_TOOLS
-  print_section "LINKS (MISC)"  "$CYAN"    DRY_LINKS_MISC
-  print_section "BACKUPS/MOVES" "$YELLOW"  DRY_BACKUPS
-  print_section "MKDIR"         "$CYAN"    DRY_MKDIR
-  print_section "OTHER"         "$DIM"     DRY_OTHER
-
-  if ((${#DRY_ACTIONS[@]}==0)); then
-    printf "%s(no actions would be taken)%s\n" "$DIM" "$RESET"
-  fi
-fi

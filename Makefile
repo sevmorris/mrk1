@@ -122,8 +122,8 @@ link-tools:
 	@echo "Running link-tools..."
 	@bash scripts/link-tools
 bootstrap:
-	echo "Running bootstrap..."
-	bash scripts/bootstrap $(filter-out $@,$(MAKECMDGOALS))
+	@echo "Running bootstrap..."
+	@bash scripts/bootstrap bootstrap
 mrk1-maint:
 	@echo "Running mrk1-maint..."
 	@bash scripts/mrk1-maint
@@ -142,3 +142,4 @@ brew-cleanup:
 	  echo "make: *** No rule to make target '$@' (and scripts/$@ is not executable). Stop."; \
 	  exit 2; \
 	fi
+

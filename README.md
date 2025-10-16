@@ -50,7 +50,7 @@ cd ~/mrk1/scripts && ./install
 
 ---
 
-## �Customize
+## Customize
 
 Edit these before or after running:
 

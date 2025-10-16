@@ -6,7 +6,7 @@ Everything runs through a single **idempotent installer script** — safe to re-
 
 ---
 
-## ⚡ Quick Start
+## Quick Start
 
 ### 1. Clone
 ```bash
@@ -27,7 +27,7 @@ cd ~/mrk1/scripts && ./install
 
 ---
 
-## 🤖 What It Does
+## What It Does
 
 1. **Xcode Tools** – Ensures CLI developer tools are present.  
 2. **Homebrew** – Installs if missing and updates shell paths.  
@@ -42,7 +42,7 @@ cd ~/mrk1/scripts && ./install
 
 ---
 
-## 🛠️ Customize
+## �Customize
 
 Edit these before or after running:
 
@@ -53,14 +53,14 @@ Edit these before or after running:
 
 ---
 
-## 🔄 Re-Running
+## Re-Running
 
 The installer is **idempotent**: safe to run anytime.  
 Existing components are updated, not reinstalled.
 
 ---
 
-## ❌ Uninstall Manually
+## Uninstall Manually
 
 To revert:
 - Delete linked dotfiles (`.zshrc`, `.aliases`, etc.)  
@@ -70,7 +70,7 @@ To revert:
 
 ---
 
-## 📦 Requirements
+## Requirements
 
 - macOS 13 (Ventura) or newer  
 - Apple Silicon Mac  
@@ -79,7 +79,7 @@ To revert:
 
 ---
 
-## 🧰 Make Targets
+## Make Targets
 
 Use `make help` for all targets.  
 Key ones:
@@ -98,7 +98,7 @@ Key ones:
 
 ---
 
-## 🧰 Maintenance Tool: `mrk1-maint`
+## Maintenance Tool: `mrk1-maint`
 
 A safe macOS maintenance utility (similar to Onyx).  
 Cleans caches, resets indexes, and can run full “tune-ups.”
@@ -117,7 +117,7 @@ maint() { command mrk1-maint "$@"; }
 
 ---
 
-## 🧩 Example Tasks
+## Example Tasks
 
 **Core:** disk verify, periodic scripts, Spotlight rebuild, DNS flush, Launch Services reset, cache clears, log trimming, permissions repair.
 
@@ -131,7 +131,7 @@ maint() { command mrk1-maint "$@"; }
 
 ---
 
-## 🧱 Quick Maintenance Start
+## Quick Maintenance Start
 ```bash
 make fix-exec && make install
 make defaults
@@ -139,7 +139,7 @@ make defaults
 
 ---
 
-## 🔧 Built-in Utilities
+## Built-in Utilities
 
 Run via `make` or directly from `scripts/`:
 
@@ -161,7 +161,7 @@ make brew-cleanup
 
 ---
 
-## 🧹 Uninstall
+## Uninstall
 
 ```bash
 make uninstall

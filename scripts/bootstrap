@@ -1,65 +1,63 @@
 #!/usr/bin/env bash
+# Safe mode
+set -Eeuo pipefail
+IFS=$'\n\t'
 
-# --- Dry-run support ---
+# Error trap
+err() { printf "\033[31m✗ %s\033[0m\n" "$*" >&2; }
+ok()  { printf "\033[32m✓ %s\033[0m\n" "$*"; }
+warn(){ printf "\033[33m⚠ %s\033[0m\n" "$*"; }
+trap 'err "Failed at ${FUNCNAME[0]:-main} line $LINENO: $BASH_COMMAND"' ERR
+
+# Optional tracing
+[[ -n "${DEBUG:-}" ]] && set -x
+
+# Dry-run support
 DRY_RUN="${DRY_RUN:-0}"
+declare -a DRY_ACTIONS=()
 if [[ "${1:-}" == "--dry-run" ]]; then
   DRY_RUN=1
   shift
 fi
 
 run() {
-  # Echo and execute unless in DRY_RUN mode
   if [[ "${DRY_RUN}" == "1" ]]; then
-    echo "DRY-RUN: $*"
+    printf "DRY-RUN: "
+    printf "%q " "$@"
+    printf "\n"
+    # record a shell-escaped form
+    local q=""; for a in "$@"; do printf -v q "%s%q " "$q" "$a"; done
+    DRY_ACTIONS+=("${q% }")
   else
-    echo "+ $*"
-    eval "$@"
+    printf "+ "; printf "%q " "$@"; printf "\n"
+    "$@"
   fi
 }
-# mrk1 bootstrap (regenerated)
-# - Safe on macOS/Linux (skips macOS-only steps on non-Darwin)
-# - Clear errors with trap; optional tracing: DEBUG=1 ./scripts/bootstrap bootstrap
-# - Avoids Bash process substitution; portable find | while loop
-set -euo pipefail
-[[ -n "${DEBUG:-}" ]] && set -x
-IFS=$'\n\t'
 
-# ---- UI helpers ----
-ok()   { printf '\033[32m✓ %s\033[0m\n' "$*"; }
-warn() { printf '\033[33m⚠ %s\033[0m\n' "$*"; }
-err()  { printf '\033[31m✗ %s\033[0m\n' "$*" >&2; }
+usage() {
+  cat <<'USAGE'
+mrk1 bootstrap
 
-# Better error reporting
-set -E -o errtrace
-trap 'err "Failed at ${FUNCNAME[0]:-main} line $LINENO: $BASH_COMMAND"' ERR
+Usage:
+  bootstrap bootstrap   # full flow
+  bootstrap brew        # brew bundle only
+  bootstrap dotfiles    # link dotfiles from dotfiles/
+  bootstrap tools       # link executable scripts into ~/.local/bin
+  bootstrap defaults    # apply macOS defaults (Darwin only)
+  bootstrap doctor      # run doctor if present (non-fatal if missing)
+  bootstrap help        # show this help
+USAGE
+}
 
-# Optional debug tracing
-[ "${DEBUG:-0}" = "1" ] && set -x
-
-# ---- Paths ----
+# Paths
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 ASSETS_DIR="${REPO_DIR}/assets"
 DOTFILES_DIR="${REPO_DIR}/dotfiles"
 SCRIPTS_DIR="${REPO_DIR}/scripts"
 DEST_DIR="${HOME}/.local/bin"
 
-usage() {
-  cat <<EOF
-mrk1 bootstrap
-
-Usage:
-  ${0##*/} bootstrap   # full flow
-  ${0##*/} brew        # brew bundle only
-  ${0##*/} dotfiles    # link dotfiles from dotfiles/
-  ${0##*/} tools       # link executable scripts into ${HOME}/.local/bin
-  ${0##*/} defaults    # apply macOS defaults (Darwin only)
-  ${0##*/} doctor      # run doctor if present (non-fatal if missing)
-  ${0##*/} help        # show this help
-EOF
-}
-
 ensure_dirs() {
-run "mkdir -p "${DEST_DIR}""
+  run mkdir -p "${DEST_DIR}"
 }
 
 run_brew_bundle() {
@@ -68,44 +66,43 @@ run_brew_bundle() {
   for bf in "${ASSETS_DIR}/Brewfile" "${REPO_DIR}/Brewfile"; do
     if [[ -f "$bf" ]]; then
       ok "Using Brewfile: $bf"
-run "brew bundle --file "$bf""
+      run brew bundle --file "$bf"
       ran=1
       break
     fi
   done
   shopt -u nullglob
-
-  if [[ "$ran" -eq 0 ]]; then
-    err "No Brewfile found (searched: ${ASSETS_DIR}/Brewfile, ${REPO_DIR}/Brewfile)"
-    exit 1
+  if [[ $ran -eq 0 ]]; then
+    err "No Brewfile found in assets/ or repo root"
+    return 1
   fi
 }
 
 link_dotfiles() {
   if [[ ! -d "${DOTFILES_DIR}" ]]; then
-    warn "No dotfiles directory at ${DOTFILES_DIR}"
+    warn "dotfiles/ missing; skipping"
     return 0
   fi
-
+  # iterate top-level files only
   while IFS= read -r -d '' src; do
     local base dest
     base="$(basename "$src")"
     case "$base" in
-  .*) dest="${HOME}/${base}" ;;
-  *)  dest="${HOME}/.${base}" ;;
- esac
+      .*) dest="${HOME}/${base}" ;;  # already has a leading dot
+      *)  dest="${HOME}/.${base}" ;;
+    esac
     if [[ -L "$dest" || -e "$dest" ]]; then
-      if [[ "$(readlink "$dest" 2>/dev/null || true)" == "$src" ]]; then
+      local target
+      target="$(readlink "$dest" 2>/dev/null || true)"
+      if [[ "$target" == "$src" ]]; then
         ok "symlink exists: $dest"
       else
-        if [[ -f "$dest" || -d "$dest" ]]; then
-          mv "$dest" "${dest}.bak.$(date +%s)"
-        fi
-run "ln -s "$src" "$dest""
+        run mv "$dest" "${dest}.bak.$(date +%s)"
+        run ln -s "$src" "$dest"
         ok "linked: $dest -> $src"
       fi
     else
-run "ln -s "$src" "$dest""
+      run ln -s "$src" "$dest"
       ok "linked: $dest -> $src"
     fi
   done < <(find "${DOTFILES_DIR}" -maxdepth 1 -type f -print0)
@@ -113,26 +110,28 @@ run "ln -s "$src" "$dest""
 
 link_tools() {
   ensure_dirs
-  # portable loop; no process substitution
-  find "${SCRIPTS_DIR}" -maxdepth 1 -type f ! -name 'doctor' ! -name 'bootstrap' -print0   | while IFS= read -r -d '' src; do
-      if head -n1 "$src" | grep -q '^#!'; then
-        local base dest
-        base="$(basename "$src")"
-        dest="${DEST_DIR}/${base}"
-        if [[ -L "$dest" || -e "$dest" ]]; then
-          if [[ "$(readlink "$dest" 2>/dev/null || true)" == "$src" ]]; then
-            ok "symlink exists: $dest"
-          else
-            mv "$dest" "${dest}.bak.$(date +%s)"
-run "ln -sf "$src" "$dest""
-            ok "linked: $dest -> $src"
-          fi
+  # link any shebang-bearing scripts except doctor/bootstrap
+  while IFS= read -r -d '' src; do
+    if head -n1 "$src" | grep -q '^#!'; then
+      local base dest
+      base="$(basename "$src")"
+      dest="${DEST_DIR}/${base}"
+      if [[ -L "$dest" || -e "$dest" ]]; then
+        local target
+        target="$(readlink "$dest" 2>/dev/null || true)"
+        if [[ "$target" == "$src" ]]; then
+          ok "symlink exists: $dest"
         else
-run "ln -sf "$src" "$dest""
+          run mv "$dest" "${dest}.bak.$(date +%s)"
+          run ln -sf "$src" "$dest"
           ok "linked: $dest -> $src"
         fi
+      else
+        run ln -sf "$src" "$dest"
+        ok "linked: $dest -> $src"
       fi
-    done
+    fi
+  done < <(find "${SCRIPTS_DIR}" -maxdepth 1 -type f ! -name 'doctor' ! -name 'bootstrap' -print0)
 }
 
 run_defaults() {
@@ -140,12 +139,7 @@ run_defaults() {
     warn "defaults only supported on macOS (Darwin)"; return 0
   fi
   if [[ -f "${SCRIPTS_DIR}/defaults.sh" ]]; then
-    run "bash ${SCRIPTS_DIR}/defaults.sh"
-  else
-    warn "defaults.sh not found; skipping"
-  fi
-}/defaults.sh" ]]; then
-    "${SCRIPTS_DIR}/defaults.sh"
+    run bash "${SCRIPTS_DIR}/defaults.sh"
   else
     warn "defaults.sh not found; skipping"
   fi
@@ -153,12 +147,7 @@ run_defaults() {
 
 run_doctor() {
   if [[ -f "${SCRIPTS_DIR}/doctor" ]]; then
-    run "bash ${SCRIPTS_DIR}/doctor"
-  else
-    warn "no doctor script"
-  fi
-}/doctor" ]]; then
-    "${SCRIPTS_DIR}/doctor" || { warn "doctor reported issues; continuing"; return 0; }
+    run bash "${SCRIPTS_DIR}/doctor"
   else
     warn "no doctor script"
   fi
@@ -175,3 +164,70 @@ case "$cmd" in
   help|-h|--help) usage ;;
   *) err "unknown command: $cmd"; usage; exit 1 ;;
 esac
+
+# --- Dry-run summary (if enabled) ---
+if [[ "${DRY_RUN}" == "1" ]]; then
+  # Colors (no emojis)
+  BOLD="$(printf '\033[1m')"
+  DIM="$(printf '\033[2m')"
+  RESET="$(printf '\033[0m')"
+  WHITE="$(printf '\033[37m')"
+  BLUE="$(printf '\033[34m')"
+  YELLOW="$(printf '\033[33m')"
+  CYAN="$(printf '\033[36m')"
+  MAGENTA="$(printf '\033[35m')"
+
+  # Buckets
+  declare -a DRY_BREW=() DRY_DEFAULTS=() DRY_DOTFILES=() DRY_TOOLS=() DRY_LINKS_MISC=() DRY_BACKUPS=() DRY_MKDIR=() DRY_OTHER=()
+
+  # Categorize
+  for cmdline in "${DRY_ACTIONS[@]}"; do
+    if [[ "$cmdline" =~ ^brew[[:space:]]+bundle ]]; then
+      DRY_BREW+=("$cmdline")
+    elif [[ "$cmdline" =~ ^bash[[:space:]]+scripts/defaults\.sh ]] || [[ "$cmdline" =~ defaults[[:space:]]+write ]]; then
+      DRY_DEFAULTS+=("$cmdline")
+    elif [[ "$cmdline" =~ ^ln[[:space:]]+-s ]]; then
+      if [[ "$cmdline" == *"${HOME}/."* ]]; then
+        DRY_DOTFILES+=("$cmdline")
+      elif [[ "$cmdline" == *"${HOME}/.local/bin/"* ]]; then
+        DRY_TOOLS+=("$cmdline")
+      else
+        DRY_LINKS_MISC+=("$cmdline")
+      fi
+    elif [[ "$cmdline" =~ ^mv[[:space:]]+- ]]; then
+      DRY_BACKUPS+=("$cmdline")
+    elif [[ "$cmdline" =~ ^mkdir[[:space:]]+-p ]]; then
+      DRY_MKDIR+=("$cmdline")
+    else
+      DRY_OTHER+=("$cmdline")
+    fi
+  done
+
+  # Print sections
+  print_section () {
+    local title="$1" color="$2"; shift 2
+    local -n arr=$1
+    if ((${#arr[@]})); then
+      printf "%s%s%s\n" "$BOLD$color" "$title" "$RESET"
+      for item in "${arr[@]}"; do
+        printf "  %s\n" "$item"
+      done
+      echo
+    fi
+  }
+
+  echo
+  printf "%sDRY-RUN SUMMARY (no changes)%s\n\n" "$BOLD$WHITE" "$RESET"
+  print_section "BREW"          "$MAGENTA" DRY_BREW
+  print_section "DEFAULTS"      "$WHITE"   DRY_DEFAULTS
+  print_section "DOTFILES"      "$BLUE"    DRY_DOTFILES
+  print_section "TOOLS"         "$CYAN"    DRY_TOOLS
+  print_section "LINKS (MISC)"  "$CYAN"    DRY_LINKS_MISC
+  print_section "BACKUPS/MOVES" "$YELLOW"  DRY_BACKUPS
+  print_section "MKDIR"         "$CYAN"    DRY_MKDIR
+  print_section "OTHER"         "$DIM"     DRY_OTHER
+
+  if ((${#DRY_ACTIONS[@]}==0)); then
+    printf "%s(no actions would be taken)%s\n" "$DIM" "$RESET"
+  fi
+fi

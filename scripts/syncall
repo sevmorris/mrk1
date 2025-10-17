@@ -1,73 +1,186 @@
 #!/usr/bin/env bash
-
-# Exit script if a command fails, if an unset variable is used, or if a command
-# in a pipeline fails. This makes the script safer and more predictable.
 set -euo pipefail
 
-# --- Constants for color output ---
-bold=$(tput bold)
-green=$(tput setaf 2)
-cyan=$(tput setaf 6)
-reset=$(tput sgr0)
+# =========================
+# Config (env-overridable)
+# =========================
+: "${SYNCALL_ROOT:="$HOME"}"
+: "${SYNCALL_MAX_DEPTH:=7}"                 # search depth under $HOME
+: "${SYNCALL_ONLY_GITHUB:=1}"               # 1 = only repos with any remote on github.com
+: "${SYNCALL_DRY_RUN:=0}"                   # 1 = preview only (or pass --dry-run)
+: "${SYNCALL_EXCLUDES:="$HOME/Library:$HOME/.Trash:$HOME/.venvs:$HOME/.cache:$HOME/.cargo:$HOME/.npm:_build:node_modules:.git/modules"}"
 
-# --- Functions ---
+# =========================
+# TTY colors (best-effort)
+# =========================
+if command -v tput >/dev/null 2>&1 && [[ -t 1 ]]; then
+  bold=$(tput bold); green=$(tput setaf 2); cyan=$(tput setaf 6); yellow=$(tput setaf 3); red=$(tput setaf 1); reset=$(tput sgr0)
+else
+  bold=""; green=""; cyan=""; yellow=""; red=""; reset=""
+fi
 
-# Pushes changes in a given Git repository to GitHub.
-# This version automatically commits any local changes before syncing.
-push_to_github() {
-  local repo_dir="$1"
-  local auto_commit_message="WIP: Auto-sync local changes on $(date '+%Y-%m-%d %H:%M:%S')"
+# =========================
+# Helpers
+# =========================
 
-  # Exit if the provided path is not a directory
-  if [[ ! -d "$repo_dir" ]]; then
-    echo >&2 "Error: Repository directory not found at $repo_dir"
-    return 1
-  fi
+log()  { printf "%s%s%s\n" "$cyan" "$*" "$reset"; }
+good() { printf "%s%s%s\n" "$green" "$*" "$reset"; }
+warn() { printf "%s%s%s\n" "$yellow" "$*" "$reset"; }
+err()  { printf "%s%s%s\n" "$red" "$*" "$reset" >&2; }
 
-  # Change directory, exiting the script if it fails
-  cd "$repo_dir"
-
-  echo
-  echo "${cyan}${bold}Processing repository: $repo_dir${reset}"
-
-  # Check for local changes before doing anything else.
-  if [[ -n $(git status --porcelain) ]]; then
-    echo "Local changes detected. Staging and committing them first..."
-    git add .
-    git commit -m "$auto_commit_message"
-    echo "${green}Local changes committed.${reset}"
-  fi
-
-  # Now that the directory is clean, pull changes and push everything.
-  echo "Syncing with GitHub..."
-  git pull --rebase
-  git push
-  echo "${green}${bold}Repository is now up to date.${reset}"
+# Return 0 if dir is a git work tree; prints toplevel path on stdout when successful
+git_toplevel() {
+  local dir="${1:?}"
+  git -C "$dir" rev-parse --is-inside-work-tree >/dev/null 2>&1 || return 1
+  git -C "$dir" rev-parse --show-toplevel 2>/dev/null
 }
 
-# --- Main Script ---
+# Return 0 if any remote URL contains github.com (case-insensitive)
+is_github_repo() {
+  local dir="${1:?}"
+  local urls
+  urls=$(git -C "$dir" remote -v 2>/dev/null | awk '{print $2}' || true)
+  [[ -n "$urls" ]] && grep -qi 'github\.com' <<<"$urls"
+}
 
-# Constants for file paths
+# Pushes a repo: auto-commit local changes, rebase-pull, push
+push_to_github() {
+  local repo_dir="${1:?}"
+  local auto_commit_message="WIP: Auto-sync local changes on $(date '+%Y-%m-%d %H:%M:%S')"
+
+  echo
+  log "${bold}Processing repository:${reset} $repo_dir"
+
+  if [[ "$SYNCALL_DRY_RUN" -eq 1 ]]; then
+    good "[dry-run] Would sync"
+    return 0
+  fi
+
+  # Commit local changes if present
+  if [[ -n "$(git -C "$repo_dir" status --porcelain)" ]]; then
+    echo "Local changes detected. Staging and committing…"
+    git -C "$repo_dir" add -A
+    git -C "$repo_dir" commit -m "$auto_commit_message" || true
+    good "Local changes committed."
+  fi
+
+  # Ensure a default remote/branch exists; attempt a safe pull/push
+  if ! git -C "$repo_dir" remote >/dev/null; then
+    warn "No remotes configured; skipping."
+    return 0
+  fi
+
+  # Detect current branch (avoid failure on detached HEAD)
+  current_branch="$(git -C "$repo_dir" rev-parse --abbrev-ref HEAD || echo '')"
+  if [[ "$current_branch" == "HEAD" || -z "$current_branch" ]]; then
+    warn "Detached HEAD or unknown branch; skipping pull/push."
+    return 0
+  fi
+
+  echo "Syncing (pull --rebase, then push)…"
+  git -C "$repo_dir" pull --rebase || { warn "Pull failed; attempting to continue."; }
+  git -C "$repo_dir" push || { err "Push failed."; return 1; }
+  good "Repository up to date."
+}
+
+# Build find(1) exclude expressions from SYNCALL_EXCLUDES
+build_find_excludes() {
+  local IFS=':'
+  read -r -a paths <<<"$SYNCALL_EXCLUDES"
+  local expr=()
+  for p in "${paths[@]}"; do
+    [[ -z "$p" ]] && continue
+    expr+=(-path "$p" -prune -o)
+  done
+  printf '%s\0' "${expr[@]}"
+}
+
+# Discover repos (prints unique toplevel paths)
+discover_repos() {
+  local -a find_expr=()
+  # shellcheck disable=SC2207
+  find_expr=($(build_find_excludes))
+
+  # Convert NUL-separated array back into args
+  # Find .git *directories*
+  # Also find .git *files* (worktrees/submodules create file pointing elsewhere)
+  # Limit depth for speed; adjust via SYNCALL_MAX_DEPTH
+  find "$SYNCALL_ROOT" -xdev \
+    "${find_expr[@]}" \
+    -type d -name .git -print -o \
+    -type f -name .git -print \
+    -maxdepth "$SYNCALL_MAX_DEPTH" 2>/dev/null \
+  | while IFS= read -r git_marker; do
+      repo_dir="$(dirname "$git_marker")"
+      toplevel="$(git_toplevel "$repo_dir" || true)"
+      [[ -n "$toplevel" ]] && printf '%s\n' "$toplevel"
+    done | LC_ALL=C sort -u
+}
+
+# =========================
+# Main
+# =========================
+
+# Args
+if [[ "${1:-}" == "--dry-run" ]]; then
+  SYNCALL_DRY_RUN=1
+fi
+
+# Brewfile sync (unchanged from your script)
 brewfile_source="$HOME/mrk1/assets/Brewfile"
 backup_log_file="$HOME/Library/Logs/mrk1-backups.log"
 
-# Sync Brewfile
 echo
-echo "${cyan}${bold}Syncing Brewfile to home directory...${reset}"
-rsync -au --progress "$brewfile_source" "$HOME/"
-echo "${green}${bold}Brewfile sync complete.${reset}"
+log "${bold}Syncing Brewfile to home directory…${reset}"
+if [[ -f "$brewfile_source" ]]; then
+  rsync -au --progress "$brewfile_source" "$HOME/"
+  good "Brewfile sync complete."
+else
+  warn "Brewfile not found at $brewfile_source (skipping)."
+fi
 
-# Push changes in the main project repository to GitHub
-push_to_github "$HOME/mrk1"
+# Always include mrk1 explicitly if present (even if outside search depth)
+[[ -d "$HOME/mrk1/.git" ]] && export INCLUDE_MRK1=1 || INCLUDE_MRK1=0
 
-# --- Success message and logging ---
 echo
-echo "${green}––––––––––––––${reset}"
-echo "${cyan}${bold}Sync complete${reset}"
+log "${bold}Discovering repositories under $SYNCALL_ROOT (depth $SYNCALL_MAX_DEPTH)…${reset}"
+mapfile -t repos < <(discover_repos)
 
-# Ensure the log directory exists before writing to the log file
+# Optionally add mrk1 if not already in list
+if [[ "$INCLUDE_MRK1" -eq 1 ]]; then
+  if ! printf '%s\n' "${repos[@]}" | grep -qx "$HOME/mrk1"; then
+    repos+=("$HOME/mrk1")
+  fi
+fi
+
+if [[ "${#repos[@]}" -eq 0 ]]; then
+  warn "No repositories found."
+  exit 0
+fi
+
+echo "Found ${#repos[@]} repositories."
+
+# Filter to GitHub repos if requested
+filtered=()
+if [[ "$SYNCALL_ONLY_GITHUB" -eq 1 ]]; then
+  for r in "${repos[@]}"; do
+    if is_github_repo "$r"; then
+      filtered+=("$r")
+    fi
+  done
+  repos=("${filtered[@]}")
+  echo "After GitHub filter: ${#repos[@]} repositories."
+fi
+
+# Process each repo
+for r in "${repos[@]}"; do
+  push_to_github "$r"
+done
+
+echo
+good "––––––––––––––"
+log   "${bold}Sync complete${reset}"
+
 mkdir -p "$(dirname "$backup_log_file")"
 echo "syncall ran on $(date)" >> "$backup_log_file"
-
-echo "${green}––––––––––––––${reset}"
-echo
+good "––––––––––––––"

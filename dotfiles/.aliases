@@ -16,27 +16,46 @@ fi
 
 alias nano='nano --linenumbers'      # Always show line numbers in nano.
 
-# Smarter cat: use bat if available, else fallback to real cat
-cat() {
-  if command -v bat >/dev/null 2>&1; then
-    bat -pp "$@"
-  else
-    command cat "$@"
-  fi
-}
+# Optional smarter cat: use bat if available, else fallback to real cat.
+# Set NO_SMART_CAT=1 to disable this behavior.
+if [[ -z "${NO_SMART_CAT:-}" ]]; then
+  cat() {
+    if command -v bat >/dev/null 2>&1; then
+      bat -pp "$@"
+    else
+      command cat "$@"
+    fi
+  }
+fi
 
 command -v networkQuality >/dev/null 2>&1 && alias netcheck='networkQuality'
 alias s='pmset displaysleepnow'      # Put the display to sleep immediately.
-alias v='source .venv/bin/activate'  # Activate a Python virtual environment.
-alias zmount='sudo zfs mount -a'
+
+# Activate nearest Python virtualenv named .venv (searches upward)
+v() {
+  local d="$PWD"
+  while [[ "$d" != "/" ]]; do
+    if [[ -f "$d/.venv/bin/activate" ]]; then
+      # shellcheck disable=SC1091
+      source "$d/.venv/bin/activate"
+      return
+    fi
+    d="${d:h}"
+  done
+  echo "No .venv found in current or parent directories."
+  return 1
+}
+
+# Only define if ZFS is present
+command -v zfs >/dev/null 2>&1 && alias zmount='sudo zfs mount -a'
 
 # ==============================================================================
 #  Productivity & Fun Aliases
 # ==============================================================================
 
-alias shrug="echo '¯\_(ツ)_/¯' | pbcopy"
-alias pw='pwgen -s -1 19 | pbcopy' # Generate a secure password and copy to clipboard.
-alias art='ascii-image-converter'
+alias shrug="printf '¯\\_(ツ)_/¯' | pbcopy"
+command -v pwgen >/dev/null 2>&1 && alias pw='pwgen -s -1 19 | pbcopy' # Generate a password → clipboard.
+command -v ascii-image-converter >/dev/null 2>&1 && alias art='ascii-image-converter'
 alias decrypt='gpg --decrypt ' # Trailing space enables filename completion.
 
 # ==============================================================================
@@ -46,14 +65,21 @@ alias decrypt='gpg --decrypt ' # Trailing space enables filename completion.
 alias dempty='~/.local/bin/remove_empty_dirs.sh '  # Trailing space enables path completion
 
 # ==============================================================================
-#  Homebrew & Development Aliases
+#  Homebrew & Development Aliases / Functions
 # ==============================================================================
 
-alias brewses='brew uses --installed '
+alias brewses='brew uses --installed'
 alias dump='brew bundle dump --force --file=~/mrk1/assets/Brewfile && cp -fv ~/mrk1/assets/Brewfile ~/'
-alias fixbrewperms='echo "⚠️  Fixing Homebrew permissions..." && sudo chown -R $(whoami) -- /opt/homebrew'
+
+# Safer Homebrew permission fixer
+fixbrewperms() {
+  echo "Fixing Homebrew permissions..."
+  sudo chown -R "$(whoami)":admin /opt/homebrew
+  sudo chmod -R g+rwx /opt/homebrew
+  brew doctor
+}
+
 alias update='topgrade'
-alias gpush='git push -u origin $(git rev-parse --abbrev-ref HEAD)'
 
 # ==============================================================================
 #  Utility Functions
@@ -69,11 +95,15 @@ c() {
 mc() {
   echo "Starting Minecraft 1.21.5 server..."
   if ! command -v java >/dev/null 2>&1; then
-    echo "❌ Java not found. Please install Java before running the Minecraft server."
+    echo "Java not found. Please install Java before running the Minecraft server."
+    return 1
+  fi
+  if [[ ! -d "$HOME/mcservers/1.21.5" ]]; then
+    echo "Server directory $HOME/mcservers/1.21.5 not found."
     return 1
   fi
   (
-    cd ~/mcservers/1.21.5 && \
+    cd "$HOME/mcservers/1.21.5" && \
     java -Xms10G -Xmx10G \
       -XX:+UseG1GC \
       -XX:+ParallelRefProcEnabled \
@@ -95,10 +125,11 @@ mc() {
       -XX:MaxTenuringThreshold=1 \
       -Dusing.aikars.flags=https://mcflags.emc.gs \
       -Daikars.new.flags=true \
-      -jar paper.jar
+      -jar paper.jar nogui
   )
 }
 
+# Commit, pull --rebase, and push helper. Usage: pushit "message"
 pushit() {
   local commit_message
   commit_message="${1:-Auto-commit on $(date '+%Y-%m-%d %H:%M')}"
@@ -118,7 +149,6 @@ pushit() {
 # --- mrk1 maintenance passthrough ---
 maint() { command mrk1-maint "$@"; }
 
-
 # --- Empty Directory Utilities (loops until fully pruned) ---
 
 __resolve_trash() {
@@ -127,7 +157,7 @@ __resolve_trash() {
   [[ -z "$tbin" && -x /opt/homebrew/opt/trash/bin/trash ]] && tbin=/opt/homebrew/opt/trash/bin/trash
   [[ -z "$tbin" && -x /usr/local/opt/trash/bin/trash    ]] && tbin=/usr/local/opt/trash/bin/trash
   if [[ -z "$tbin" ]]; then
-    echo "❌ 'trash' not found. Install with: brew install trash" >&2
+    echo "'trash' not found. Install with: brew install trash" >&2
     return 1
   fi
   echo "$tbin"
@@ -136,7 +166,7 @@ __resolve_trash() {
 # Preview (no deletion)
 showempties() {
   local target="${1:-.}"
-  echo "🔍 Searching recursively for empty directories under: $target"
+  echo "Searching recursively for empty directories under: $target"
   find "$target" -depth -type d -empty -print
 }
 
@@ -152,25 +182,25 @@ cleanempties() {
   echo "Cleaning under: $target"
 
   # Remove ignorable files first (so dirs can become empty)
-  echo "• Removing macOS cruft (.DS_Store, ._*, .localized, .gitkeep, Icon^M)"
+  echo "Removing macOS cruft (.DS_Store, ._*, .localized, .gitkeep, Icon^M)"
   find "$target" -depth \( \
     -name ".DS_Store" -o -name "._*" -o -name ".localized" -o -name ".gitkeep" -o -name "Icon"$'\r' \
   \) -type f -exec "$TRASH_BIN" {} + 2>/dev/null || true
 
   # First preview & (optional) confirmation
   local count
-  count="$(find "$target" -depth -mindepth 1 -type d -empty | wc -l | tr -d ' ')"
+  count="$(find "$target" -depth -mindepth 1 -type d -empty | awk 'END{print NR+0}')"
   if [[ "$count" == "0" ]]; then
-    echo "✅ No empty directories found."
+    echo "No empty directories found."
     return 0
   fi
 
   if [[ -z "$force" ]]; then
-    echo "• Found $count empty director$( [[ $count -eq 1 ]] && echo y || echo ies ):"
+    echo "Found $count empty director$( [[ $count -eq 1 ]] && echo y || echo ies ):"
     find "$target" -depth -mindepth 1 -type d -empty -print
     echo
     read -r "reply?Move these and any newly-empty parents to Trash? [y/N] "
-    [[ "$reply" =~ ^[Yy]$ ]] || { echo "❌ Cancelled."; return 0; }
+    [[ "$reply" =~ ^[Yy]$ ]] || { echo "Cancelled."; return 0; }
   fi
 
   # Cycle until nothing left
@@ -190,20 +220,32 @@ cleanempties() {
     ((iter++))
   done
 
-  echo "🗑️  Done. Fully pruned after $iter pass$( [[ $iter -eq 1 ]] && echo "" || echo "es")."
+  echo "Done. Fully pruned after $iter pass$( [[ $iter -eq 1 ]] && echo "" || echo "es")."
 }
 
-# Push WaxOn and WaxOff repos to GutHub
-alias waxup='
-  echo "🔄 WaxOn → pushing to GitHub...";
-  cd ~/WaxOn && git add . && git commit -m "Update WaxOn" --allow-empty && git push origin main;
-  echo "";
-  echo "🔄 WaxOff → pushing to GitHub...";
-  cd ~/WaxOff && git add . && git commit -m "Update WaxOff" --allow-empty && git push origin main;
-  echo "";
-  echo "✅ WaxOn + WaxOff pushed successfully.";
-  cd - >/dev/null
-'
+# Push WaxOn and WaxOff repos to GitHub
+waxup() {
+  local here=$PWD
+  if [[ -d "$HOME/WaxOn/.git" ]]; then
+    echo "WaxOn → pushing to GitHub..."
+    (cd "$HOME/WaxOn" && git add . && git commit -m "Update WaxOn" --allow-empty && git push origin main)
+  else
+    echo "WaxOn repo not found at \$HOME/WaxOn"
+  fi
+
+  echo
+
+  if [[ -d "$HOME/WaxOff/.git" ]]; then
+    echo "WaxOff → pushing to GitHub..."
+    (cd "$HOME/WaxOff" && git add . && git commit -m "Update WaxOff" --allow-empty && git push origin main)
+  else
+    echo "WaxOff repo not found at \$HOME/WaxOff"
+  fi
+
+  cd "$here" >/dev/null || true
+  echo
+  echo "WaxOn + WaxOff push completed."
+}
 
 # Short aliases
 alias se='showempties'

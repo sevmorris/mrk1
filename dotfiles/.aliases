@@ -63,11 +63,58 @@ alias decrypt='gpg --decrypt ' # Trailing space enables filename completion.
 # ==============================================================================
 
 alias dempty='~/.local/bin/remove_empty_dirs.sh '  # Trailing space enables path completion
-alias clean-ds='find "$HOME" -name ".DS_Store" \
-  -not -path "*/Library/*" \
-  -not -path "$HOME/Desktop/*" \
-  -not -path "/Volumes/*" \
-  -delete && echo "🧹 .DS_Store cleanup complete (Desktop and network drives excluded)."'
+
+# Clean .DS_Store files only on your local internal volume (no network/external),
+# skipping ~/Library and ~/Desktop (to preserve Desktop layout), with a quiet spinner + count.
+clean-ds() {
+  echo "🧹 Starting .DS_Store cleanup (local-only; Desktop & Library excluded)…"
+
+  TMPFILE=$(mktemp)
+
+  # Build safe local dirs on the same device as $HOME
+  local HOME_DEV SAFE_DIRS=() d base dev
+  HOME_DEV=$(df -P "$HOME" | tail -1 | awk '{print $1}')
+  for d in "$HOME"/*; do
+    [[ -d "$d" && ! -L "$d" ]] || continue
+    base=${d##*/}
+    case "$base" in Library|Desktop|.*) continue ;; esac
+    dev=$(df -P "$d" | tail -1 | awk '{print $1}')
+    [[ "$dev" == "$HOME_DEV" ]] && SAFE_DIRS+=("$d")
+  done
+  [[ ${#SAFE_DIRS[@]} -eq 0 ]] && { echo "ℹ️ No eligible local folders."; return 0; }
+
+  # Launch the cleanup in the BACKGROUND quietly, then disown it (no job-control messages).
+  set +m  # temporarily silence job control output
+  (
+    for d in "${SAFE_DIRS[@]}"; do
+      find "$d" -xdev -type f -name ".DS_Store" \
+        -not -path "*/Library/*" \
+        -not -path "$HOME/Desktop/*" \
+        -print -delete
+    done > "$TMPFILE"
+  ) >/dev/null 2>&1 &
+  local FINDPID=$!
+  disown -h "$FINDPID" 2>/dev/null || disown %+
+  set -m  # restore shell job control
+
+  # Foreground spinner that watches the background PID without generating job messages
+  {
+    local spin='|/-\' i=0
+    while kill -0 "$FINDPID" 2>/dev/null; do
+      printf "\r%s" "${spin:$(( (i++) % 4 )):1}"
+      sleep 0.2
+    done
+    printf "\r"
+  }
+
+  local COUNT
+  COUNT=$(wc -l < "$TMPFILE" | tr -d ' ')
+  rm -f "$TMPFILE"
+
+  printf "✅ .DS_Store cleanup complete — removed %s file%s.\n" "$COUNT" "$( [ "$COUNT" -eq 1 ] || echo 's' )"
+  echo "🔒 Searched only on: $HOME_DEV"
+  echo "📁 Folders scanned:"; for d in "${SAFE_DIRS[@]}"; do printf " • %s\n" "${d/$HOME/~}"; done
+}
 
 # ==============================================================================
 #  Homebrew & Development Aliases / Functions

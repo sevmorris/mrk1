@@ -63,6 +63,11 @@ alias decrypt='gpg --decrypt ' # Trailing space enables filename completion.
 # ==============================================================================
 
 alias dempty='~/.local/bin/remove_empty_dirs.sh '  # Trailing space enables path completion
+alias clean-ds='find "$HOME" -name ".DS_Store" \
+  -not -path "*/Library/*" \
+  -not -path "$HOME/Desktop/*" \
+  -not -path "/Volumes/*" \
+  -delete && echo "🧹 .DS_Store cleanup complete (Desktop and network drives excluded)."'
 
 # ==============================================================================
 #  Homebrew & Development Aliases / Functions

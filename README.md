@@ -11,21 +11,28 @@ Opinionated, idempotent bootstrap for a fresh macOS install: Homebrew + apps, sh
 ## Quick start
 
 ### Option A — Pinned (recommended)
-Pin the installer to a known-good commit SHA to reduce supply‑chain risk:
+Pin the installer to a known-good commit SHA to reduce supply‑chain risk. Use the **full 40-character SHA**:
 
 ```bash
 SHA="660eb1c87074c9046c1843ce1dc219b1ed38fd2b"
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/sevmorris/mrk1/$SHA/scripts/install)"
+TMP="$(mktemp -d)"
+git clone https://github.com/sevmorris/mrk1 "$TMP/mrk1"
+cd "$TMP/mrk1"
+git checkout "$SHA"
+./scripts/install
 ```
 
 ### Option B — Latest (advanced)
 Use the tip of the default branch:
 
 ```bash
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/sevmorris/mrk1/main/scripts/install)"
+TMP="$(mktemp -d)"
+git clone --depth 1 https://github.com/sevmorris/mrk1 "$TMP/mrk1"
+cd "$TMP/mrk1"
+./scripts/install
 ```
 
-> **Security note:** Always **read** `scripts/install` before running remote code.
+> **Security note:** Always **read** `scripts/install` before running it. The pinned flow above lets you audit the exact revision.
 
 ---
 
@@ -90,7 +97,7 @@ assets/
   Brewfile            # primary Homebrew bundle file
 bin/                  # small helper tools you want on PATH
 scripts/
-  install             # main installer (curl | bash safe to audit)
+  install             # main installer (clone and run; easy to audit)
   uninstall           # removes symlinks, optional defaults rollback
   defaults.sh         # apply defaults + author rollback
   ...

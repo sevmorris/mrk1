@@ -1,85 +1,41 @@
+\
 #!/usr/bin/env bash
-# mrk1 single-command installer (curl | bash safe)
-# Usage:
-#   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/sevmorris/mrk1/main/scripts/install)"
-
 set -euo pipefail
 IFS=$'\n\t'
 
-# ---------- helpers ----------
-ok()   { printf '\033[32m✓ %s\033[0m\n' "$*"; }
+ok() { printf '\033[32m✓ %s\033[0m\n' "$*"; }
 warn() { printf '\033[33m⚠ %s\033[0m\n' "$*"; }
-err()  { printf '\033[31m✗ %s\033[0m\n' "$*" >&2; }
+err() { printf '\033[31m✗ %s\033[0m\n' "$*" >&2; }
 
 set -E -o errtrace
 trap 'err "Failed at ${FUNCNAME[0]:-main} line $LINENO: $BASH_COMMAND"' ERR
 
-[ "${DEBUG:-0}" = "1" ] && set -x
-
-# ---------- constants ----------
-REPO_SLUG="sevmorris/mrk1"
-REPO_URL="https://github.com/${REPO_SLUG}.git"
-HOME_DIR="${HOME:-$PWD}"
-DEST_DIR="${HOME_DIR}/.local/bin"
-CHECKOUT_DIR="${HOME_DIR}/mrk1"
-
-# Determine script dir if run from a local file
+HOME_DIR="${HOME}"
 SCRIPT_PATH="${BASH_SOURCE[0]:-${0:-}}"
 if [[ -n "${SCRIPT_PATH}" && -f "${SCRIPT_PATH}" ]]; then
-# shellcheck disable=SC2034
+  # shellcheck disable=SC2034
   SCRIPT_DIR="$(cd "$(dirname "${SCRIPT_PATH}")" && pwd)"
 else
-# shellcheck disable=SC2034
+  # shellcheck disable=SC2034
   SCRIPT_DIR="$PWD"
 fi
 
-# ---------- repo ----------
-ensure_repo() {
-  if [[ -d "${CHECKOUT_DIR}/.git" ]]; then
-    ok "Using existing repo at ${CHECKOUT_DIR}"
-    (cd "${CHECKOUT_DIR}" && git fetch --all -q && git pull -q) || warn "Could not update repo at ${CHECKOUT_DIR}"
-  else
-    ok "Cloning ${REPO_SLUG} to ${CHECKOUT_DIR}"
-    git clone -q "${REPO_URL}" "${CHECKOUT_DIR}"
-  fi
-}
-
-# ---------- platform prereqs ----------
-ensure_xcode_tools() {
-  echo
-  echo "==> Checking for Xcode Command Line Tools..."
-  if ! xcode-select -p >/dev/null 2>&1; then
-    xcode-select --install || true
-    warn "If a dialog appeared, complete installation and re-run this installer."
-  else
-    ok "Xcode Command Line Tools already installed..."
-  fi
-}
-
-ensure_homebrew() {
-  echo
-  echo "==> Checking for Homebrew..."
-  if ! command -v brew >/dev/null 2>&1; then
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    if [[ -f /opt/homebrew/bin/brew ]]; then
-      eval "$(/opt/homebrew/bin/brew shellenv)"
-    elif [[ -f /usr/local/bin/brew ]]; then
-      eval "$(/usr/local/bin/brew shellenv)"
+ensure_cli_tools() {
+  if [[ "$(uname -s)" == "Darwin" ]]; then
+    if ! xcode-select -p >/dev/null 2>&1; then
+      xcode-select --install || true
+      warn "Install Xcode Command Line Tools and re-run."
+    else
+      ok "Xcode CLT present"
     fi
-    ok "Homebrew installed."
-  else
-    ok "Homebrew already installed..."
   fi
-  echo "==> Updating Homebrew..."
-  brew update || warn "brew update failed (continuing)"
 }
 
-brew_core_tools() {
-  echo
+install_core_brew() {
   echo "==> Installing core tools via Homebrew Bundle..."
   local bf_core
   bf_core="$(mktemp)"
-  cat > "${bf_core}" <<'BREW'
+  cat >"${bf_core}" <<'BREW'
 brew "git"
 brew "gh"
 brew "zsh"
@@ -87,178 +43,56 @@ brew "coreutils"
 brew "topgrade"
 brew "bat"
 brew "pwgen"
-cask "iterm2"
-cask "pulsar"
+brew "shellcheck"
+brew "shfmt"
 BREW
-  if ! brew bundle --file "${bf_core}"; then
-    warn "brew bundle core tools failed (continuing)"
-  else
-    ok "Core tools installed..."
+  if command -v brew >/dev/null 2>&1; then
+    brew bundle --file "${bf_core}" || true
   fi
+  rm -f "${bf_core}"
+  ok "Core brew ensured"
 }
 
-install_ohmyzsh() {
-  echo
-  echo "==> Checking for Oh My Zsh..."
-  if [[ -d "${HOME_DIR}/.oh-my-zsh" ]]; then
-    ok "Oh My Zsh already installed..."
-  else
-    RUNZSH=no CHSH=no KEEP_ZSHRC=yes sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-    ok "Oh My Zsh installed..."
-  fi
-}
-
-install_zsh_plugins() {
-  echo
-  echo "==> Installing Zsh plugins..."
-  local ZSH_CUSTOM="${HOME_DIR}/.oh-my-zsh/custom"
-  mkdir -p "${ZSH_CUSTOM}/plugins"
-  if [[ -d "${ZSH_CUSTOM}/plugins/zsh-syntax-highlighting" ]]; then
-    ok "zsh-syntax-highlighting already installed..."
-  else
-    git clone -q https://github.com/zsh-users/zsh-syntax-highlighting.git "${ZSH_CUSTOM}/plugins/zsh-syntax-highlighting"
-    ok "zsh-syntax-highlighting installed..."
-  fi
-  if [[ -d "${ZSH_CUSTOM}/plugins/zsh-autosuggestions" ]]; then
-    ok "zsh-autosuggestions already installed..."
-  else
-    git clone -q https://github.com/zsh-users/zsh-autosuggestions "${ZSH_CUSTOM}/plugins/zsh-autosuggestions"
-    ok "zsh-autosuggestions installed..."
-  fi
-}
-
-# ---------- PATH management ----------
 ensure_local_bin_on_path() {
-
-# shellcheck disable=SC2016
-SNIPPET=$(cat <<'EOF'
+  # shellcheck disable=SC2016
+  SNIPPET=$(
+    cat <<'EOF'
 [ -d "$HOME/.local/bin" ] && case ":$PATH:" in *":$HOME/.local/bin:"*) ;; *) export PATH="$HOME/.local/bin:$PATH";; esac
 EOF
-)
-
+  )
 
   local MARK_OPEN="# >>> mrk1 PATH >>>"
   local MARK_CLOSE="# <<< mrk1 PATH <<<"
 
-  ensure_snippet() {
+  add_snippet() {
     local file="$1"
-    [[ -f "$file" ]] || touch "$file"
-    if ! grep -Fq "$MARK_OPEN" "$file"; then
+    if ! grep -q "$MARK_OPEN" "$file" 2>/dev/null; then
       {
         echo ""
         echo "$MARK_OPEN"
         echo "$SNIPPET"
         echo "$MARK_CLOSE"
-      } >> "$file"
+      } >>"$file"
       ok "Added ${HOME}/.local/bin to PATH in ${file/$HOME_DIR/\~}"
     fi
   }
 
-  ensure_snippet "${HOME_DIR}/.zprofile"
-  ensure_snippet "${HOME_DIR}/.zshrc"
+  mkdir -p "$HOME/.local/bin"
+  touch "$HOME/.zshrc" "$HOME/.zprofile" "$HOME/.zshenv"
+  add_snippet "$HOME/.zshrc"
+  add_snippet "$HOME/.zprofile"
 }
 
-# ---------- dotfiles & scripts ----------
-setup_dotfiles_and_scripts() {
-  echo
-  echo "==> Setting up dotfiles and scripts..."
-  ensure_repo
-  local REPO_DIR="${CHECKOUT_DIR}"
-  local ASSETS_DIR="${REPO_DIR}/assets"
-  local DOTFILES_DIR="${REPO_DIR}/dotfiles"
-  local SCRIPTS_DIR="${REPO_DIR}/scripts"
-
-  echo "Copying static configuration files..."
-  if [[ -f "${ASSETS_DIR}/topgrade.toml" ]]; then
-    mkdir -p "${HOME_DIR}/.config"
-    cp -f "${ASSETS_DIR}/topgrade.toml" "${HOME_DIR}/.config/topgrade.toml"
-    ok "topgrade.toml installed."
-  else
-    warn "topgrade.toml not found at ${ASSETS_DIR}/topgrade.toml, skipping..."
-  fi
-
-  echo "Creating symlinks for dotfiles..."
-  if [[ -d "${DOTFILES_DIR}" ]]; then
-    # Helper: map "aliases" -> "${HOME}/.aliases", ".aliases" -> "${HOME}/.aliases"
-    dotlink_dest() {
-      local name="$1"
-      if [[ "$name" == .* ]]; then
-        printf "%s/%s" "$HOME_DIR" "$name"
-      else
-        printf "%s/.%s" "$HOME_DIR" "$name"
-      fi
-    }
-
-    find "${DOTFILES_DIR}" -maxdepth 1 -type f -print0 | while IFS= read -r -d '' src; do
-      base="$(basename "$src")"
-      dest="$(dotlink_dest "$base")"
-      if [[ "$(readlink "$dest" 2>/dev/null || true)" == "$src" ]]; then
-        ok "symlink exists: $dest"
-      else
-        rm -rf "$dest"
-        ln -s "$src" "$dest"
-        ok "linked: $dest -> $src"
-      fi
-    done
-  else
-    warn "dotfiles directory not found at ${DOTFILES_DIR}; skipping..."
-  fi
-
-  echo "Marking repo scripts executable..."
-  if [[ -d "${SCRIPTS_DIR}" ]]; then
-    # chmod +x only shebang-marked, non-empty files
-    find "${SCRIPTS_DIR}" -maxdepth 1 -type f -print0 | while IFS= read -r -d '' src; do
-      if [[ -s "$src" ]] && head -n1 "$src" | grep -q '^#!'; then
-        chmod +x "$src" || warn "chmod +x failed on $src"
-      fi
-    done
-    ok "Scripts marked executable."
-  fi
-
-  echo "Linking executable scripts into ${HOME}/.local/bin..."
-  mkdir -p "${DEST_DIR}"
-  if [[ -d "${SCRIPTS_DIR}" ]]; then
-    find "${SCRIPTS_DIR}" -maxdepth 1 -type f ! -name 'doctor' ! -name 'bootstrap' -print0 | while IFS= read -r -d '' src; do
-      # Only link shebang-marked, non-empty files
-      if [[ -s "$src" ]] && head -n1 "$src" | grep -q '^#!'; then
-        base="$(basename "$src")"
-        dest="${DEST_DIR}/${base}"
-        if [[ "$(readlink "$dest" 2>/dev/null || true)" == "$src" ]]; then
-          ok "symlink exists: $dest"
-        else
-          rm -rf "$dest"
-          ln -sf "$src" "$dest"
-          ok "linked: $dest -> $src"
-        fi
-      fi
-    done
-  else
-    warn "scripts directory not found at ${SCRIPTS_DIR}"
-  fi
-}
-
-# ---------- post install ----------
-refresh_shell_cache() {
-  hash -r 2>/dev/null || true
-  if command -v rehash >/dev/null 2>&1; then rehash || true; fi
-}
-
-# ---------- main ----------
 main() {
-  ensure_xcode_tools
-  ensure_homebrew
-  brew_core_tools
-  install_ohmyzsh
-  install_zsh_plugins
-  setup_dotfiles_and_scripts
+  ensure_cli_tools
+  install_core_brew
   ensure_local_bin_on_path
-  refresh_shell_cache
-  echo
-  ok "Install complete."
-  echo "• ${HOME}/.local/bin ensured on PATH (added to ${HOME}/.zprofile and ${HOME}/.zshrc if missing)"
-  echo "• Scripts marked executable and linked into ${HOME}/.local/bin"
-  echo "• Shell command cache refreshed"
-  echo "Open a new terminal, or run:  source ${HOME}/.zprofile && exec zsh"
+
+  # hand off to Make if present
+  if [[ -f "${SCRIPT_DIR}/../Makefile" ]]; then
+    ( cd "${SCRIPT_DIR}/.." && make fix-exec && make bootstrap )
+  fi
+  ok "Install complete"
 }
 
 main "$@"

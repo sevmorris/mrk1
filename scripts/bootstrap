@@ -1,181 +1,102 @@
+\
 #!/usr/bin/env bash
-# Safe mode
-set -Eeuo pipefail
-DRY_RUN=0
+set -euo pipefail
 IFS=$'\n\t'
 
 # Error trap
 err() { printf "\033[31m✗ %s\033[0m\n" "$*" >&2; }
-ok()  { printf "\033[32m✓ %s\033[0m\n" "$*"; }
-warn(){ printf "\033[33m⚠ %s\033[0m\n" "$*"; }
+ok() { printf "\033[32m✓ %s\033[0m\n" "$*"; }
+warn() { printf "\033[33m⚠ %s\033[0m\n" "$*"; }
 trap 'err "Failed at ${FUNCNAME[0]:-main} line $LINENO: $BASH_COMMAND"' ERR
 
 # Optional tracing
-[[ -n "${DEBUG:-}" ]] && set -x
+[[ "${TRACE:-0}" == "1" ]] && set -x
 
-# Dry-run support
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+DOTFILES_DIR="${REPO_ROOT}/dotfiles"
+SCRIPTS_DIR="${REPO_ROOT}/scripts"
+BREWFILE="${REPO_ROOT}/assets/Brewfile"
 
 run() {
-  printf "+ "; printf "%q " "$@"; printf "
-"
+  printf "+ "
+  printf "%q " "$@"
+  printf "\n"
   "$@"
 }
-
 
 usage() {
   cat <<'USAGE'
 mrk1 bootstrap
-
-Usage:
-  bootstrap bootstrap   # full flow
-  bootstrap brew        # brew bundle only
-  bootstrap dotfiles    # link dotfiles from dotfiles/
-  bootstrap tools       # link executable scripts into ~/.local/bin
-  bootstrap defaults    # apply macOS defaults (Darwin only)
-  bootstrap doctor      # run doctor if present (non-fatal if missing)
-  bootstrap help        # show this help
+Usage: bootstrap [bootstrap|brew|dotfiles|tools|defaults|doctor|help]
 USAGE
 }
 
-# Paths
-REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-ASSETS_DIR="${REPO_DIR}/assets"
-DOTFILES_DIR="${REPO_DIR}/dotfiles"
-SCRIPTS_DIR="${REPO_DIR}/scripts"
-DEST_DIR="${HOME}/.local/bin"
-
-ensure_dirs() {
-  run mkdir -p "${DEST_DIR}"
-}
-
 run_brew_bundle() {
-  local ran=0
-  shopt -s nullglob
-  for bf in "${ASSETS_DIR}/Brewfile" "${REPO_DIR}/Brewfile"; do
-    if [[ -f "$bf" ]]; then
-      ok "Using Brewfile: $bf"
-      if [[ "${DRY_RUN}" == "1" ]]; then
-        run brew bundle --file "$bf"
-      else
-        local log; log="$(mktemp -t mrk1-brew.XXXXXX)"
-        # Capture stdout+stderr so we can search for common failure patterns
-        if brew bundle --file "$bf" > >(tee -a "$log") 2>&1; then
-          :
-        else
-          warn "brew bundle exited with non-zero status (continuing)"
-        fi
-
-        # Parse for SHA-256 mismatch blocks and 404s and print guidance
-        if grep -q 'SHA-256 mismatch' "$log"; then
-          # Try to extract the last 'Installing <cask>' line to name the cask
-          local cask="the-cask"
-          local install_line
-          install_line="$(grep -E '^(Installing|==> Installing) ' "$log" | tail -n1)"
-          if [[ -n "$install_line" ]]; then
-            cask="${install_line##* }"
-          fi
-
-          local cache_path
-          cache_path="$(grep -E 'File:\s*/.*/Library/Caches/Homebrew/downloads/.*' "$log" | awk -F'File: ' '{print $2}' | tail -n1)"
-          local BOLD="\033[1m" YELLOW="\033[33m" DIM="\033[2m" RESET="\033[0m"
-          printf "%b%b\n" "$BOLD$YELLOW" "Brew reported a SHA-256 mismatch (continuing)."
-          printf "%b%s\n" "$DIM" "This usually means the vendor replaced the DMG or the local cache is stale."
-          printf "%s\n" "To fix:"
-          if [[ -n "$cache_path" ]]; then
-            printf "  rm -f %q\n" "$cache_path"
-          else
-            printf "  rm -f \"\$HOME/Library/Caches/Homebrew/downloads/<filename>.dmg\"\n"
-          fi
-          printf "  brew fetch --cask %s --force --retry\n" "$cask"
-          printf "  brew install --cask %s\n" "$cask"
-          printf "%b\n" "$RESET"
-        fi
-
-        if grep -q 'curl: (22) The requested URL returned error: 404' "$log"; then
-          local BOLD="\033[1m" YELLOW="\033[33m" DIM="\033[2m" RESET="\033[0m"
-          printf "%b%b\n" "$BOLD$YELLOW" "Brew encountered a 404 while fetching a cask (continuing)."
-          printf "%b%s\n" "$DIM" "This can happen when upstream renames an artifact or a release is moved."
-          printf "%s\n" "Try:"
-          printf "  brew update\n"
-          printf "  brew update-reset\n"
-          printf "  brew fetch --cask <caskname> --force --retry\n"
-          printf "  brew install --cask <caskname>\n"
-          printf "%b\n" "$RESET"
-        fi
-
-        rm -f "$log"
-      fi
-      ran=1
-      break
+  if [[ -f "$BREWFILE" ]]; then
+    ok "Using Brewfile: $BREWFILE"
+    if [[ "${DRY_RUN:-0}" == "1" ]]; then
+      run brew bundle --file "$BREWFILE"
+    else
+      local log
+      log="$(mktemp -t mrk1-brew.XXXXXX)"
+      if brew bundle --file "$BREWFILE" > >(tee -a "$log") 2>&1; then :; fi
     fi
-  done
-  shopt -u nullglob
-  if [[ $ran -eq 0 ]]; then
-    err "No Brewfile found in assets/ or repo root"
-    return 1
+  else
+    warn "No Brewfile found at $BREWFILE"
   fi
 }
-
 
 link_dotfiles() {
   if [[ ! -d "${DOTFILES_DIR}" ]]; then
     warn "dotfiles/ missing; skipping"
     return 0
   fi
-  # iterate top-level files only
-  while IFS= read -r -d '' src; do
-    local base dest
+
+  for src in "${DOTFILES_DIR}"/.*; do
+    [[ -f "$src" ]] || continue
+    local base dest target
     base="$(basename "$src")"
     case "$base" in
-      .*) dest="${HOME}/${base}" ;;  # already has a leading dot
-      *)  dest="${HOME}/.${base}" ;;
+      .*) dest="${HOME}/${base}" ;;
+      *) dest="${HOME}/.${base}" ;;
     esac
     if [[ -L "$dest" || -e "$dest" ]]; then
-      local target
-      target="$(readlink "$dest" 2>/dev/null || true)"
+      target="$(readlink "$dest" || true)"
       if [[ "$target" == "$src" ]]; then
         ok "symlink exists: $dest"
+        continue
       else
-        run mv "$dest" "${dest}.bak.$(date +%s)"
-        run ln -s "$src" "$dest"
-        ok "linked: $dest -> $src"
+        warn "$dest exists; replacing with symlink"
+        rm -rf "$dest"
       fi
-    else
-      run ln -s "$src" "$dest"
-      ok "linked: $dest -> $src"
     fi
-  done < <(find "${DOTFILES_DIR}" -maxdepth 1 -type f -print0)
+    run ln -s "$src" "$dest"
+    ok "linked: $dest -> $src"
+  done
 }
 
 link_tools() {
-  ensure_dirs
-  # link any shebang-bearing scripts except doctor/bootstrap
-  while IFS= read -r -d '' src; do
-    if head -n1 "$src" | grep -q '^#!'; then
-      local base dest
-      base="$(basename "$src")"
-      dest="${DEST_DIR}/${base}"
-      if [[ -L "$dest" || -e "$dest" ]]; then
-        local target
-        target="$(readlink "$dest" 2>/dev/null || true)"
-        if [[ "$target" == "$src" ]]; then
-          ok "symlink exists: $dest"
-        else
-          run mv "$dest" "${dest}.bak.$(date +%s)"
-          run ln -sf "$src" "$dest"
-          ok "linked: $dest -> $src"
-        fi
-      else
-        run ln -sf "$src" "$dest"
-        ok "linked: $dest -> $src"
-      fi
+  mkdir -p "${HOME}/.local/bin"
+  for src in "${SCRIPTS_DIR}"/*; do
+    [[ -f "$src" ]] || continue
+    head -n1 "$src" | grep -q '^#!' || continue
+    chmod +x "$src" || true
+    dest="${HOME}/.local/bin/$(basename "$src")"
+    ln -sfn "$src" "$dest"
+    ok "linked: $dest -> $src"
+    # clean legacy .sh
+    legacy="${dest}.sh"
+    if [[ -L "$legacy" && "$(readlink "$legacy")" == "$src" ]]; then
+      rm -f "$legacy"
     fi
-  done < <(find "${SCRIPTS_DIR}" -maxdepth 1 -type f ! -name 'doctor' ! -name 'bootstrap' -print0)
+  done
 }
 
 run_defaults() {
   if [[ "$(uname -s)" != "Darwin" ]]; then
-    warn "defaults only supported on macOS (Darwin)"; return 0
+    warn "defaults only supported on macOS (Darwin)"
+    return 0
   fi
   if [[ -f "${SCRIPTS_DIR}/defaults.sh" ]]; then
     run bash "${SCRIPTS_DIR}/defaults.sh"
@@ -185,21 +106,27 @@ run_defaults() {
 }
 
 run_doctor() {
-  if [[ -f "${SCRIPTS_DIR}/doctor" ]]; then
-    run bash "${SCRIPTS_DIR}/doctor"
-  else
-    warn "no doctor script"
-  fi
+  PATH="$HOME/.local/bin:$PATH" bash "${SCRIPTS_DIR}/doctor"
 }
 
 cmd="${1:-help}"
 case "$cmd" in
-  bootstrap) run_brew_bundle; link_dotfiles; link_tools; run_defaults; run_doctor ;;
-  brew)      run_brew_bundle ;;
-  dotfiles)  link_dotfiles ;;
-  tools)     link_tools ;;
-  defaults)  run_defaults ;;
-  doctor)    run_doctor ;;
+  bootstrap)
+    run_brew_bundle
+    link_dotfiles
+    link_tools
+    run_defaults
+    run_doctor
+    ;;
+  brew) run_brew_bundle ;;
+  dotfiles) link_dotfiles ;;
+  tools) link_tools ;;
+  defaults) run_defaults ;;
+  doctor) run_doctor ;;
   help|-h|--help) usage ;;
-  *) err "unknown command: $cmd"; usage; exit 1 ;;
+  *)
+    err "unknown command: $cmd"
+    usage
+    exit 1
+    ;;
 esac

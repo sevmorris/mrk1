@@ -1,42 +1,43 @@
+\
 #!/usr/bin/env bash
 set -euo pipefail
 IFS=$'\n\t'
 
-ok()   { printf '\033[32m✓ %s\033[0m\n' "$*"; }
+ok() { printf '\033[32m✓ %s\033[0m\n' "$*"; }
 warn() { printf '\033[33m⚠ %s\033[0m\n' "$*"; }
-err()  { printf '\033[31m✗ %s\033[0m\n' "$*" >&2; }
+err() { printf '\033[31m✗ %s\033[0m\n' "$*" >&2; }
 
-MODE="${1:-check}"   # check | --fix | fix
+MODE="${1:-check}" # check | --fix | fix
 STATUS=0
 
 check_brew() {
-  if ! command -v brew >/dev/null 2>&1; then
-    warn "Homebrew not found on PATH"
-    STATUS=1
-  else
+  if command -v brew >/dev/null 2>&1; then
     ok "Homebrew present: $(brew --version | head -n1)"
+  else
+    warn "Homebrew not installed"
+    STATUS=1
   fi
 }
 
 check_localbin() {
   case ":$PATH:" in
     *":$HOME/.local/bin:"*) ok "${HOME}/.local/bin is on PATH" ;;
-    *) warn "${HOME}/.local/bin is NOT on PATH"; STATUS=1 ;;
+    *)
+      warn "${HOME}/.local/bin is NOT on PATH"
+      STATUS=1
+      ;;
   esac
 }
 
 fix_localbin() {
-  # add to ${HOME}/.zshrc if missing
-  local target="$HOME/.zshrc"
-  if [ -f "$target" ] && grep -qs '\.local/bin' "$target"; then
-    ok "${HOME}/.local/bin already referenced in $target"
-  else
-    cat >>"$target" <<'EOF'
-
-export PATH="$HOME/.local/bin:$PATH"
-EOF
-
-    ok "Appended ${HOME}/.local/bin to PATH in $target"
+  mkdir -p "$HOME/.local/bin"
+  if ! grep -q ".local/bin" "${HOME}/.zshrc" 2>/dev/null; then
+    {
+      echo ''
+      echo '# Added by mrk1 doctor'
+      echo '[ -d "$HOME/.local/bin" ] && case ":$PATH:" in *":$HOME/.local/bin:"*) ;; *) export PATH="$HOME/.local/bin:$PATH";; esac'
+    } >> "${HOME}/.zshrc"
+    ok "Added ~/.local/bin to PATH in .zshrc"
   fi
 }
 
@@ -47,12 +48,13 @@ case "$MODE" in
     exit "${STATUS}"
     ;;
   --fix|fix)
-    # tolerate missing brew; still try to fix PATH
     check_brew || true
     fix_localbin
-    ok "Fix pass complete."
+    ok "Fixes applied"
     exit 0
     ;;
   *)
-    err "Unknown mode: $MODE"; exit 2 ;;
+    err "Unknown mode: $MODE"
+    exit 2
+    ;;
 esac

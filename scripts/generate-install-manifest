@@ -2,7 +2,6 @@
 #!/usr/bin/env bash
 # scripts/generate-install-manifest — scan user space and record items created by mrk1
 # Writes a conservative manifest at .install-manifest in the repo root.
-# This avoids modifying existing install scripts; run it after bootstrap/installation.
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -11,7 +10,6 @@ MANIFEST="$REPO_ROOT/.install-manifest"
 
 echo "🧾 Generating install manifest → $MANIFEST"
 
-# Config: tweak if your repo structure changes
 DOTFILES=(.zshrc .zshenv .zprofile .aliases)
 CANDIDATE_BIN_DIRS=("$HOME/.local/bin" "$HOME/bin")
 CONFIG_DIRS=("$HOME/.config/mrk1" "$HOME/.mrk1")
@@ -23,40 +21,32 @@ print(os.path.realpath(sys.argv[1]))
 PY
 }
 
-# Start a fresh manifest with header
 {
   echo "# mrk1 install manifest"
   echo "# Generated: $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
   echo "# Only paths safe to remove on uninstall are recorded below."
 } > "$MANIFEST"
 
-# 1) Record helper script symlinks that target this repo
 for bindir in "${CANDIDATE_BIN_DIRS[@]}"; do
   [[ -d "$bindir" ]] || continue
   while IFS= read -r -d '' link; do
     target="$(resolve_realpath "$link")"
     case "$target" in
-      "$REPO_ROOT"/scripts/*)
-        echo "$link" >> "$MANIFEST"
-        ;;
+      "$REPO_ROOT"/scripts/*) echo "$link" >> "$MANIFEST" ;;
     esac
   done < <(find "$bindir" -maxdepth 1 -type l -print0 2>/dev/null || true)
 done
 
-# 2) Record dotfile symlinks that point into repo/dotfiles
 for f in "${DOTFILES[@]}"; do
   path="$HOME/$f"
   if [[ -L "$path" ]]; then
     tgt="$(resolve_realpath "$path")"
     case "$tgt" in
-      "$REPO_ROOT"/dotfiles/*)
-        echo "$path" >> "$MANIFEST"
-        ;;
+      "$REPO_ROOT"/dotfiles/*) echo "$path" >> "$MANIFEST" ;;
     esac
   fi
 done
 
-# 3) Record mrk1 config dirs if present
 for d in "${CONFIG_DIRS[@]}"; do
   [[ -e "$d" ]] && echo "$d" >> "$MANIFEST"
 done

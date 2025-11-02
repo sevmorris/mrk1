@@ -1,150 +1,61 @@
+\
 #!/usr/bin/env bash
 set -euo pipefail
 
-# =========================
 # Config (env-overridable)
-# =========================
 : "${SYNCALL_ROOT:="$HOME"}"
-: "${SYNCALL_MAX_DEPTH:=7}"                 # search depth under $HOME (if supported by find)
-: "${SYNCALL_ONLY_GITHUB:=1}"               # 1 = only repos whose remotes include github.com
-: "${SYNCALL_DRY_RUN:=0}"                   # 1 = preview only (or pass --dry-run)
+: "${SYNCALL_MAX_DEPTH:=7}"   # search depth under $HOME (if supported by find)
+: "${SYNCALL_ONLY_GITHUB:=1}" # 1 = only repos whose remotes include github.com
+: "${SYNCALL_DRY_RUN:=0}"     # 1 = preview only (or pass --dry-run)
 : "${SYNCALL_EXCLUDES:="$HOME/Library:$HOME/.Trash:$HOME/.venvs:$HOME/.cache:$HOME/.cargo:$HOME/.npm:_build:node_modules:.git/modules"}"
-: "${SYNCALL_DEFAULT_REMOTE:=origin}"       # fallback remote if no upstream is set
+: "${SYNCALL_DEFAULT_REMOTE:=origin}" # fallback remote if no upstream is set
 
-# Optional: set to your GH username to only include repos you "own" (skips vendor clones)
+# Optional: set to your GH username to only include repos you "own"
 # export SYNCALL_GH_OWNER="sevmorris"
 
-# =========================
 # Colors
-# =========================
 if command -v tput >/dev/null 2>&1 && [[ -t 1 ]]; then
-  bold=$(tput bold); green=$(tput setaf 2); cyan=$(tput setaf 6); yellow=$(tput setaf 3); red=$(tput setaf 1); reset=$(tput sgr0)
+  bold=$(tput bold)
+  green=$(tput setaf 2)
+  cyan=$(tput setaf 6)
+  yellow=$(tput setaf 3)
+  red=$(tput setaf 1)
+  reset=$(tput sgr0)
 else
   bold=""; green=""; cyan=""; yellow=""; red=""; reset=""
 fi
-log()  { printf "%s%s%s\n" "$cyan" "$*" "$reset"; }
+log() { printf "%s%s%s\n" "$cyan" "$*" "$reset"; }
 good() { printf "%s%s%s\n" "$green" "$*" "$reset"; }
 warn() { printf "%s%s%s\n" "$yellow" "$*" "$reset"; }
-err()  { printf "%s%s%s\n" "$red" "$*" "$reset" >&2; }
+err() { printf "%s%s%s\n" "$red" "$*" "$reset" >&2; }
 
-# =========================
 # Git helpers
-# =========================
-
-git_toplevel() {
-  local dir="${1:?}"
-  git -C "$dir" rev-parse --is-inside-work-tree >/dev/null 2>&1 || return 1
-  git -C "$dir" rev-parse --show-toplevel 2>/dev/null
-}
-
-is_github_repo() {
-  local dir="${1:?}"
-  local urls
-  urls=$(git -C "$dir" remote -v 2>/dev/null | awk '{print $2}' || true)
-  [[ -n "$urls" ]] && grep -qi 'github\.com' <<<"$urls"
-}
-
-# Resolve branch and remote we'll use
-resolve_branch_remote() {
-  local dir="${1:?}"
-  local branch remote upstream
-
-  branch="$(git -C "$dir" symbolic-ref --quiet --short HEAD 2>/dev/null || true)"
-  [[ -z "$branch" || "$branch" == "HEAD" ]] && return 1
-
-  upstream="$(git -C "$dir" rev-parse --abbrev-ref --symbolic-full-name '@{u}' 2>/dev/null || true)"
-  if [[ -n "$upstream" ]]; then
-    remote="${upstream%%/*}"
-  else
-    remote="$(git -C "$dir" remote 2>/dev/null | head -n1 || true)"
-    [[ -z "$remote" ]] && remote="$SYNCALL_DEFAULT_REMOTE"
-  fi
-
-  [[ -n "$remote" ]] || return 1
-  printf '%s %s\n' "$branch" "$remote"
-}
-
-# Extract GitHub owner from a remote URL
-gh_owner_from_url() {
-  local url="$1"
-  # Matches: git@github.com:OWNER/REPO(.git)?  OR  https://github.com/OWNER/REPO(.git)?
-  if [[ "$url" =~ github\.com[:/]+([^/]+)/[^/]+(\.git)?$ ]]; then
-    printf '%s\n' "${BASH_REMATCH[1]}"
-  fi
-}
-
-# Can we PUSH to this repo? Non-destructive, no prompts.
-can_push_repo() {
-  local dir="${1:?}"
-  local branch remote url owner
-
-  # Must be on a named branch with a remote
-  read -r branch remote < <(resolve_branch_remote "$dir") || return 1
-
-  # Quick fetch-permission sanity (fast failure if totally unreachable)
-  git -C "$dir" ls-remote --exit-code "$remote" &>/dev/null || return 1
-
-  # Optional owner filter (skip if remote owner != SYNCALL_GH_OWNER)
-  if [[ -n "${SYNCALL_GH_OWNER:-}" ]]; then
-    url="$(git -C "$dir" remote get-url --push "$remote" 2>/dev/null || git -C "$dir" remote get-url "$remote" 2>/dev/null || true)"
-    owner="$(gh_owner_from_url "$url" || true)"
-    if [[ -n "$owner" && "$owner" != "$SYNCALL_GH_OWNER" ]]; then
-      return 1
-    fi
-  fi
-
-  # Real push-permission probe: dry-run push to remote/branch.
-  # Disable any interactive auth prompts.
-  GIT_TERMINAL_PROMPT=0 \
-  git -C "$dir" push --dry-run -q "$remote" "HEAD:$branch" &>/dev/null
+git_toplevel() { git -C "$1" rev-parse --show-toplevel 2>/dev/null; }
+has_remote_github() { git -C "$1" remote -v | grep -q 'github\.com'; }
+current_branch() { git -C "$1" rev-parse --abbrev-ref HEAD 2>/dev/null; }
+can_push() {
+  local dir="$1" remote="${2:-$SYNCALL_DEFAULT_REMOTE}" branch
+  branch="$(current_branch "$dir")" || return 1
+  GIT_TERMINAL_PROMPT=0 git -C "$dir" push --dry-run -q "$remote" "HEAD:$branch" &>/dev/null
 }
 
 push_repo() {
-  local repo_dir="${1:?}"
-  local branch remote
-  read -r branch remote < <(resolve_branch_remote "$repo_dir" 2>/dev/null || echo " _ _")
-  if [[ -z "$branch" || -z "$remote" || "$branch" == "_" ]]; then
-    warn "Skipping $repo_dir (no branch/remote)."
-    return 0
+  local dir="$1" remote="${2:-$SYNCALL_DEFAULT_REMOTE}" branch
+  branch="$(current_branch "$dir")" || return 1
+  if [[ "${SYNCALL_DRY_RUN}" == "1" ]]; then
+    log "DRY-RUN: would push $dir ($remote → $branch)"
+  else
+    git -C "$dir" push "$remote" "HEAD:$branch" && good "pushed: $dir"
   fi
-
-  echo
-  log "${bold}Processing repository:${reset} $repo_dir"
-
-  if [[ "$SYNCALL_DRY_RUN" -eq 1 ]]; then
-    good "[dry-run] Would sync"
-    return 0
-  fi
-
-  # Commit local changes if present
-  if [[ -n "$(git -C "$repo_dir" status --porcelain)" ]]; then
-    echo "Local changes detected. Staging and committing…"
-    git -C "$repo_dir" add -A
-    git -C "$repo_dir" commit -m "WIP: Auto-sync local changes on $(date '+%Y-%m-%d %H:%M:%S')" || true
-    good "Local changes committed."
-  fi
-
-  echo "Syncing (pull --rebase, then push)…"
-  if ! git -C "$repo_dir" pull --rebase "$remote" "$branch"; then
-    warn "Pull failed; continuing."
-  fi
-
-  if ! git -C "$repo_dir" push "$remote" "HEAD:$branch"; then
-    err "Push failed."
-    return 1
-  fi
-  good "Repository up to date."
 }
 
-# =========================
-# Repo discovery
-# =========================
 build_prune_expr() {
-  local IFS=':'; read -r -a paths <<<"$SYNCALL_EXCLUDES"
+  local IFS=':'
+  read -r -a paths <<<"$SYNCALL_EXCLUDES"
   PRUNE_EXPR=()
   for p in "${paths[@]}"; do
     [[ -z "$p" ]] && continue
-    PRUNE_EXPR+=( -path "$p" -o )
+    PRUNE_EXPR+=(-path "$p" -o)
   done
   if ((${#PRUNE_EXPR[@]} >= 1)) && [[ "${PRUNE_EXPR[-1]}" == "-o" ]]; then
     unset 'PRUNE_EXPR[-1]'
@@ -156,77 +67,43 @@ discover_repos() {
   local have_maxdepth=0
   if find . -maxdepth 0 -print >/dev/null 2>&1; then have_maxdepth=1; fi
 
-  local -a cmd=( find "$SYNCALL_ROOT" -xdev )
-  if [[ $have_maxdepth -eq 1 ]]; then cmd+=( -maxdepth "$SYNCALL_MAX_DEPTH" ); fi
-  if ((${#PRUNE_EXPR[@]})); then cmd+=( \( "${PRUNE_EXPR[@]}" \) -prune -o ); fi
-  cmd+=( \( -type d -name .git -o -type f -name .git \) -print )
+  local -a cmd=(find "$SYNCALL_ROOT" -xdev)
+  if [[ $have_maxdepth -eq 1 ]]; then cmd+=(-maxdepth "$SYNCALL_MAX_DEPTH"); fi
+  if ((${#PRUNE_EXPR[@]})); then cmd+=(\( "${PRUNE_EXPR[@]}" \) -prune -o); fi
+  cmd+=(\( -type d -name .git -o -type f -name .git \) -print)
 
   "${cmd[@]}" 2>/dev/null \
-  | while IFS= read -r git_marker; do
+    | while IFS= read -r git_marker; do
       repo_dir="$(dirname "$git_marker")"
       toplevel="$(git_toplevel "$repo_dir" || true)"
       [[ -n "$toplevel" ]] && printf '%s\n' "$toplevel"
-    done | LC_ALL=C sort -u
+    done | sort -u
 }
 
-# =========================
-# Main
-# =========================
-if [[ "${1:-}" == "--dry-run" ]]; then
-  SYNCALL_DRY_RUN=1
-fi
+main() {
+  log "${bold}Syncing repos under ${SYNCALL_ROOT}${reset}"
+  repos=()
+  while IFS= read -r r; do repos+=("$r"); done < <(discover_repos)
 
-brewfile_source="$HOME/mrk1/assets/Brewfile"
-backup_log_file="$HOME/Library/Logs/mrk1-backups.log"
+  for r in "${repos[@]}"; do
+    [[ -d "$r/.git" ]] || continue
+    if [[ "$SYNCALL_ONLY_GITHUB" == "1" ]] && ! has_remote_github "$r"; then
+      warn "skip (non-GitHub): $r"
+      continue
+    fi
+    if can_push "$r"; then
+      push_repo "$r"
+    else
+      warn "no push permission: $r"
+    fi
+  done
 
-echo
-log "${bold}Syncing Brewfile to home directory…${reset}"
-if [[ -f "$brewfile_source" ]]; then
-  rsync -au --progress "$brewfile_source" "$HOME/"
-  good "Brewfile sync complete."
-else
-  warn "Brewfile not found at $brewfile_source (skipping)."
-fi
+  echo
+  good "––––––––––––––"
+  log "${bold}Sync complete${reset}"
+  mkdir -p "${HOME}/.cache/mrk1"
+  echo "syncall ran on $(date)" >>"${HOME}/.cache/mrk1/syncall.log"
+  good "––––––––––––––"
+}
 
-[[ -d "$HOME/mrk1/.git" ]] && INCLUDE_MRK1=1 || INCLUDE_MRK1=0
-
-echo
-log "${bold}Discovering repositories under $SYNCALL_ROOT (depth $SYNCALL_MAX_DEPTH)…${reset}"
-mapfile -t repos < <(discover_repos)
-
-if [[ "$INCLUDE_MRK1" -eq 1 ]]; then
-  if ! printf '%s\n' "${repos[@]}" | grep -qx "$HOME/mrk1"; then
-    repos+=("$HOME/mrk1")
-  fi
-fi
-
-if [[ "${#repos[@]}" -eq 0 ]]; then
-  warn "No repositories found."
-  exit 0
-fi
-echo "Found ${#repos[@]} repositories."
-
-# Apply filters: GitHub-only (optional) + push-permission
-filtered=()
-for r in "${repos[@]}"; do
-  [[ "$SYNCALL_ONLY_GITHUB" -eq 1 ]] && ! is_github_repo "$r" && continue
-  if can_push_repo "$r"; then
-    filtered+=("$r")
-  else
-    warn "Skipping $r (no push permission or no upstream)."
-  fi
-done
-repos=("${filtered[@]}")
-echo "After filters: ${#repos[@]} repositories will be synced."
-
-# Process
-for r in "${repos[@]}"; do
-  push_repo "$r"
-done
-
-echo
-good "––––––––––––––"
-log   "${bold}Sync complete${reset}"
-mkdir -p "$(dirname "$backup_log_file")"
-echo "syncall ran on $(date)" >> "$backup_log_file"
-good "––––––––––––––"
+main "$@"

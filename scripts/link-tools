@@ -1,54 +1,49 @@
 #!/usr/bin/env bash
+# link-tools — link repo scripts into ~/.local/bin without creating .sh duplicates
+
 set -euo pipefail
-IFS=$'\n\t'
 
-DEST_DIR="${HOME}/.local/bin"
-REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-SCRIPTS_DIR="${REPO_DIR}/scripts"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+SRC_DIR="$REPO_ROOT/scripts"
+BIN_DIR="$HOME/.local/bin"
 
-usage() {
-  cat <<EOF
-Usage: $(basename "$0") [--prune]
+mkdir -p "$BIN_DIR"
 
-Links shebang'd files from: ${SCRIPTS_DIR}
-into: ${DEST_DIR}
+echo "🔗 Linking tools from: $SRC_DIR -> $BIN_DIR"
 
-Actions:
-  - chmod +x on shebang'd files in scripts/
-  - ln -sf for each shebang'd script into ${HOME}/.local/bin
-  - --prune: remove links in ${HOME}/.local/bin that point into this repo but no longer exist
-EOF
+shabang() {
+  # returns 0 if file starts with a shebang (#!)
+  head -n1 "$1" 2>/dev/null | grep -q '^#!'
 }
 
-PRUNE=0
-if [[ "${1:-}" == "--help" || "${1:-}" == "-h" ]]; then usage; exit 0; fi
-if [[ "${1:-}" == "--prune" ]]; then PRUNE=1; fi
+# Ensure repo scripts are executable (top-level files only)
+find "$SRC_DIR" -maxdepth 1 -type f -print0 \
+  | xargs -0 chmod +x 2>/dev/null || true
 
-mkdir -p "${DEST_DIR}"
-
-count_linked=0
-count_exec=0
-
-# mark shebang'd scripts executable and link
+linked=0
 while IFS= read -r -d '' src; do
-  if head -n1 "$src" | grep -q '^#!'; then
-    if [[ ! -x "$src" ]]; then chmod +x "$src" && count_exec=$((count_exec+1)); fi
-    base="$(basename "$src")"
-    ln -sf "$src" "${DEST_DIR}/${base}"
-    count_linked=$((count_linked+1))
-    echo "linked: ${DEST_DIR}/${base} -> ${src}"
-  fi
-done < <(find "${SCRIPTS_DIR}" -maxdepth 1 -type f -not -name '.*' -print0)
+  base="$(basename "$src")"
+  # Only link files that have a shebang; skip hidden temp files
+  if shabang "$src"; then
+    dest="$BIN_DIR/$base"
+    ln -sfn "$src" "$dest"
+    echo "✓ $dest -> $src"
+    ((linked++)) || true
 
-# prune stale links that used to point into this repo
-if [[ "$PRUNE" -eq 1 ]]; then
-  while IFS= read -r -d '' link; do
-    target="$(readlink "$link" || true)"
-    if [[ -n "$target" && "$target" == "${SCRIPTS_DIR}/"* && ! -e "$target" ]]; then
-      echo "prune: removing stale link ${link} (-> ${target})"
-      rm -f "$link"
+    # Cleanup legacy .sh dupes if pointing to same src
+    legacy="$BIN_DIR/${base}.sh"
+    if [ -L "$legacy" ] && [ "$(readlink "$legacy")" = "$src" ]; then
+      rm -f "$legacy"
+      echo "🧹 removed legacy link: $legacy"
     fi
-  done < <(find "${DEST_DIR}" -maxdepth 1 -type l -print0)
-fi
+  else
+    echo "⏭️  Skipping (no shebang): $base"
+  fi
+done < <(find "$SRC_DIR" -maxdepth 1 -type f -print0)
 
-echo "done: linked=${count_linked}, chmod+x=${count_exec}"
+if [ "$linked" -eq 0 ]; then
+  echo "ℹ️  No tools linked (no shebang scripts found)."
+else
+  echo "✅ Linked $linked tool(s) into $BIN_DIR"
+fi

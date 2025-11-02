@@ -14,7 +14,7 @@ Opinionated, idempotent bootstrap for a fresh macOS install: Homebrew + apps, sh
 Pin the installer to a known-good commit SHA to reduce supply‑chain risk:
 
 ```bash
-SHA="<REPLACE_WITH_COMMIT_SHA>"
+SHA="660eb1c87074c9046c1843ce1dc219b1ed38fd2b"
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/sevmorris/mrk1/$SHA/scripts/install)"
 ```
 

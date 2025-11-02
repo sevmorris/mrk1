@@ -1,0 +1,107 @@
+\
+#!/usr/bin/env bash
+# scripts/uninstall — mrk1 uninstaller (self-contained)
+# Removes only what mrk1 created: symlinks pointing into this repo, mrk1 config dirs,
+# and optionally the ~/mrk1 repo itself (with safety checks).
+set -euo pipefail
+
+# ----- config you can tweak -----
+DOTFILES=(.zshrc .zshenv .zprofile .aliases)
+CANDIDATE_BIN_DIRS=("$HOME/.local/bin" "$HOME/bin")
+MANIFEST_FILES=(".install-manifest" "var/install_manifest.txt")
+# --------------------------------
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+removed=0
+
+log() { printf '%s\n' "$*"; }
+
+resolve_realpath() {
+  python3 - "$1" <<'PY'
+import os, sys
+print(os.path.realpath(sys.argv[1]))
+PY
+}
+
+log "🧹 Uninstalling mrk1…"
+
+# 0) Optional: process install manifest if present (remove only safe entries)
+for mf in "${MANIFEST_FILES[@]}"; do
+  mf_path="$REPO_ROOT/$mf"
+  [[ -f "$mf_path" ]] || continue
+  log "📓 Using manifest: $mf_path"
+  # Each line = path installed/linked. We only remove:
+  #  - symlinks whose realpath points inside this repo
+  #  - directories under $HOME that match mrk1-specific config
+  while IFS= read -r entry || [[ -n "$entry" ]]; do
+    [[ -n "$entry" ]] || continue
+    case "$entry" in
+      \#*) continue ;;  # comments
+    esac
+    if [[ -L "$entry" ]]; then
+      tgt="$(resolve_realpath "$entry")"
+      case "$tgt" in
+        "$REPO_ROOT"/*)
+          log "🔗 (mf) Removing symlink: $entry → $tgt"
+          rm -f -- "$entry"; ((removed++)) || true
+          ;;
+      esac
+    fi
+  done < "$mf_path"
+done
+
+# 1) Unlink helper scripts symlinked into local bin dirs
+for bindir in "${CANDIDATE_BIN_DIRS[@]}"; do
+  [[ -d "$bindir" ]] || continue
+  while IFS= read -r -d '' link; do
+    target="$(resolve_realpath "$link")"
+    case "$target" in
+      "$REPO_ROOT"/scripts/*)
+        log "🔗 Removing script symlink: $link → $target"
+        rm -f -- "$link"; ((removed++)) || true
+        ;;
+    esac
+  done < <(find "$bindir" -maxdepth 1 -type l -print0 2>/dev/null || true)
+done
+
+# 2) Unlink dotfiles that point into repo/dotfiles
+for f in "${DOTFILES[@]}"; do
+  path="$HOME/$f"
+  [[ -L "$path" ]] || continue
+  target="$(resolve_realpath "$path")"
+  case "$target" in
+    "$REPO_ROOT"/dotfiles/*)
+      log "📄 Removing dotfile symlink: $path → $target"
+      rm -f -- "$path"; ((removed++)) || true
+      ;;
+  esac
+done
+
+# 3) Remove mrk1-specific config/caches
+for d in "$HOME/.config/mrk1" "$HOME/.mrk1"; do
+  if [[ -e "$d" ]]; then
+    log "🗑️  Removing $d"
+    rm -rf -- "$d"; ((removed++)) || true
+  fi
+done
+
+# 4) Remove the mrk1 repo itself if it lives at ~/mrk1 and looks valid
+if [[ "$REPO_ROOT" == "$HOME/mrk1" ]]; then
+  if [[ -d "$REPO_ROOT/.git" || -f "$REPO_ROOT/Makefile" ]]; then
+    log "💣 Removing mrk1 repository at $REPO_ROOT"
+    rm -rf -- "$REPO_ROOT"
+    ((removed++)) || true
+  else
+    log "⚠️  Skipping repo deletion: $REPO_ROOT doesn’t look like a valid mrk1 repo."
+  fi
+else
+  log "ℹ️  Skipping repo deletion: mrk1 not located at ~/mrk1."
+fi
+
+# 5) Done
+if [[ $removed -eq 0 ]]; then
+  log "ℹ️  Nothing to remove (no repo-linked symlinks or mrk1 config found)."
+else
+  log "✅ Uninstall complete — removed $removed item(s)."
+fi

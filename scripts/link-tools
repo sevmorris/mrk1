@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+set -euo pipefail
+IFS=$'\n\t'
+
+DEST_DIR="${HOME}/.local/bin"
+REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+SCRIPTS_DIR="${REPO_DIR}/scripts"
+
+usage() {
+  cat <<EOF
+Usage: $(basename "$0") [--prune]
+
+Links shebang'd files from: ${SCRIPTS_DIR}
+into: ${DEST_DIR}
+
+Actions:
+  - chmod +x on shebang'd files in scripts/
+  - ln -sf for each shebang'd script into ${HOME}/.local/bin
+  - --prune: remove links in ${HOME}/.local/bin that point into this repo but no longer exist
+EOF
+}
+
+PRUNE=0
+if [[ "${1:-}" == "--help" || "${1:-}" == "-h" ]]; then usage; exit 0; fi
+if [[ "${1:-}" == "--prune" ]]; then PRUNE=1; fi
+
+mkdir -p "${DEST_DIR}"
+
+count_linked=0
+count_exec=0
+
+# mark shebang'd scripts executable and link
+while IFS= read -r -d '' src; do
+  if head -n1 "$src" | grep -q '^#!'; then
+    if [[ ! -x "$src" ]]; then chmod +x "$src" && count_exec=$((count_exec+1)); fi
+    base="$(basename "$src")"
+    ln -sf "$src" "${DEST_DIR}/${base}"
+    count_linked=$((count_linked+1))
+    echo "linked: ${DEST_DIR}/${base} -> ${src}"
+  fi
+done < <(find "${SCRIPTS_DIR}" -maxdepth 1 -type f -not -name '.*' -print0)
+
+# prune stale links that used to point into this repo
+if [[ "$PRUNE" -eq 1 ]]; then
+  while IFS= read -r -d '' link; do
+    target="$(readlink "$link" || true)"
+    if [[ -n "$target" && "$target" == "${SCRIPTS_DIR}/"* && ! -e "$target" ]]; then
+      echo "prune: removing stale link ${link} (-> ${target})"
+      rm -f "$link"
+    fi
+  done < <(find "${DEST_DIR}" -maxdepth 1 -type l -print0)
+fi
+
+echo "done: linked=${count_linked}, chmod+x=${count_exec}"

@@ -1,96 +1,48 @@
 #!/usr/bin/env bash
-# scripts/uninstall — mrk1 uninstaller (self-contained)
 set -euo pipefail
 
-DOTFILES=(.zshrc .zshenv .zprofile .aliases)
-CANDIDATE_BIN_DIRS=("$HOME/.local/bin" "$HOME/bin")
-MANIFEST_FILES=(".install-manifest" "var/install_manifest.txt")
+# mrk1 uninstaller — reverses what the installer did, conservatively
+# - Unlinks symlinks in ~/.local/bin that point into this repo's scripts/ or bin/
+# - Optionally runs ~/.mrk1/defaults-rollback.sh if present
+# - Does NOT delete Homebrew or user data
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-removed=0
+LOCAL_BIN="$HOME/.local/bin"
 
-log() { printf '%s\n' "$*"; }
+log(){ printf "\033[1;34m[uninstall]\033[0m %s\n" "$*"; }
+warn(){ printf "\033[1;33m[warn]\033[0m %s\n" "$*"; }
 
-resolve_realpath() {
-  python3 - "$1" <<'PY'
-import os, sys
-print(os.path.realpath(sys.argv[1]))
-PY
-}
-
-log "🧹 Uninstalling mrk1…"
-
-for mf in "${MANIFEST_FILES[@]}"; do
-  mf_path="$REPO_ROOT/$mf"
-  [[ -f "$mf_path" ]] || continue
-  log "📓 Using manifest: $mf_path"
-  while IFS= read -r entry || [[ -n "${entry-}" ]]; do
-    [[ -n "${entry-}" ]] || continue
-    case "$entry" in \#*) continue ;; esac
-    if [[ -L "$entry" ]]; then
-      tgt="$(resolve_realpath "$entry")"
-      case "$tgt" in
-        "$REPO_ROOT"/*)
-          log "🔗 (mf) Removing symlink: $entry → $tgt"
-          rm -f -- "$entry"
-          ((removed++)) || true
-          ;;
-      esac
-    fi
-  done <"$mf_path"
-done
-
-for bindir in "${CANDIDATE_BIN_DIRS[@]}"; do
-  [[ -d "$bindir" ]] || continue
-  find "$bindir" -maxdepth 1 -type l -print0 2>/dev/null \
-    | while IFS= read -r -d '' link; do
-      target="$(resolve_realpath "$link")"
-      case "$target" in
-        "$REPO_ROOT"/scripts/*)
-          log "🔗 Removing script symlink: $link → $target"
-          rm -f -- "$link"
-          ((removed++)) || true
+log "Unlinking mrk1 symlinks from $LOCAL_BIN…"
+if [[ -d "$LOCAL_BIN" ]]; then
+  find "$LOCAL_BIN" -type l -exec bash -c '
+    for L in "$@"; do
+      T="$(readlink "$L" 2>/dev/null || true)";
+      case "$T" in
+        *"/scripts/"*|*"/bin/"*)
+          # Only remove links that point back into this repo
+          if [[ -n "$T" && -e "$T" && "$T" == '"'"'$REPO_ROOT'"'"'* ]]; then
+            rm -f "$L" && echo "- removed $L -> $T";
+          fi
           ;;
       esac
     done
-done
+  ' _ {} +
+else
+  warn "$LOCAL_BIN not found"
+fi
 
-for f in "${DOTFILES[@]}"; do
-  path="$HOME/$f"
-  [[ -L "$path" ]] || continue
-  target="$(resolve_realpath "$path")"
-  case "$target" in
-    "$REPO_ROOT"/dotfiles/*)
-      log "📄 Removing dotfile symlink: $path → $target"
-      rm -f -- "$path"
-      ((removed++)) || true
-      ;;
-  esac
-done
-
-for d in "$HOME/.config/mrk1" "$HOME/.mrk1"; do
-  if [[ -e "$d" ]]; then
-    log "🗑️  Removing $d"
-    rm -rf -- "$d"
-    ((removed++)) || true
-  fi
-done
-
-if [[ "$REPO_ROOT" == "$HOME/mrk1" ]]; then
-  if [[ -d "$REPO_ROOT/.git" || -f "$REPO_ROOT/Makefile" ]]; then
-    log "💣 Removing mrk1 repository at $REPO_ROOT"
-    rm -rf -- "$REPO_ROOT"
-    ((removed++)) || true
+ROLLBACK="$HOME/.mrk1/defaults-rollback.sh"
+if [[ -x "$ROLLBACK" ]]; then
+  read -r -p "Run macOS defaults rollback now? [y/N] " ans
+  if [[ "$ans" =~ ^[Yy]$ ]]; then
+    log "Running $ROLLBACK…"
+    "$ROLLBACK" || warn "rollback returned non-zero"
   else
-    log "⚠️  Skipping repo deletion: $REPO_ROOT doesn’t look like a valid mrk1 repo."
+    log "Skipped defaults rollback (you can run it later)."
   fi
 else
-  log "ℹ️  Skipping repo deletion: mrk1 not located at ~/mrk1."
+  log "No defaults rollback script present at $ROLLBACK (nothing to do)."
 fi
 
-if [[ $removed -eq 0 ]]; then
-  log "ℹ️  Nothing to remove (no repo-linked symlinks or mrk1 config found)."
-else
-  log "✅ Uninstall complete — removed $removed item(s)."
-fi
+log "Uninstall complete."

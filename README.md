@@ -1,160 +1,122 @@
-# macOS Setup & Personalization with **mrk1**
+# mrk1 — macOS bootstrap & dotfiles
 
-A personal configuration toolkit for quickly provisioning a new **Apple Silicon Mac** with preferred tools, dotfiles, apps, and macOS defaults.
+Opinionated, idempotent bootstrap for a fresh macOS install: Homebrew + apps, shell setup, dotfiles, and a few sensible defaults. Designed to be readable and auditable.
 
-Everything runs through a single **idempotent installer script** — safe to re-run anytime.
+- **Safe by default.** Every action is logged; dotfile conflicts are backed up first; macOS defaults include a generated rollback script.
+- **Idempotent.** Re-running the installer won’t clobber existing state without confirming or backing up.
+- **No destructive cleanup tools.** This project **does not** ship a cleanup script.
 
 ---
 
-## Quick Start
+## Quick start
 
-### 1) Clone
-```bash
-git clone https://github.com/sevmorris/mrk1.git ~/mrk1
-```
-If the Xcode Command Line Tools are missing, the installer will prompt to install them.
+### Option A — Pinned (recommended)
+Pin the installer to a known-good commit SHA to reduce supply‑chain risk:
 
-### 2) Fix permissions & install (recommended)
 ```bash
-cd ~/mrk1
-make fix-exec && make install
-```
-> `make fix-exec` ensures `scripts/install` (and other helpers) are executable after a fresh clone.
-
-### (Alternative) Manual install
-```bash
-chmod +x ~/mrk1/scripts/install
-cd ~/mrk1/scripts && ./install
+SHA="<REPLACE_WITH_COMMIT_SHA>"
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/sevmorris/mrk1/$SHA/scripts/install)"
 ```
 
-### (Optional) One-line bootstrap
+### Option B — Latest (advanced)
+Use the tip of the default branch:
+
 ```bash
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/sevmorris/mrk1/main/scripts/install)"
 ```
-> ⚠️ Review [`scripts/install`](scripts/install) before running remote code.
+
+> **Security note:** Always **read** `scripts/install` before running remote code.
 
 ---
 
-## What It Does
-
-1. **Xcode Tools** – Ensures CLI developer tools are present.  
-2. **Homebrew** – Installs if missing and updates shell paths.  
-3. **Core Tools** – Installs essentials via Brewfile:  
-   `iterm2`, `pulsar`, `git`, `gh`, `zsh`, `coreutils`, `topgrade`, `bat`, `pwgen`, etc.  
-4. **Oh My Zsh** – Installs and configures shell environment.  
-5. **Zsh Plugins** – Adds `zsh-syntax-highlighting` and `zsh-autosuggestions`.  
-6. **Dotfiles** – Links `.zshrc`, `.zshenv`, `.zprofile`, `.aliases`, and configs (e.g. `topgrade.toml`).  
-7. **Default Shell** – Sets Homebrew Zsh as login shell.  
-8. **macOS Defaults** – Applies custom system settings via `scripts/defaults.sh`.  
-9. **Apps** – Installs all CLI, cask, and Mac App Store apps from your Brewfile (one confirmation prompt).
+## What it sets up
+- **Homebrew + Bundle** via `assets/Brewfile` (or root `Brewfile` if present)
+- **Zsh** as login shell (if available via Homebrew)
+- **Dotfiles** from `dotfiles/` safely linked into `$HOME` with timestamped backups
+- **Scripts & tools** from `scripts/` and `bin/` linked into `~/.local/bin`
+- **macOS defaults** via `scripts/defaults.sh`, with a generated rollback script at `~/.mrk1/defaults-rollback.sh`
 
 ---
 
-## Customize
+## Make targets
 
-Edit these before or after running:
-
-- `dotfiles/` — Shell and Zsh configuration  
-- `assets/Brewfile` — Packages and apps  
-- `scripts/defaults.sh` — macOS preference tweaks  
-- `scripts/` — Helper scripts linked into `~/.local/bin`
-
----
-
-## Make Targets
-
-Use `make help` for all targets.  
-Key ones:
-
-| Command | Description |
-|----------|-------------|
-| `make bootstrap` | Run full setup (brew → dotfiles → tools → defaults → doctor) |
-| `make doctor` | Run health checks |
-| `make dotfiles` | Link dotfiles into `$HOME` |
-| `make tools` | Link executables into `~/.local/bin` |
-| `make defaults` | Apply macOS defaults |
-| `make brew-install` | Apply Brewfile installs |
-| `make brew-clean` | Cleanup and autoremove |
-| `make lint` / `make format` / `make fix` | ShellCheck + shfmt validation |
-| `make ci` | Combined lint/format check |
-| `make cleanmac` | Run interactive system cleanup (live by default; prompts each step) |
-
----
-
-## Cleanup Tool: `clean-mac.sh`
-
-A unified macOS cleanup and hygiene script for the user environment (`$HOME`).
-
-**Mode:**
-
-- **Live by default**, with an interactive prompt before each step.
-- No dry-run flag. You decide per-step at runtime.
-
-**Includes:**
-- Removal of user/application caches and logs  
-- Deletion of all virtual environments (`~/.venvs`)  
-- Cleaning of Apple resource fork files (preserves `.DS_Store` to keep Desktop/Finder layouts)  
-- Pruning old files in `~/Library/Caches`  
-- Running `brew cleanup` and `brew autoremove`  
-- Clearing `pip` and Node/Corepack caches  
-- Optional guidance for Spotlight and Finder rebuilds
-
-**Usage:**
-```bash
-make cleanmac            # live, prompts before each step
+```text
+make fix-exec        # ensure executability on scripts/* and bin/*
+make install         # full bootstrap (brew, dotfiles, tools, defaults)
+make bootstrap       # alias of install
+make tools           # brew bundle (installs/updates tools)
+make dotfiles        # link dotfiles with backups
+make defaults        # apply macOS defaults and write rollback script
+make brew-install    # brew bundle (explicit)
+make brew-clean      # brew cleanup && autoremove
+make uninstall       # remove symlinks, optionally rollback defaults
 ```
 
-Run directly:
-```bash
-scripts/clean-mac.sh     # live, prompts before each step
-```
-Color-coded output shows what ran and what was skipped.
-
-## Quick Maintenance Start
-```bash
-make fix-exec && make install
-make defaults
-make cleanmac            # interactive prompts, live by default
-```
-
-## Built-in Utilities
-
-Run via `make` or directly from `scripts/`:
-
-| Command | Description |
-|----------|-------------|
-| `make fix-exec` | Ensure all scripts are executable |
-| `make install` | Run main installer |
-| `make defaults` | Apply macOS defaults |
-| `make cleanmac` | Run cleanup and hygiene tasks |
-| `make uninstall` | Run uninstaller if present |
-
-You can also run any executable under `scripts/` directly:
-```bash
-make doctor
-make syncall
-make bootstrap
-make brew-cleanup
-```
+> **Removed:** Any "clean mac" functionality. There is no `clean-mac.sh` and no `make cleanmac`.
 
 ---
 
 ## Uninstall
 
+Run:
+
 ```bash
-make uninstall
+scripts/uninstall
 ```
+
+What it does:
+- Unlinks symlinks the installer created in `~/.local/bin`
+- Optionally runs `~/.mrk1/defaults-rollback.sh` if present (created by `make defaults`/installer)
+- Does **not** remove Homebrew, apps, or any user data
 
 ---
 
-## Bootstrap Commands
+## macOS defaults rollback
 
-Run the full flow or specific steps:
-```bash
-make bootstrap-brew       # Homebrew bundle only
-make bootstrap-dotfiles   # Link dotfiles
-make bootstrap-tools      # Link scripts
-make bootstrap-defaults   # Apply macOS defaults
-make bootstrap-doctor     # Run doctor
-make bootstrap-help       # Show help
+When you run `make defaults` or the installer, the script generates a rollback helper at:
+
 ```
+~/.mrk1/defaults-rollback.sh
+```
+
+It captures *only* the changes this project makes, so you can revert cleanly.
+
+---
+
+## Structure
+
+```
+assets/
+  Brewfile            # primary Homebrew bundle file
+bin/                  # small helper tools you want on PATH
+scripts/
+  install             # main installer (curl | bash safe to audit)
+  uninstall           # removes symlinks, optional defaults rollback
+  defaults.sh         # apply defaults + author rollback
+  ...
+dotfiles/             # your shell/editor/git config etc.
+Makefile
+README.md
+```
+
+**PATH policy:** both `scripts/` and `bin/` are linked into `~/.local/bin`. Use `bin/` for user-facing commands; keep bootstrap/one-off helpers in `scripts/`.
+
+---
+
+## Logging
+
+Installer output is tee’d to:
+
+```
+~/mrk1-install.log
+```
+
+Uninstall also logs its steps to the terminal.
+
+---
+
+## Contributing / safety
+
+- Prefer small, reviewable scripts
+- Keep defaults minimal and provide clear comments
+- Never add destructive cleanup by default

@@ -1,0 +1,20 @@
+{
+  ".gitignore": {
+    "sha256": "4ad02e755db5408a894977deaa9984c8183f6e7569ba70ddd9b7489cb57e1e72"
+  },
+  "Makefile": {
+    "sha256": "b3c8108ae781ac51886b4b20594a1688682915e463d5fe6ff68760e6bfa988a3"
+  },
+  "README.md": {
+    "sha256": "10b1c5e3cd0c7c930097e9fa42a9e73be76354d22fcb1b555750563ccd762026"
+  },
+  "scripts/defaults.sh": {
+    "sha256": "532d3238e80dc433533db22199bd02ef39e03a7c98122aef87d75f3a933bdb9c"
+  },
+  "scripts/install": {
+    "sha256": "78d7338fd0fdd4536a1344d130f1a153e967a2a80508da8e387f314206b6515a"
+  },
+  "scripts/uninstall": {
+    "sha256": "add08d9b8a980d3759b0d7308a2192bf952b604aacaa2c3c1a9c23d040d5c897"
+  }
+}

@@ -1,11 +1,9 @@
-\
 #!/usr/bin/env bash
 # hide_tm.sh — hide Time Machine volumes from Finder sidebar
 set -euo pipefail
 
 VOLS="${TM_VOLUMES:-${1:-TimeMachine}}"
 
-# Split comma-separated list
 IFS=',' read -ra NAMES <<<"$VOLS"
 
 for NAME in "${NAMES[@]}"; do

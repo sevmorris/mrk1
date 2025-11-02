@@ -1,4 +1,3 @@
-\
 #!/usr/bin/env bash
 # clean-mac.sh — unified macOS cleanup (interactive, live by default)
 set -euo pipefail
@@ -6,21 +5,29 @@ IFS=$'\n\t'
 
 # Colors
 if command -v tput >/dev/null 2>&1 && [[ -t 1 ]]; then
-  green=$(tput setaf 2); yellow=$(tput setaf 3); red=$(tput setaf 1); bold=$(tput bold); reset=$(tput sgr0)
+  green=$(tput setaf 2)
+  yellow=$(tput setaf 3)
+  red=$(tput setaf 1)
+  bold=$(tput bold)
+  reset=$(tput sgr0)
 else
-  green=""; yellow=""; red=""; bold=""; reset=""
+  green=""
+  yellow=""
+  red=""
+  bold=""
+  reset=""
 fi
-ok()   { printf "%s✓ %s%s\n" "$green" "$*" "$reset"; }
+ok() { printf "%s✓ %s%s\n" "$green" "$*" "$reset"; }
 warn() { printf "%s⚠ %s%s\n" "$yellow" "$*" "$reset"; }
-err()  { printf "%s✗ %s%s\n" "$red" "$*" "$reset" >&2; }
+err() { printf "%s✗ %s%s\n" "$red" "$*" "$reset" >&2; }
 
 confirm() {
   local prompt="${1:-Proceed?} [y/N] "
   read -r -p "$prompt" ans || ans=""
   case "$ans" in
-    y|Y|yes|YES) return 0 ;;
+    y | Y | yes | YES) return 0 ;;
     *) return 1 ;;
-  endesac
+  esac
 }
 
 # Root password only when needed
@@ -87,7 +94,6 @@ purge_node_pip() {
 box_legacy() {
   local BASE="${HOME}"
   if confirm "Remove legacy .Box_* folders in $BASE?"; then
-    # find legacy folders
     mapfile -t BOX_LEGACY < <(find "$BASE" -maxdepth 2 -type d -name ".Box_*" 2>/dev/null || true)
     if [ -n "${BOX_LEGACY[*]-}" ] && [ "${#BOX_LEGACY[@]}" -gt 0 ]; then
       for d in "${BOX_LEGACY[@]}"; do

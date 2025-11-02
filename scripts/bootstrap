@@ -1,15 +1,12 @@
-\
 #!/usr/bin/env bash
 set -euo pipefail
 IFS=$'\n\t'
 
-# Error trap
 err() { printf "\033[31m✗ %s\033[0m\n" "$*" >&2; }
 ok() { printf "\033[32m✓ %s\033[0m\n" "$*"; }
 warn() { printf "\033[33m⚠ %s\033[0m\n" "$*"; }
 trap 'err "Failed at ${FUNCNAME[0]:-main} line $LINENO: $BASH_COMMAND"' ERR
 
-# Optional tracing
 [[ "${TRACE:-0}" == "1" ]] && set -x
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -40,7 +37,7 @@ run_brew_bundle() {
     else
       local log
       log="$(mktemp -t mrk1-brew.XXXXXX)"
-      if brew bundle --file "$BREWFILE" > >(tee -a "$log") 2>&1; then :; fi
+      brew bundle --file "$BREWFILE" > >(tee -a "$log") 2>&1 || true
     fi
   else
     warn "No Brewfile found at $BREWFILE"
@@ -59,7 +56,7 @@ link_dotfiles() {
     base="$(basename "$src")"
     case "$base" in
       .*) dest="${HOME}/${base}" ;;
-      *) dest="${HOME}/.${base}" ;;
+      *)  dest="${HOME}/.${base}" ;;
     esac
     if [[ -L "$dest" || -e "$dest" ]]; then
       target="$(readlink "$dest" || true)"
@@ -76,21 +73,45 @@ link_dotfiles() {
   done
 }
 
+# NEW: robust tool linker (same logic as in install)
 link_tools() {
-  mkdir -p "${HOME}/.local/bin"
-  for src in "${SCRIPTS_DIR}"/*; do
-    [[ -f "$src" ]] || continue
+  local src_dir
+  if [[ -n "${SCRIPTS_DIR:-}" && -d "$SCRIPTS_DIR" ]]; then
+    src_dir="$SCRIPTS_DIR"
+  elif [[ -n "${SCRIPT_DIR:-}" && -d "$SCRIPT_DIR" ]]; then
+    src_dir="$SCRIPT_DIR"
+  else
+    local here; here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    if [[ -d "$here" ]]; then
+      src_dir="$here"
+    else
+      echo "link_tools: cannot locate scripts dir" >&2
+      return 0
+    fi
+  fi
+
+  local dest_dir="$HOME/.local/bin"
+  mkdir -p "$dest_dir"
+
+  find "$src_dir" -maxdepth 1 -type f -print0 | xargs -0 chmod +x 2>/dev/null || true
+
+  local linked=0
+  while IFS= read -r -d '' src; do
     head -n1 "$src" | grep -q '^#!' || continue
-    chmod +x "$src" || true
-    dest="${HOME}/.local/bin/$(basename "$src")"
+    local base dest legacy
+    base="$(basename "$src")"
+    dest="$dest_dir/$base"
     ln -sfn "$src" "$dest"
     ok "linked: $dest -> $src"
-    # clean legacy .sh
+    ((linked++)) || true
     legacy="${dest}.sh"
     if [[ -L "$legacy" && "$(readlink "$legacy")" == "$src" ]]; then
       rm -f "$legacy"
+      warn "removed legacy link: $legacy"
     fi
-  done
+  done < <(find "$src_dir" -maxdepth 1 -type f -print0)
+
+  [[ "$linked" -gt 0 ]] && ok "Linked $linked tool(s) into $dest_dir" || warn "No tools linked"
 }
 
 run_defaults() {
@@ -118,12 +139,12 @@ case "$cmd" in
     run_defaults
     run_doctor
     ;;
-  brew) run_brew_bundle ;;
-  dotfiles) link_dotfiles ;;
-  tools) link_tools ;;
-  defaults) run_defaults ;;
-  doctor) run_doctor ;;
-  help|-h|--help) usage ;;
+  brew)      run_brew_bundle ;;
+  dotfiles)  link_dotfiles ;;
+  tools)     link_tools ;;
+  defaults)  run_defaults ;;
+  doctor)    run_doctor ;;
+  help | -h | --help) usage ;;
   *)
     err "unknown command: $cmd"
     usage

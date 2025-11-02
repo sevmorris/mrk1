@@ -1,7 +1,4 @@
-\
 #!/usr/bin/env bash
-# scripts/generate-install-manifest — scan user space and record items created by mrk1
-# Writes a conservative manifest at .install-manifest in the repo root.
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -25,14 +22,14 @@ PY
   echo "# mrk1 install manifest"
   echo "# Generated: $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
   echo "# Only paths safe to remove on uninstall are recorded below."
-} > "$MANIFEST"
+} >"$MANIFEST"
 
 for bindir in "${CANDIDATE_BIN_DIRS[@]}"; do
   [[ -d "$bindir" ]] || continue
   while IFS= read -r -d '' link; do
     target="$(resolve_realpath "$link")"
     case "$target" in
-      "$REPO_ROOT"/scripts/*) echo "$link" >> "$MANIFEST" ;;
+      "$REPO_ROOT"/scripts/*) echo "$link" >>"$MANIFEST" ;;
     esac
   done < <(find "$bindir" -maxdepth 1 -type l -print0 2>/dev/null || true)
 done
@@ -42,13 +39,13 @@ for f in "${DOTFILES[@]}"; do
   if [[ -L "$path" ]]; then
     tgt="$(resolve_realpath "$path")"
     case "$tgt" in
-      "$REPO_ROOT"/dotfiles/*) echo "$path" >> "$MANIFEST" ;;
+      "$REPO_ROOT"/dotfiles/*) echo "$path" >>"$MANIFEST" ;;
     esac
   fi
 done
 
 for d in "${CONFIG_DIRS[@]}"; do
-  [[ -e "$d" ]] && echo "$d" >> "$MANIFEST"
+  [[ -e "$d" ]] && echo "$d" >>"$MANIFEST"
 done
 
 echo "✅ Manifest written."

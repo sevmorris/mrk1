@@ -46,3 +46,10 @@ defaults:
 
 uninstall:
 	@"$(SCRIPTS)/uninstall"
+
+.PHONY: updates harden
+updates:
+	@softwareupdate -ia || true
+
+harden:
+	@./scripts/hardening.sh

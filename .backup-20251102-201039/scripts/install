@@ -1,14 +1,16 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# mrk1 installer — idempotent bootstrap for macOS (with Strap-inspired improvements)
+# mrk1 installer — idempotent bootstrap for macOS (ASCII-only)
 
+# ----------------------
+# Flags
+# ----------------------
 ONLY=""
 NO_BREW=0
 NO_DOTFILES=0
 NO_DEFAULTS=0
 NO_LINK_TOOLS=0
-DEBUG=0
 
 while (("$#")); do
   case "$1" in
@@ -17,21 +19,16 @@ while (("$#")); do
     --no-dotfiles) NO_DOTFILES=1 ;;
     --no-defaults) NO_DEFAULTS=1 ;;
     --no-link-tools) NO_LINK_TOOLS=1 ;;
-    --debug) DEBUG=1 ;;
     -h|--help)
       cat <<'USAGE'
 mrk1 installer
 
 Usage: scripts/install [options]
-  --only <phase>     Run a single phase: brew|dotfiles|tools|defaults|shell
+  --only <phase>     Run a single phase: brew|dotfiles|tools|defaults
   --no-brew          Skip Homebrew install/bundle
   --no-dotfiles      Skip dotfiles linking
   --no-defaults      Skip macOS defaults
   --no-link-tools    Skip linking scripts/bin into ~/.local/bin
-  --debug            Enable bash tracing (set -x)
-Env:
-  MRK1_DOTFILES_REPO   If set, clones repo to ~/.dotfiles and runs script/setup and script/strap-after-setup if present
-  MRK1_LOGIN_MSG       If set, writes login window message (requires sudo), rollback added to ~/.mrk1/defaults-rollback.sh
 USAGE
       exit 0
       ;;
@@ -40,8 +37,9 @@ USAGE
   shift
 done
 
-(( DEBUG )) && set -x
-
+# ----------------------
+# Paths & helpers
+# ----------------------
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 ASSETS="$REPO_ROOT/assets"
@@ -49,43 +47,36 @@ BIN_DIR="$REPO_ROOT/bin"
 SCRIPTS_DIR="$REPO_ROOT/scripts"
 LOGFILE="$HOME/mrk1-install.log"
 LOCAL_BIN="$HOME/.local/bin"
-STATE_DIR="$HOME/.mrk1"
-BACKUP_DIR="$STATE_DIR/backups/$(date +%Y%m%d-%H%M%S)"
-ROLLBACK="$STATE_DIR/defaults-rollback.sh"
+BACKUP_DIR="$HOME/.mrk1/backups/$(date +%Y%m%d-%H%M%S)"
 
-mkdir -p "$(dirname "$LOGFILE")" "$LOCAL_BIN" "$(dirname "$BACKUP_DIR")" "$STATE_DIR"
-: > "$ROLLBACK"; chmod +x "$ROLLBACK"
+# Brewfile preference: assets/Brewfile, else root Brewfile
+BREWFILE="$ASSETS/Brewfile"
+if [[ -f "$REPO_ROOT/Brewfile" ]]; then
+  BREWFILE="$REPO_ROOT/Brewfile"
+fi
+
+mkdir -p "$(dirname "$LOGFILE")" "$LOCAL_BIN" "$(dirname "$BACKUP_DIR")"
 
 log()  { printf "[mrk1] %s\n" "$*"; }
 warn() { printf "[warn] %s\n" "$*"; }
 err()  { printf "[err ] %s\n" "$*"; }
 
+# tee all stdout/stderr
 exec > >(tee -a "$LOGFILE") 2>&1
 log "Starting install... (log: $LOGFILE)"
 
-BREWFILE="$ASSETS/Brewfile"
-if [[ -f "$REPO_ROOT/Brewfile" ]]; then
-  BREWFILE="$REPO_ROOT/Brewfile"
-elif [[ -f "$HOME/.Brewfile" ]]; then
-  BREWFILE="$HOME/.Brewfile"
-fi
-
+# ----------------------
+# Phase runner
+# ----------------------
 run_phase() {
   local name="$1"; shift
   if [[ -n "$ONLY" && "$ONLY" != "$name" ]]; then return 0; fi
   "$@"
 }
 
-phase_xcode() {
-  if ! xcode-select -p >/dev/null 2>&1; then
-    log "Xcode Command Line Tools not found. Triggering install (GUI). Re-run after completion."
-    xcode-select --install || true
-  fi
-  if [[ -d "/Applications/Xcode.app" ]]; then
-    sudo xcodebuild -license accept >/dev/null 2>&1 || true
-  fi
-}
-
+# ----------------------
+# Homebrew & bundle
+# ----------------------
 phase_brew() {
   if (( NO_BREW )); then log "Skipping brew (flag)"; return; fi
   if ! command -v brew >/dev/null 2>&1; then
@@ -105,9 +96,14 @@ phase_brew() {
   fi
 }
 
+# ----------------------
+# Link scripts/bin into ~/.local/bin
+# ----------------------
 phase_link_tools() {
   if (( NO_LINK_TOOLS )); then log "Skipping link-tools (flag)"; return; fi
   log "Linking scripts/* and bin/* into $LOCAL_BIN..."
+
+  # Important: pass LOCAL_BIN into the subshell as $1
   if [[ -d "$SCRIPTS_DIR" ]]; then
     find "$SCRIPTS_DIR" -maxdepth 1 -type f -perm -u+x -exec bash -c '
       LOCAL_BIN="$1"; shift
@@ -117,6 +113,7 @@ phase_link_tools() {
       done
     ' _ "$LOCAL_BIN" {} +
   fi
+
   if [[ -d "$BIN_DIR" ]]; then
     find "$BIN_DIR" -maxdepth 1 -type f -perm -u+x -exec bash -c '
       LOCAL_BIN="$1"; shift
@@ -128,10 +125,14 @@ phase_link_tools() {
   fi
 }
 
+# ----------------------
+# Dotfiles with backups
+# ----------------------
 phase_dotfiles() {
   if (( NO_DOTFILES )); then log "Skipping dotfiles (flag)"; return; fi
   local src dst
   mkdir -p "$BACKUP_DIR"
+  # Copy all files (including dotfiles) at top-level of dotfiles/
   shopt -s dotglob nullglob
   for src in "$REPO_ROOT/dotfiles"/*; do
     dst="$HOME/$(basename "$src")"
@@ -144,20 +145,9 @@ phase_dotfiles() {
   shopt -u dotglob nullglob
 }
 
-phase_ext_dotfiles() {
-  if [[ -n "${MRK1_DOTFILES_REPO:-}" ]]; then
-    local DOTDIR="$HOME/.dotfiles"
-    if [[ ! -d "$DOTDIR/.git" ]]; then
-      log "Cloning external dotfiles repo: $MRK1_DOTFILES_REPO"
-      git clone --depth 1 "$MRK1_DOTFILES_REPO" "$DOTDIR"
-    else
-      log "External dotfiles repo present at $DOTDIR"
-    fi
-    [[ -x "$DOTDIR/script/setup" ]] && "$DOTDIR/script/setup"
-    [[ -x "$DOTDIR/script/strap-after-setup" ]] && "$DOTDIR/script/strap-after-setup"
-  fi
-}
-
+# ----------------------
+# macOS defaults + rollback
+# ----------------------
 phase_defaults() {
   if (( NO_DEFAULTS )); then log "Skipping defaults (flag)"; return; fi
   if [[ -x "$SCRIPTS_DIR/defaults.sh" ]]; then
@@ -165,18 +155,11 @@ phase_defaults() {
   else
     warn "defaults.sh not found/executable; skipping"
   fi
-
-  if [[ -n "${MRK1_LOGIN_MSG:-}" ]]; then
-    if command -v sudo >/dev/null 2>&1; then
-      log "Setting login window message"
-      sudo defaults write /Library/Preferences/com.apple.loginwindow LoginwindowText "$MRK1_LOGIN_MSG"
-      echo "sudo defaults delete /Library/Preferences/com.apple.loginwindow LoginwindowText" >> "$ROLLBACK"
-    else
-      warn "sudo not available; cannot set login window message"
-    fi
-  fi
 }
 
+# ----------------------
+# Change login shell to available zsh
+# ----------------------
 phase_shell() {
   if command -v zsh >/dev/null 2>&1; then
     local target_shell
@@ -190,11 +173,12 @@ phase_shell() {
   fi
 }
 
-run_phase xcode    phase_xcode
+# ----------------------
+# Execute phases
+# ----------------------
 run_phase brew     phase_brew
 run_phase tools    phase_link_tools
 run_phase dotfiles phase_dotfiles
-run_phase ext      phase_ext_dotfiles
 run_phase defaults phase_defaults
 run_phase shell    phase_shell
 

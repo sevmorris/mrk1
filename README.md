@@ -1,14 +1,13 @@
 # mrk1 — macOS bootstrap & dotfiles
 
-A clean, idempotent way to spin up a new Mac with all your favorite tools: Homebrew, Zsh, dotfiles, and a few sane defaults. Easy to read, easy to trust.
+A clean, idempotent way to spin up a new Mac with all your (my) favorite tools: Homebrew, Zsh, dotfiles, and a few sane defaults. Easy to read, easy to trust.
 
-- **Safe by default.** Any conflicting dotfiles get backed up. Defaults come with a rollback script.  
-- **Idempotent.** Run it again anytime — it won’t wreck your setup.  
-- **No system nuking.** There’s no “clean my Mac” script here on purpose.
+- **Safe by default.** Any conflicting dotfiles get backed up. Defaults come with a rollback script.
+- **Idempotent.** Run it again anytime — it won’t wreck your setup.
 
 ---
 
-## 🚀 Quick start
+## Quick start
 
 ### One-liner install
 

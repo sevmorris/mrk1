@@ -1,12 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# mrk1 installer - idempotent bootstrap for macOS
-# ASCII-only version to avoid stray Unicode bytes causing set -u failures.
+# mrk1 installer - idempotent bootstrap for macOS (ASCII-only)
 
-# ----------------------
 # Flags
-# ----------------------
 ONLY=""
 NO_BREW=0
 NO_DOTFILES=0
@@ -38,9 +35,7 @@ USAGE
   shift
 done
 
-# ----------------------
-# Paths & helpers
-# ----------------------
+# Paths
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 ASSETS="$REPO_ROOT/assets"
@@ -50,12 +45,11 @@ LOGFILE="$HOME/mrk1-install.log"
 LOCAL_BIN="$HOME/.local/bin"
 BACKUP_DIR="$HOME/.mrk1/backups/$(date +%Y%m%d-%H%M%S)"
 
-# Default Brewfile: prefer assets/Brewfile, else root Brewfile; else empty
+# Brewfile preference: assets/Brewfile, else root Brewfile
 BREWFILE="$ASSETS/Brewfile"
 if [[ -f "$REPO_ROOT/Brewfile" ]]; then
   BREWFILE="$REPO_ROOT/Brewfile"
 fi
-: "${BREWFILE:=}"
 
 mkdir -p "$(dirname "$LOGFILE")" "$LOCAL_BIN" "$(dirname "$BACKUP_DIR")"
 
@@ -63,35 +57,30 @@ log()  { printf "[mrk1] %s\n" "$*"; }
 warn() { printf "[warn] %s\n" "$*"; }
 err()  { printf "[err ] %s\n" "$*"; }
 
-# tee all stdout/stderr
+# log to file and console
 exec > >(tee -a "$LOGFILE") 2>&1
 log "Starting install... (log: $LOGFILE)"
 
-# ----------------------
 # Phase runner
-# ----------------------
 run_phase() {
   local name="$1"; shift
   if [[ -n "$ONLY" && "$ONLY" != "$name" ]]; then return 0; fi
   "$@"
 }
 
-# ----------------------
 # Homebrew & bundle
-# ----------------------
 phase_brew() {
   if (( NO_BREW )); then log "Skipping brew (flag)"; return; fi
   if ! command -v brew >/dev/null 2>&1; then
     log "Installing Homebrew..."
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    # shellcheck disable=SC2016
     echo 'eval "$($(brew --prefix)/bin/brew shellenv)"' >> "$HOME/.zprofile"
     eval "$($(brew --prefix)/bin/brew shellenv)"
   else
     log "Homebrew present."
   fi
 
-  if [[ -n "$BREWFILE" && -f "$BREWFILE" ]]; then
+  if [[ -f "$BREWFILE" ]]; then
     log "Running brew bundle using $BREWFILE..."
     brew bundle --file="$BREWFILE" || warn "brew bundle returned non-zero"
   else
@@ -99,9 +88,7 @@ phase_brew() {
   fi
 }
 
-# ----------------------
 # Link scripts/bin into ~/.local/bin
-# ----------------------
 phase_link_tools() {
   if (( NO_LINK_TOOLS )); then log "Skipping link-tools (flag)"; return; fi
   log "Linking scripts/* and bin/* into $LOCAL_BIN..."
@@ -121,9 +108,7 @@ phase_link_tools() {
   fi
 }
 
-# ----------------------
 # Dotfiles with backups
-# ----------------------
 phase_dotfiles() {
   if (( NO_DOTFILES )); then log "Skipping dotfiles (flag)"; return; fi
   local src dst
@@ -140,9 +125,7 @@ phase_dotfiles() {
   shopt -u dotglob nullglob
 }
 
-# ----------------------
 # macOS defaults + rollback
-# ----------------------
 phase_defaults() {
   if (( NO_DEFAULTS )); then log "Skipping defaults (flag)"; return; fi
   if [[ -x "$SCRIPTS_DIR/defaults.sh" ]]; then
@@ -152,9 +135,7 @@ phase_defaults() {
   fi
 }
 
-# ----------------------
 # Change login shell to available zsh
-# ----------------------
 phase_shell() {
   if command -v zsh >/dev/null 2>&1; then
     local target_shell
@@ -168,9 +149,7 @@ phase_shell() {
   fi
 }
 
-# ----------------------
 # Execute phases
-# ----------------------
 run_phase brew     phase_brew
 run_phase tools    phase_link_tools
 run_phase dotfiles phase_dotfiles

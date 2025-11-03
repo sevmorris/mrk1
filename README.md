@@ -1,112 +1,98 @@
-# mrk1 — macOS bootstrap & dotfiles
+# mrk1 — macOS bootstrap & dotfiles (simplified)
 
-Opinionated, idempotent bootstrap for a fresh macOS install: Homebrew + apps, shell setup, dotfiles, and a few sensible defaults. Designed to be readable and auditable.
+A tidy, idempotent bootstrap for a fresh macOS setup: Homebrew + apps, shell, dotfiles, and a few sane defaults. Designed to be readable and auditable.
 
-- **Safe by default.** Every action is logged; dotfile conflicts are backed up first; macOS defaults include a generated rollback script.
-- **Idempotent.** Re-running the installer won’t clobber existing state without confirming or backing up.
-- **No destructive cleanup tools.** This project **does not** ship a cleanup script.
+- **Safe by default.** Dotfile conflicts are backed up; defaults have a rollback helper.
+- **Idempotent.** Re-run anytime without clobbering your system.
+- **No cleanup script.** This project does **not** ship a system “cleaner.”
 
 ---
 
 ## Quick start
 
-### Option A — Pinned (recommended)
-Pin the installer to a known-good commit SHA to reduce supply‑chain risk. Use the **full 40-character SHA**:
-
 ```bash
-SHA="660eb1c87074c9046c1843ce1dc219b1ed38fd2b"
-TMP="$(mktemp -d)"
-git clone https://github.com/sevmorris/mrk1 "$TMP/mrk1"
-cd "$TMP/mrk1"
-git checkout "$SHA"
-./scripts/install
+# 1) Clone
+git clone https://github.com/sevmorris/mrk1.git ~/mrk1
+
+# 2) Install
+cd ~/mrk1
+make fix-exec && make install
 ```
 
-### Option B — Latest (advanced)
-Use the tip of the default branch:
-
-```bash
-TMP="$(mktemp -d)"
-git clone --depth 1 https://github.com/sevmorris/mrk1 "$TMP/mrk1"
-cd "$TMP/mrk1"
-./scripts/install
-```
-
-> **Security note:** Always **read** `scripts/install` before running it. The pinned flow above lets you audit the exact revision.
+> `make fix-exec` ensures scripts are executable after a fresh clone.
+> You can also run the installer directly with `./scripts/install`.
 
 ---
 
 ## What it sets up
-- **Homebrew + Bundle** via `assets/Brewfile` (or root `Brewfile` if present)
+
+- **Homebrew + Bundle** using `assets/Brewfile` (falls back to root `Brewfile` if present)
 - **Zsh** as login shell (if available via Homebrew)
 - **Dotfiles** from `dotfiles/` safely linked into `$HOME` with timestamped backups
-- **Scripts & tools** from `scripts/` and `bin/` linked into `~/.local/bin`
-- **macOS defaults** via `scripts/defaults.sh`, with a generated rollback script at `~/.mrk1/defaults-rollback.sh`
+- **Scripts & tools** from `scripts/` **and** `bin/` linked into `~/.local/bin`
+- **macOS defaults** via `scripts/defaults.sh`, plus an auto-generated rollback script
 
 ---
 
-## Make targets
+## Common make targets
 
 ```text
-make fix-exec        # ensure executability on scripts/* and bin/*
-make install         # full bootstrap (brew, dotfiles, tools, defaults)
-make bootstrap       # alias of install
-make tools           # brew bundle (installs/updates tools)
-make dotfiles        # link dotfiles with backups
-make defaults        # apply macOS defaults and write rollback script
-make brew-install    # brew bundle (explicit)
-make brew-clean      # brew cleanup && autoremove
-make uninstall       # remove symlinks, optionally rollback defaults
+make fix-exec     # ensure executability on scripts/* and bin/*
+make install      # full bootstrap (brew → dotfiles → tools → defaults)
+make tools        # brew bundle (installs/updates from Brewfile)
+make dotfiles     # link dotfiles with backups
+make defaults     # apply macOS defaults and write rollback script
+make brew-install # alias of 'make tools'
+make brew-clean   # brew cleanup && autoremove
+make uninstall    # unlink PATH tools, optionally run defaults rollback
 ```
 
-> **Removed:** Any "clean mac" functionality. There is no `clean-mac.sh` and no `make cleanmac`.
+> **Removed:** any “clean mac” functionality. No `make cleanmac`. No `scripts/clean-mac.sh`.
 
 ---
 
 ## Uninstall
 
-Run:
-
 ```bash
-scripts/uninstall
+./scripts/uninstall
 ```
 
-What it does:
-- Unlinks symlinks the installer created in `~/.local/bin`
-- Optionally runs `~/.mrk1/defaults-rollback.sh` if present (created by `make defaults`/installer)
-- Does **not** remove Homebrew, apps, or any user data
+This will:
+
+- Unlink symlinks the installer created in `~/.local/bin`
+- Optionally run `~/.mrk1/defaults-rollback.sh` (created by `make defaults`)
+- **Won’t** remove Homebrew, apps, or your data
 
 ---
 
-## macOS defaults rollback
+## Rollback for macOS defaults
 
-When you run `make defaults` or the installer, the script generates a rollback helper at:
+When you run `make defaults` or `./scripts/install`, a rollback helper is created at:
 
 ```
 ~/.mrk1/defaults-rollback.sh
 ```
 
-It captures *only* the changes this project makes, so you can revert cleanly.
+It captures only the keys changed by this project so you can revert cleanly.
 
 ---
 
-## Structure
+## Repo layout
 
 ```
 assets/
   Brewfile            # primary Homebrew bundle file
-bin/                  # small helper tools you want on PATH
+bin/                  # small helper tools to expose on PATH
 scripts/
-  install             # main installer (clone and run; easy to audit)
+  install             # main installer (run from a local clone)
   uninstall           # removes symlinks, optional defaults rollback
   defaults.sh         # apply defaults + author rollback
-  ...
-dotfiles/             # your shell/editor/git config etc.
+dotfiles/             # your shell/editor/git config, etc.
 Makefile
 README.md
 ```
 
-**PATH policy:** both `scripts/` and `bin/` are linked into `~/.local/bin`. Use `bin/` for user-facing commands; keep bootstrap/one-off helpers in `scripts/`.
+**PATH policy:** both `scripts/` and `bin/` are linked into `~/.local/bin`. Use `bin/` for user-facing commands; keep bootstrap helpers in `scripts/`.
 
 ---
 
@@ -122,8 +108,8 @@ Uninstall also logs its steps to the terminal.
 
 ---
 
-## Contributing / safety
+## Contributing
 
-- Prefer small, reviewable scripts
-- Keep defaults minimal and provide clear comments
-- Never add destructive cleanup by default
+- Keep scripts small and reviewable.
+- Be conservative with macOS defaults; always comment them and ensure rollback.
+- Prefer durable, idempotent steps; avoid destructive “cleanup” features.

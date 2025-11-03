@@ -1,20 +1,26 @@
 {
+  ".editorconfig": {
+    "sha256": "5f9f886ac4785e1a2a079481a30046c84bbde35a5a64b825f9f98254a81805d2"
+  },
+  ".gitattributes": {
+    "sha256": "3d0090108d23229f65ed72db6d2b3ae03cc71d9cbd61fb93ccd987778c6cd796"
+  },
   ".gitignore": {
     "sha256": "4ad02e755db5408a894977deaa9984c8183f6e7569ba70ddd9b7489cb57e1e72"
   },
   "Makefile": {
-    "sha256": "b3c8108ae781ac51886b4b20594a1688682915e463d5fe6ff68760e6bfa988a3"
+    "sha256": "5ee409eae258782f71f110a81274fda10430420ee2640c02806d1194ea5b353e"
   },
   "README.md": {
-    "sha256": "10b1c5e3cd0c7c930097e9fa42a9e73be76354d22fcb1b555750563ccd762026"
+    "sha256": "28bcc9e8a2d5dabb2dca9d268e024798eb3c8eff429096cd2bdf75a4d2936b11"
   },
   "scripts/defaults.sh": {
-    "sha256": "532d3238e80dc433533db22199bd02ef39e03a7c98122aef87d75f3a933bdb9c"
+    "sha256": "659b540b96d7f32ecf8be2fadfa11ffefbd498af1c72e0abddd540cea5136357"
   },
   "scripts/install": {
-    "sha256": "78d7338fd0fdd4536a1344d130f1a153e967a2a80508da8e387f314206b6515a"
+    "sha256": "9bba1c5d1ff708e290491810e0b4ff39b66b6e2bb8501c31823ccfa32df9c249"
   },
   "scripts/uninstall": {
-    "sha256": "add08d9b8a980d3759b0d7308a2192bf952b604aacaa2c3c1a9c23d040d5c897"
+    "sha256": "5b15ba14cd2dd1c90882dae3bdec3445a4f3cbb96747e1d48d50f44b275ff9e8"
   }
 }

@@ -15,7 +15,7 @@ all: install
 bootstrap: install
 
 fix-exec:
-	@echo "Making scripts and bin executables…"
+	@echo "Making scripts and bin executables..."
 	@find $(SCRIPTS) -type f -maxdepth 1 -not -name "*.md" -exec chmod +x {} + 2>/dev/null || true
 	@find $(BIN_DIR) -type f -maxdepth 1 -not -name "*.md" -exec chmod +x {} + 2>/dev/null || true
 

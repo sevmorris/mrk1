@@ -9,15 +9,6 @@ A clean, idempotent way to spin up a new Mac with all your (my) favorite tools: 
 
 ## Quick start
 
-### One-liner install
-
-```bash
-/bin/bash -c 'TMP="$(mktemp -d)" && git clone --depth 1 https://github.com/sevmorris/mrk1 "$TMP/mrk1" && bash "$TMP/mrk1/scripts/install"'
-```
-
-That’s the easiest way to bootstrap from scratch. It clones into a temp folder, runs the installer, and leaves no mess behind.  
-If you’d rather work from a local copy:
-
 ```bash
 git clone https://github.com/sevmorris/mrk1.git ~/mrk1
 cd ~/mrk1

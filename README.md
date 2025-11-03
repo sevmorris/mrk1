@@ -47,8 +47,6 @@ make brew-clean   # brew cleanup && autoremove
 make uninstall    # unlink PATH tools, optionally run defaults rollback
 ```
 
-> **Removed:** any “clean mac” functionality. No `make cleanmac`. No `scripts/clean-mac.sh`.
-
 ---
 
 ## Uninstall

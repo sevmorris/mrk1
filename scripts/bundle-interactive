@@ -1,0 +1,135 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Interactive cask installer driven by assets/Brewfile.
+# - Installs formulas/taps automatically (filters casks out)
+# - Prompts per cask (Y/n)
+#
+# Flags:
+#   --yes       Install all casks without prompting
+#   --no        Skip all casks without prompting
+#   --dry-run   Show what would happen
+#   --quiet     Less output
+#
+# Notes:
+# - Requires Homebrew
+# - Looks for Brewfile at assets/Brewfile, falls back to ./Brewfile
+# - Ignores Brewfile cask args (rare). If you rely on special appdir args,
+#   consider setting HOMEBREW_CASK_OPTS or installing those few manually.
+
+BREWFILE_DEFAULT="assets/Brewfile"
+BREWFILE="${1:-}"
+case "${BREWFILE:-}" in
+  *.rb|*Brewfile) : ;;
+  "") BREWFILE="$BREWFILE_DEFAULT";;
+  *)  echo "Usage: $0 [path/to/Brewfile] [--yes|--no|--dry-run|--quiet]" >&2; exit 2;;
+esac
+
+shift || true
+YES=0 NO=0 DRY=0 QUIET=0
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --yes) YES=1 ;;
+    --no) NO=1 ;;
+    --dry-run) DRY=1 ;;
+    --quiet) QUIET=1 ;;
+    *) echo "Unknown flag: $1" >&2; exit 2 ;;
+  esac
+  shift
+done
+
+if [[ ! -f "$BREWFILE" ]]; then
+  echo "Brewfile not found: $BREWFILE" >&2
+  exit 1
+fi
+
+brew_cmd() {
+  if (( DRY )); then
+    echo "[dry-run] brew $*"
+  else
+    brew "$@"
+  fi
+}
+
+# Ensure brew exists
+if ! command -v brew >/dev/null 2>&1; then
+  echo "Homebrew not found on PATH." >&2
+  exit 1
+fi
+
+# Split Brewfile into formulas/taps vs casks
+FORMULAS_BREWFILE="$(mktemp -t mrk1-formulas.XXXXXX)"
+CASKS_LIST="$(mktemp -t mrk1-casks.XXXXXX)"
+trap 'rm -f "$FORMULAS_BREWFILE" "$CASKS_LIST"' EXIT
+
+# Keep taps, brew "…", mas "…", and anything not starting with cask
+# Strip blank/comment lines; preserve order.
+awk '
+  /^[[:space:]]*#/ { next }
+  /^[[:space:]]*$/ { next }
+  /^[[:space:]]*cask[[:space:]]/ { print > casks; next }
+  { print > forms }
+' forms="$FORMULAS_BREWFILE" casks="$CASKS_LIST" "$BREWFILE"
+
+# 1) Non-interactive: formulas/taps/mas via brew bundle
+if [[ -s "$FORMULAS_BREWFILE" ]]; then
+  (( QUIET )) || echo "==> Installing formulas/taps from $BREWFILE (casks filtered out)..."
+  brew_cmd bundle --file="$FORMULAS_BREWFILE" --no-upgrade
+else
+  (( QUIET )) || echo "==> No formulas/taps to install."
+fi
+
+# 2) Interactive: casks
+if [[ ! -s "$CASKS_LIST" ]]; then
+  (( QUIET )) || echo "==> No casks found."
+  exit 0
+fi
+
+# Extract bare cask tokens from lines like:
+#   cask "iterm2"
+#   cask "google-chrome", args: { appdir: "/Applications" }
+# We ignore args and install with defaults.
+awk '
+  {
+    # remove leading stuff up to cask
+    sub(/^[[:space:]]*cask[[:space:]]*/, "", $0)
+    # get first quoted token
+    if (match($0, /"[^"]+"/)) {
+      name = substr($0, RSTART+1, RLENGTH-2)
+      print name
+    }
+  }
+' "$CASKS_LIST" | while IFS= read -r cask; do
+  # Skip already-installed casks
+  if brew list --cask -1 2>/dev/null | grep -Fxq "$cask"; then
+    (( QUIET )) || echo "• $cask (already installed)"
+    continue
+  fi
+
+  choice="y"
+  if (( NO )); then
+    choice="n"
+  elif (( YES )); then
+    choice="y"
+  else
+    read -r -p "Install cask '$cask'? [Y/n] " ans
+    ans="${ans:-Y}"
+    case "$ans" in
+      [Yy]*) choice="y" ;;
+      [Nn]*) choice="n" ;;
+      *)     choice="y" ;;
+    esac
+  fi
+
+  if [[ "$choice" = "y" ]]; then
+    if (( DRY )); then
+      echo "[dry-run] brew install --cask $cask"
+    else
+      brew install --cask "$cask"
+    fi
+  else
+    (( QUIET )) || echo "↷ skipped: $cask"
+  fi
+done
+
+(( QUIET )) || echo "==> Done."

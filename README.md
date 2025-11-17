@@ -30,12 +30,15 @@ make fix-exec && make install
 
 ---
 
-## Interactive Cask Installation
+## Interactive Cask & MAS App Installation
 
-By default, **Casks are optional and interactive**. The installer will:
+By default, **Casks and Mac App Store (MAS) apps are optional and interactive**. The installer will:
 
-1. **Automatically install** all formulas, taps, and Mac App Store apps from your Brewfile
-2. **Prompt you** for each cask individually, allowing you to choose which applications to install
+1. **Automatically install** all formulas and taps from your Brewfile
+2. **Prompt you** for each MAS app individually
+3. **Prompt you** for each cask individually
+
+This allows you to choose which applications to install, keeping your system lean.
 
 ### Cask Installation Options
 
@@ -54,11 +57,11 @@ By default, **Casks are optional and interactive**. The installer will:
 ```
 
 The interactive installer shows:
-- A summary of total, already-installed, and pending casks
-- Progress counter for each cask (`[1/25] Install cask 'iterm2'? [Y/n]`)
-- Final summary of installed, skipped, and failed casks
+- A summary of total, already-installed, and pending items for both MAS apps and casks
+- Progress counter for each item (`[1/25] Install MAS app 'Keynote'? [Y/n]` or `[1/25] Install cask 'iterm2'? [Y/n]`)
+- Final summary of installed, skipped, and failed items for both MAS apps and casks
 
-**Note:** In non-interactive mode (no TTY), casks are skipped by default. Use `--yes-casks` to install all casks automatically.
+**Note:** In non-interactive mode (no TTY), both MAS apps and casks are skipped by default. Use `--yes-casks` to install all automatically.
 
 ---
 

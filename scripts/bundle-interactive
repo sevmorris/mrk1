@@ -57,189 +57,350 @@ if ! command -v brew >/dev/null 2>&1; then
   exit 1
 fi
 
-# Split Brewfile into formulas/taps vs casks
+# Split Brewfile into formulas/taps vs casks vs MAS apps
 FORMULAS_BREWFILE="$(mktemp -t mrk1-formulas.XXXXXX)"
 CASKS_LIST="$(mktemp -t mrk1-casks.XXXXXX)"
-trap 'rm -f "$FORMULAS_BREWFILE" "$CASKS_LIST"' EXIT
+MAS_LIST="$(mktemp -t mrk1-mas.XXXXXX)"
+trap 'rm -f "$FORMULAS_BREWFILE" "$CASKS_LIST" "$MAS_LIST"' EXIT
 
-# Keep taps, brew "…", mas "…", and anything not starting with cask
+# Keep taps, brew "…" in formulas; separate casks and mas apps
 # Strip blank/comment lines; preserve order.
 awk '
   /^[[:space:]]*#/ { next }
   /^[[:space:]]*$/ { next }
   /^[[:space:]]*cask[[:space:]]/ { print > casks; next }
+  /^[[:space:]]*mas[[:space:]]/ { print > mas; next }
   { print > forms }
-' forms="$FORMULAS_BREWFILE" casks="$CASKS_LIST" "$BREWFILE"
+' forms="$FORMULAS_BREWFILE" casks="$CASKS_LIST" mas="$MAS_LIST" "$BREWFILE"
 
-# 1) Non-interactive: formulas/taps/mas via brew bundle
+# 1) Non-interactive: formulas/taps via brew bundle (no casks, no MAS)
 if [[ -s "$FORMULAS_BREWFILE" ]]; then
-  (( QUIET )) || echo "==> Installing formulas/taps from $BREWFILE (casks filtered out)..."
+  (( QUIET )) || echo "==> Installing formulas/taps from $BREWFILE (casks and MAS apps filtered out)..."
   brew_cmd bundle --file="$FORMULAS_BREWFILE" --no-upgrade
 else
   (( QUIET )) || echo "==> No formulas/taps to install."
 fi
 
-# 2) Interactive: casks
-if [[ ! -s "$CASKS_LIST" ]]; then
-  (( QUIET )) || echo "==> No casks found."
-  exit 0
-fi
+# 2) Interactive: MAS apps
+MAS_TEMP="$(mktemp -t mrk1-mas-extracted.XXXXXX)"
+trap 'rm -f "$FORMULAS_BREWFILE" "$CASKS_LIST" "$MAS_LIST" "$MAS_TEMP"' EXIT
 
-# Extract bare cask tokens from lines like:
-#   cask "iterm2"
-#   cask "google-chrome", args: { appdir: "/Applications" }
-# We ignore args and install with defaults.
-CASKS_TEMP="$(mktemp -t mrk1-casks-extracted.XXXXXX)"
-trap 'rm -f "$FORMULAS_BREWFILE" "$CASKS_LIST" "$CASKS_TEMP"' EXIT
-
-awk '
-  {
-    # remove leading stuff up to cask
-    sub(/^[[:space:]]*cask[[:space:]]*/, "", $0)
-    # get first quoted token
-    if (match($0, /"[^"]+"/)) {
-      name = substr($0, RSTART+1, RLENGTH-2)
-      print name
+if [[ -s "$MAS_LIST" ]]; then
+  # Extract MAS app names and IDs from lines like:
+  #   mas "App Name", id: 123456789
+  awk '
+    {
+      # remove leading stuff up to mas
+      sub(/^[[:space:]]*mas[[:space:]]*/, "", $0)
+      # get quoted name and id
+      if (match($0, /"([^"]+)"/, name_match)) {
+        name = name_match[1]
+        if (match($0, /id:[[:space:]]*([0-9]+)/, id_match)) {
+          id = id_match[1]
+          print name "|" id
+        }
+      }
     }
-  }
-' "$CASKS_LIST" > "$CASKS_TEMP"
+  ' "$MAS_LIST" > "$MAS_TEMP"
 
-# Count total casks and already-installed ones
-total_casks=0
-installed_casks=0
-pending_casks=0
+  # Count MAS apps
+  total_mas=0
+  installed_mas=0
+  pending_mas=0
 
-while IFS= read -r cask; do
-  [[ -z "$cask" ]] && continue
-  ((total_casks++))
-  if brew list --cask -1 2>/dev/null | grep -Fxq "$cask"; then
-    ((installed_casks++))
-  else
-    ((pending_casks++))
-  fi
-done < "$CASKS_TEMP"
-
-if (( total_casks == 0 )); then
-  (( QUIET )) || echo "==> No casks found."
-  exit 0
-fi
-
-# Show summary
-if (( ! QUIET )); then
-  echo ""
-  echo "==> Casks Summary:"
-  echo "   Total: $total_casks"
-  if (( installed_casks > 0 )); then
-    echo "   Already installed: $installed_casks"
-  fi
-  if (( pending_casks > 0 )); then
-    echo "   Pending: $pending_casks"
-  fi
-  echo ""
-fi
-
-# Handle non-interactive mode
-if (( YES )); then
-  (( QUIET )) || echo "==> Installing all casks (--yes flag)..."
-elif (( NO )); then
-  (( QUIET )) || echo "==> Skipping all casks (--no flag)..."
-elif [[ ! -t 0 ]]; then
-  # Non-interactive (no TTY) - skip casks by default
-  (( QUIET )) || echo "==> Non-interactive mode: skipping casks (use --yes-casks to install all)"
-  exit 0
-fi
-
-# Process casks
-installed=0
-skipped=0
-failed=0
-current=0
-
-while IFS= read -r cask; do
-  [[ -z "$cask" ]] && continue
-  
-  # Skip already-installed casks
-  if brew list --cask -1 2>/dev/null | grep -Fxq "$cask"; then
-    (( QUIET )) || echo "✓ $cask (already installed)"
-    continue
-  fi
-  
-  # Only count pending casks for progress
-  ((current++))
-
-  # Determine choice based on flags or interactive prompt
-  choice=""
-  if (( NO )); then
-    choice="n"
-  elif (( YES )); then
-    choice="y"
-  else
-    # Interactive prompt - check if we have a TTY for input
-    # Use /dev/tty if available, otherwise check stdin
-    if [[ -c /dev/tty ]] && [[ -r /dev/tty ]]; then
-      # We have a terminal - prompt interactively
-      echo -n "[$current/$pending_casks] Install cask '$cask'? [Y/n] " >&2
-      read -r ans < /dev/tty
-      ans="${ans:-Y}"
-      case "$ans" in
-        [Yy]*) choice="y" ;;
-        [Nn]*) choice="n" ;;
-        *)     choice="y" ;;
-      esac
-    elif [[ -t 0 ]]; then
-      # stdin is a TTY - use it directly
-      echo -n "[$current/$pending_casks] Install cask '$cask'? [Y/n] " >&2
-      read -r ans
-      ans="${ans:-Y}"
-      case "$ans" in
-        [Yy]*) choice="y" ;;
-        [Nn]*) choice="n" ;;
-        *)     choice="y" ;;
-      esac
+  while IFS='|' read -r mas_name mas_id; do
+    [[ -z "$mas_name" ]] && continue
+    ((total_mas++))
+    # Check if MAS app is installed (mas list shows installed apps)
+    if mas list 2>/dev/null | grep -q "^$mas_id"; then
+      ((installed_mas++))
     else
-      # No TTY available - skip by default in non-interactive mode
-      (( QUIET )) || echo "[$current/$pending_casks] ↷ Skipping '$cask' (non-interactive, use --yes-casks to install all)" >&2
-      choice="n"
+      ((pending_mas++))
     fi
-  fi
+  done < "$MAS_TEMP"
 
-  if [[ "$choice" = "y" ]]; then
-    if (( DRY )); then
-      echo "[dry-run] brew install --cask $cask"
-      ((installed++))
-    else
-      if brew install --cask "$cask"; then
-        (( QUIET )) || echo "[$current/$pending_casks] ✓ Installed: $cask"
-        ((installed++))
-      else
-        (( QUIET )) || echo "[$current/$pending_casks] ✗ Failed: $cask" >&2
-        ((failed++))
+  if (( total_mas > 0 )); then
+    # Show summary
+    if (( ! QUIET )); then
+      echo ""
+      echo "==> Mac App Store Apps Summary:"
+      echo "   Total: $total_mas"
+      if (( installed_mas > 0 )); then
+        echo "   Already installed: $installed_mas"
       fi
+      if (( pending_mas > 0 )); then
+        echo "   Pending: $pending_mas"
+      fi
+      echo ""
     fi
-  else
-    (( QUIET )) || echo "[$current/$pending_casks] ↷ Skipped: $cask"
-    ((skipped++))
-  fi
-done < "$CASKS_TEMP"
 
-# Final summary
-if (( ! QUIET )); then
-  echo ""
-  echo "==> Cask Installation Summary:"
-  if (( installed > 0 )); then
-    echo "   ✓ Installed: $installed"
+    # Handle non-interactive mode
+    if (( YES )); then
+      (( QUIET )) || echo "==> Installing all MAS apps (--yes flag)..."
+    elif (( NO )); then
+      (( QUIET )) || echo "==> Skipping all MAS apps (--no flag)..."
+    elif [[ ! -t 0 ]]; then
+      # Non-interactive (no TTY) - skip MAS apps by default
+      (( QUIET )) || echo "==> Non-interactive mode: skipping MAS apps (use --yes-casks to install all)"
+    fi
+
+    # Process MAS apps
+    mas_installed=0
+    mas_skipped=0
+    mas_failed=0
+    mas_current=0
+
+    while IFS='|' read -r mas_name mas_id; do
+      [[ -z "$mas_name" ]] && continue
+      
+      # Skip already-installed MAS apps
+      if mas list 2>/dev/null | grep -q "^$mas_id"; then
+        (( QUIET )) || echo "✓ $mas_name (already installed)"
+        continue
+      fi
+      
+      # Only count pending MAS apps for progress
+      ((mas_current++))
+
+      # Determine choice based on flags or interactive prompt
+      mas_choice=""
+      if (( NO )); then
+        mas_choice="n"
+      elif (( YES )); then
+        mas_choice="y"
+      else
+        # Interactive prompt - check if we have a TTY for input
+        if [[ -c /dev/tty ]] && [[ -r /dev/tty ]]; then
+          echo -n "[$mas_current/$pending_mas] Install MAS app '$mas_name'? [Y/n] " >&2
+          read -r ans < /dev/tty
+          ans="${ans:-Y}"
+          case "$ans" in
+            [Yy]*) mas_choice="y" ;;
+            [Nn]*) mas_choice="n" ;;
+            *)     mas_choice="y" ;;
+          esac
+        elif [[ -t 0 ]]; then
+          echo -n "[$mas_current/$pending_mas] Install MAS app '$mas_name'? [Y/n] " >&2
+          read -r ans
+          ans="${ans:-Y}"
+          case "$ans" in
+            [Yy]*) mas_choice="y" ;;
+            [Nn]*) mas_choice="n" ;;
+            *)     mas_choice="y" ;;
+          esac
+        else
+          (( QUIET )) || echo "[$mas_current/$pending_mas] ↷ Skipping '$mas_name' (non-interactive, use --yes-casks to install all)" >&2
+          mas_choice="n"
+        fi
+      fi
+
+      if [[ "$mas_choice" = "y" ]]; then
+        if (( DRY )); then
+          echo "[dry-run] mas install $mas_id"
+          ((mas_installed++))
+        else
+          if mas install "$mas_id"; then
+            (( QUIET )) || echo "[$mas_current/$pending_mas] ✓ Installed: $mas_name"
+            ((mas_installed++))
+          else
+            (( QUIET )) || echo "[$mas_current/$pending_mas] ✗ Failed: $mas_name" >&2
+            ((mas_failed++))
+          fi
+        fi
+      else
+        (( QUIET )) || echo "[$mas_current/$pending_mas] ↷ Skipped: $mas_name"
+        ((mas_skipped++))
+      fi
+    done < "$MAS_TEMP"
+
+    # MAS apps summary
+    if (( ! QUIET )) && (( total_mas > 0 )); then
+      echo ""
+      echo "==> MAS Apps Installation Summary:"
+      if (( mas_installed > 0 )); then
+        echo "   ✓ Installed: $mas_installed"
+      fi
+      if (( mas_skipped > 0 )); then
+        echo "   ↷ Skipped: $mas_skipped"
+      fi
+      if (( mas_failed > 0 )); then
+        echo "   ✗ Failed: $mas_failed" >&2
+      fi
+      if (( installed_mas > 0 )); then
+        echo "   • Already installed: $installed_mas"
+      fi
+      echo ""
+    fi
+
+    # Track MAS failures
+    if (( mas_failed > 0 )); then
+      ((failed += mas_failed))
+    fi
   fi
-  if (( skipped > 0 )); then
-    echo "   ↷ Skipped: $skipped"
-  fi
-  if (( failed > 0 )); then
-    echo "   ✗ Failed: $failed" >&2
-  fi
-  if (( installed_casks > 0 )); then
-    echo "   • Already installed: $installed_casks"
-  fi
-  echo ""
 fi
+
+# 3) Interactive: casks
+if [[ -s "$CASKS_LIST" ]]; then
+  # Extract bare cask tokens from lines like:
+  #   cask "iterm2"
+  #   cask "google-chrome", args: { appdir: "/Applications" }
+  # We ignore args and install with defaults.
+  CASKS_TEMP="$(mktemp -t mrk1-casks-extracted.XXXXXX)"
+  trap 'rm -f "$FORMULAS_BREWFILE" "$CASKS_LIST" "$MAS_LIST" "$MAS_TEMP" "$CASKS_TEMP"' EXIT
+
+  awk '
+    {
+      # remove leading stuff up to cask
+      sub(/^[[:space:]]*cask[[:space:]]*/, "", $0)
+      # get first quoted token
+      if (match($0, /"[^"]+"/)) {
+        name = substr($0, RSTART+1, RLENGTH-2)
+        print name
+      }
+    }
+  ' "$CASKS_LIST" > "$CASKS_TEMP"
+
+  # Count total casks and already-installed ones
+  total_casks=0
+  installed_casks=0
+  pending_casks=0
+
+  while IFS= read -r cask; do
+    [[ -z "$cask" ]] && continue
+    ((total_casks++))
+    if brew list --cask -1 2>/dev/null | grep -Fxq "$cask"; then
+      ((installed_casks++))
+    else
+      ((pending_casks++))
+    fi
+  done < "$CASKS_TEMP"
+
+  if (( total_casks == 0 )); then
+    (( QUIET )) || echo "==> No casks found."
+    # Continue to final summary even if no casks (we may have processed MAS apps)
+  else
+    # Show summary
+    if (( ! QUIET )); then
+      echo ""
+      echo "==> Casks Summary:"
+      echo "   Total: $total_casks"
+      if (( installed_casks > 0 )); then
+        echo "   Already installed: $installed_casks"
+      fi
+      if (( pending_casks > 0 )); then
+        echo "   Pending: $pending_casks"
+      fi
+      echo ""
+    fi
+
+    # Handle non-interactive mode
+    if (( YES )); then
+      (( QUIET )) || echo "==> Installing all casks (--yes flag)..."
+    elif (( NO )); then
+      (( QUIET )) || echo "==> Skipping all casks (--no flag)..."
+    elif [[ ! -t 0 ]]; then
+      # Non-interactive (no TTY) - skip casks by default
+      (( QUIET )) || echo "==> Non-interactive mode: skipping casks (use --yes-casks to install all)"
+    fi
+
+    # Process casks
+    installed=0
+    skipped=0
+    cask_failed=0
+    current=0
+
+    while IFS= read -r cask; do
+      [[ -z "$cask" ]] && continue
+      
+      # Skip already-installed casks
+      if brew list --cask -1 2>/dev/null | grep -Fxq "$cask"; then
+        (( QUIET )) || echo "✓ $cask (already installed)"
+        continue
+      fi
+      
+      # Only count pending casks for progress
+      ((current++))
+
+      # Determine choice based on flags or interactive prompt
+      choice=""
+      if (( NO )); then
+        choice="n"
+      elif (( YES )); then
+        choice="y"
+      else
+        # Interactive prompt - check if we have a TTY for input
+        # Use /dev/tty if available, otherwise check stdin
+        if [[ -c /dev/tty ]] && [[ -r /dev/tty ]]; then
+          # We have a terminal - prompt interactively
+          echo -n "[$current/$pending_casks] Install cask '$cask'? [Y/n] " >&2
+          read -r ans < /dev/tty
+          ans="${ans:-Y}"
+          case "$ans" in
+            [Yy]*) choice="y" ;;
+            [Nn]*) choice="n" ;;
+            *)     choice="y" ;;
+          esac
+        elif [[ -t 0 ]]; then
+          # stdin is a TTY - use it directly
+          echo -n "[$current/$pending_casks] Install cask '$cask'? [Y/n] " >&2
+          read -r ans
+          ans="${ans:-Y}"
+          case "$ans" in
+            [Yy]*) choice="y" ;;
+            [Nn]*) choice="n" ;;
+            *)     choice="y" ;;
+          esac
+        else
+          # No TTY available - skip by default in non-interactive mode
+          (( QUIET )) || echo "[$current/$pending_casks] ↷ Skipping '$cask' (non-interactive, use --yes-casks to install all)" >&2
+          choice="n"
+        fi
+      fi
+
+      if [[ "$choice" = "y" ]]; then
+        if (( DRY )); then
+          echo "[dry-run] brew install --cask $cask"
+          ((installed++))
+        else
+          if brew install --cask "$cask"; then
+            (( QUIET )) || echo "[$current/$pending_casks] ✓ Installed: $cask"
+            ((installed++))
+          else
+            (( QUIET )) || echo "[$current/$pending_casks] ✗ Failed: $cask" >&2
+            ((cask_failed++))
+          fi
+        fi
+      else
+        (( QUIET )) || echo "[$current/$pending_casks] ↷ Skipped: $cask"
+        ((skipped++))
+      fi
+    done < "$CASKS_TEMP"
+
+    # Final summary for casks
+    if (( ! QUIET )); then
+      echo ""
+      echo "==> Cask Installation Summary:"
+      if (( installed > 0 )); then
+        echo "   ✓ Installed: $installed"
+      fi
+      if (( skipped > 0 )); then
+        echo "   ↷ Skipped: $skipped"
+      fi
+      if (( cask_failed > 0 )); then
+        echo "   ✗ Failed: $cask_failed" >&2
+      fi
+      if (( installed_casks > 0 )); then
+        echo "   • Already installed: $installed_casks"
+      fi
+      echo ""
+    fi
+
+    # Track cask failures
+    if (( cask_failed > 0 )); then
+      ((failed += cask_failed))
+    fi
+  fi
+fi  # End of casks section (if [[ -s "$CASKS_LIST" ]])
 
 # Exit with error if any failed
 if (( failed > 0 )); then

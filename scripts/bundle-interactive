@@ -89,6 +89,9 @@ fi
 #   cask "iterm2"
 #   cask "google-chrome", args: { appdir: "/Applications" }
 # We ignore args and install with defaults.
+CASKS_TEMP="$(mktemp -t mrk1-casks-extracted.XXXXXX)"
+trap 'rm -f "$FORMULAS_BREWFILE" "$CASKS_LIST" "$CASKS_TEMP"' EXIT
+
 awk '
   {
     # remove leading stuff up to cask
@@ -99,12 +102,70 @@ awk '
       print name
     }
   }
-' "$CASKS_LIST" | while IFS= read -r cask; do
+' "$CASKS_LIST" > "$CASKS_TEMP"
+
+# Count total casks and already-installed ones
+total_casks=0
+installed_casks=0
+pending_casks=0
+
+while IFS= read -r cask; do
+  [[ -z "$cask" ]] && continue
+  ((total_casks++))
+  if brew list --cask -1 2>/dev/null | grep -Fxq "$cask"; then
+    ((installed_casks++))
+  else
+    ((pending_casks++))
+  fi
+done < "$CASKS_TEMP"
+
+if (( total_casks == 0 )); then
+  (( QUIET )) || echo "==> No casks found."
+  exit 0
+fi
+
+# Show summary
+if (( ! QUIET )); then
+  echo ""
+  echo "==> Casks Summary:"
+  echo "   Total: $total_casks"
+  if (( installed_casks > 0 )); then
+    echo "   Already installed: $installed_casks"
+  fi
+  if (( pending_casks > 0 )); then
+    echo "   Pending: $pending_casks"
+  fi
+  echo ""
+fi
+
+# Handle non-interactive mode
+if (( YES )); then
+  (( QUIET )) || echo "==> Installing all casks (--yes flag)..."
+elif (( NO )); then
+  (( QUIET )) || echo "==> Skipping all casks (--no flag)..."
+elif [[ ! -t 0 ]]; then
+  # Non-interactive (no TTY) - skip casks by default
+  (( QUIET )) || echo "==> Non-interactive mode: skipping casks (use --yes-casks to install all)"
+  exit 0
+fi
+
+# Process casks
+installed=0
+skipped=0
+failed=0
+current=0
+
+while IFS= read -r cask; do
+  [[ -z "$cask" ]] && continue
+  
   # Skip already-installed casks
   if brew list --cask -1 2>/dev/null | grep -Fxq "$cask"; then
-    (( QUIET )) || echo "• $cask (already installed)"
+    (( QUIET )) || echo "✓ $cask (already installed)"
     continue
   fi
+  
+  # Only count pending casks for progress
+  ((current++))
 
   choice="y"
   if (( NO )); then
@@ -112,7 +173,9 @@ awk '
   elif (( YES )); then
     choice="y"
   else
-    read -r -p "Install cask '$cask'? [Y/n] " ans
+    # Interactive prompt
+    echo -n "[$current/$pending_casks] Install cask '$cask'? [Y/n] "
+    read -r ans
     ans="${ans:-Y}"
     case "$ans" in
       [Yy]*) choice="y" ;;
@@ -124,12 +187,42 @@ awk '
   if [[ "$choice" = "y" ]]; then
     if (( DRY )); then
       echo "[dry-run] brew install --cask $cask"
+      ((installed++))
     else
-      brew install --cask "$cask"
+      if brew install --cask "$cask"; then
+        (( QUIET )) || echo "[$current/$pending_casks] ✓ Installed: $cask"
+        ((installed++))
+      else
+        (( QUIET )) || echo "[$current/$pending_casks] ✗ Failed: $cask" >&2
+        ((failed++))
+      fi
     fi
   else
-    (( QUIET )) || echo "↷ skipped: $cask"
+    (( QUIET )) || echo "[$current/$pending_casks] ↷ Skipped: $cask"
+    ((skipped++))
   fi
-done
+done < "$CASKS_TEMP"
 
-(( QUIET )) || echo "==> Done."
+# Final summary
+if (( ! QUIET )); then
+  echo ""
+  echo "==> Cask Installation Summary:"
+  if (( installed > 0 )); then
+    echo "   ✓ Installed: $installed"
+  fi
+  if (( skipped > 0 )); then
+    echo "   ↷ Skipped: $skipped"
+  fi
+  if (( failed > 0 )); then
+    echo "   ✗ Failed: $failed" >&2
+  fi
+  if (( installed_casks > 0 )); then
+    echo "   • Already installed: $installed_casks"
+  fi
+  echo ""
+fi
+
+# Exit with error if any failed
+if (( failed > 0 )); then
+  exit 1
+fi

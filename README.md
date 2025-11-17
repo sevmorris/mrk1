@@ -30,16 +30,66 @@ make fix-exec && make install
 
 ---
 
+## Interactive Cask Installation
+
+By default, **Casks are optional and interactive**. The installer will:
+
+1. **Automatically install** all formulas, taps, and Mac App Store apps from your Brewfile
+2. **Prompt you** for each cask individually, allowing you to choose which applications to install
+
+### Cask Installation Options
+
+```bash
+# Interactive mode (default) - prompts for each cask
+./scripts/install
+
+# Install all casks without prompting
+./scripts/install --yes-casks
+
+# Skip all casks
+./scripts/install --no-casks
+
+# Use the interactive bundle script directly
+./scripts/bundle-interactive assets/Brewfile
+```
+
+The interactive installer shows:
+- A summary of total, already-installed, and pending casks
+- Progress counter for each cask (`[1/25] Install cask 'iterm2'? [Y/n]`)
+- Final summary of installed, skipped, and failed casks
+
+**Note:** In non-interactive mode (no TTY), casks are skipped by default. Use `--yes-casks` to install all casks automatically.
+
+---
+
 ## Common make targets
 
 ```text
 make fix-exec     # ensure scripts/* and bin/* are executable
 make install      # full bootstrap (brew → dotfiles → tools → defaults)
-make tools        # install/update Brewfile packages
+make tools        # install/update Brewfile packages (interactive for casks)
 make dotfiles     # link dotfiles with backups
 make defaults     # apply defaults + write rollback script
 make brew-clean   # brew cleanup && autoremove
 make uninstall    # unlink scripts and optionally roll back defaults
+```
+
+### Installer Options
+
+```bash
+# Run specific phase only
+./scripts/install --only brew
+./scripts/install --only dotfiles
+
+# Control cask installation
+./scripts/install --yes-casks    # install all casks
+./scripts/install --no-casks      # skip all casks
+
+# Skip specific phases
+./scripts/install --no-brew --no-defaults
+
+# See all options
+./scripts/install --help
 ```
 
 ---

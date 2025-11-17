@@ -9,6 +9,8 @@ NO_DOTFILES=0
 NO_DEFAULTS=0
 NO_LINK_TOOLS=0
 DEBUG=0
+CASKS_YES=0
+CASKS_NO=0
 
 while (("$#")); do
   case "$1" in
@@ -17,6 +19,8 @@ while (("$#")); do
     --no-dotfiles) NO_DOTFILES=1 ;;
     --no-defaults) NO_DEFAULTS=1 ;;
     --no-link-tools) NO_LINK_TOOLS=1 ;;
+    --yes-casks) CASKS_YES=1 ;;
+    --no-casks) CASKS_NO=1 ;;
     --debug) DEBUG=1 ;;
     -h|--help)
       cat <<'USAGE'
@@ -28,6 +32,8 @@ Usage: scripts/install [options]
   --no-dotfiles      Skip dotfiles linking
   --no-defaults      Skip macOS defaults
   --no-link-tools    Skip linking scripts/bin into ~/.local/bin
+  --yes-casks        Install all casks without prompting
+  --no-casks         Skip all casks without prompting
   --debug            Enable bash tracing (set -x)
 Env:
   MRK1_DOTFILES_REPO   If set, clones repo to ~/.dotfiles and runs script/setup and script/strap-after-setup if present
@@ -122,11 +128,33 @@ phase_brew() {
     log "Homebrew present."
   fi
 
-  if [[ -f "$BREWFILE" ]]; then
-    log "Running brew bundle using $BREWFILE..."
-    brew bundle --file="$BREWFILE" || warn "brew bundle returned non-zero"
-  else
+  if [[ ! -f "$BREWFILE" ]]; then
     warn "No Brewfile found; skipping bundle"
+    return 0
+  fi
+
+  # Use interactive bundle script if available, otherwise fall back to plain brew bundle
+  local bundle_script="$SCRIPTS_DIR/bundle-interactive"
+  if [[ -x "$bundle_script" ]]; then
+    log "Running interactive brew bundle (casks will be prompted)..."
+    local bundle_args=("$BREWFILE")
+    
+    # Pass flags to bundle-interactive
+    if (( CASKS_YES )); then
+      bundle_args+=(--yes)
+    elif (( CASKS_NO )); then
+      bundle_args+=(--no)
+    fi
+    
+    if "$bundle_script" "${bundle_args[@]}"; then
+      log "Brew bundle completed"
+    else
+      warn "Brew bundle returned non-zero"
+    fi
+  else
+    log "Running brew bundle using $BREWFILE (non-interactive)..."
+    log "Note: Install scripts/bundle-interactive for interactive cask installation"
+    brew bundle --file="$BREWFILE" || warn "brew bundle returned non-zero"
   fi
 }
 

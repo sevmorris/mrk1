@@ -1,1 +1,33 @@
+# Logs
+*.log
+mrk1-install.log
+*.log.*
+
+# macOS
 .DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Editor files
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+*.sublime-*
+
+# Backup directories (if tracked)
+backups/
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+
+# State directories (user-specific)
+.mrk1/
+
+# Test files
+test-*
+*.test

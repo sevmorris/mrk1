@@ -37,6 +37,7 @@ make install      # full bootstrap (dotfiles → tools → defaults)
 make tools        # link scripts/bin into ~/.local/bin
 make dotfiles     # link dotfiles with backups
 make defaults     # apply defaults + write rollback script
+make status       # check installation status
 make uninstall    # unlink scripts and optionally roll back defaults
 ```
 
@@ -48,11 +49,29 @@ make uninstall    # unlink scripts and optionally roll back defaults
 ./scripts/install --only tools
 ./scripts/install --only defaults
 
+# Preview changes without applying
+./scripts/install --dry-run
+
+# Validate configuration before installing
+./scripts/install --validate
+
+# Continue even if a phase fails
+./scripts/install --continue-on-error
+
 # Skip specific phases
 ./scripts/install --no-dotfiles --no-defaults
 
 # See all options
 ./scripts/install --help
+```
+
+### Check Installation Status
+
+```bash
+# Check what's installed and linked
+./scripts/status
+# or
+make status
 ```
 
 ---
@@ -67,7 +86,7 @@ What it does:
 
 - Removes symlinks created in `~/.local/bin`  
 - Optionally runs `~/.mrk1/defaults-rollback.sh`  
-- Leaves your Homebrew setup and personal files alone
+- Leaves your personal files and dotfiles alone
 
 ---
 

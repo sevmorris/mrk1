@@ -5,7 +5,7 @@ REPO_ROOT := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 SCRIPTS   := $(REPO_ROOT)/scripts
 BIN_DIR   := $(REPO_ROOT)/bin
 
-.PHONY: all bootstrap install fix-exec tools dotfiles defaults uninstall updates harden
+.PHONY: all bootstrap install fix-exec tools dotfiles defaults uninstall updates harden status
 
 all: install
 bootstrap: install
@@ -38,3 +38,6 @@ updates:
 
 harden:
 	@./scripts/hardening.sh
+
+status:
+	@"$(SCRIPTS)/status"

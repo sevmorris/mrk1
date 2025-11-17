@@ -4,7 +4,7 @@ set -euo pipefail
 # mrk1 uninstaller - conservative
 # - Unlinks ~/.local/bin symlinks pointing into this repo
 # - Optionally runs ~/.mrk1/defaults-rollback.sh
-# - Does not remove Homebrew or user data
+# - Does not remove user data or dotfiles
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"

@@ -1,0 +1,156 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# mrk1 status - check installation status
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+LOCAL_BIN="$HOME/.local/bin"
+STATE_DIR="$HOME/.mrk1"
+
+ok()    { printf '\033[32m✓ %s\033[0m\n' "$*"; }
+warn()  { printf '\033[33m⚠ %s\033[0m\n' "$*"; }
+err()   { printf '\033[31m✗ %s\033[0m\n' "$*"; }
+info()  { printf '  %s\n' "$*"; }
+
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "  mrk1 Installation Status"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo ""
+
+# Check dotfiles
+echo "Dotfiles:"
+if [[ -d "$REPO_ROOT/dotfiles" ]]; then
+  local linked=0
+  local missing=0
+  shopt -s dotglob nullglob
+  for src in "$REPO_ROOT/dotfiles"/*; do
+    [[ -e "$src" ]] || continue
+    local dst="$HOME/$(basename "$src")"
+    if [[ -L "$dst" ]] && [[ "$(readlink "$dst")" == "$src" ]]; then
+      ((linked++))
+    else
+      ((missing++))
+      if [[ -e "$dst" ]]; then
+        warn "  Not linked: $dst (file exists)"
+      else
+        info "  Not linked: $dst"
+      fi
+    fi
+  done
+  shopt -u dotglob nullglob
+  
+  if (( linked > 0 )); then
+    ok "  $linked dotfile(s) linked"
+  fi
+  if (( missing == 0 && linked > 0 )); then
+    ok "  All dotfiles linked"
+  fi
+else
+  warn "  dotfiles directory not found"
+fi
+echo ""
+
+# Check tools
+echo "Tools:"
+if [[ -d "$LOCAL_BIN" ]]; then
+  local linked=0
+  local broken=0
+  while IFS= read -r -d '' link; do
+    local target
+    target="$(readlink "$link" 2>/dev/null || true)"
+    if [[ -n "$target" ]] && [[ "$target" == "$REPO_ROOT"/* ]]; then
+      if [[ -e "$target" ]]; then
+        ((linked++))
+      else
+        ((broken++))
+        warn "  Broken link: $link -> $target"
+      fi
+    fi
+  done < <(find "$LOCAL_BIN" -maxdepth 1 -type l -print0 2>/dev/null || true)
+  
+  if (( linked > 0 )); then
+    ok "  $linked tool(s) linked"
+  fi
+  if (( broken > 0 )); then
+    err "  $broken broken symlink(s)"
+  fi
+  if (( linked == 0 && broken == 0 )); then
+    info "  No mrk1 tools linked"
+  fi
+else
+  warn "  $LOCAL_BIN not found"
+fi
+echo ""
+
+# Check defaults
+echo "macOS Defaults:"
+if [[ -f "$STATE_DIR/defaults-rollback.sh" ]] && [[ -s "$STATE_DIR/defaults-rollback.sh" ]]; then
+  local rollback_lines
+  rollback_lines=$(grep -c "defaults write\|defaults delete" "$STATE_DIR/defaults-rollback.sh" 2>/dev/null || echo "0")
+  if (( rollback_lines > 0 )); then
+    ok "  Defaults have been applied"
+    info "  Rollback script: $STATE_DIR/defaults-rollback.sh"
+    info "  ($rollback_lines change(s) can be rolled back)"
+  else
+    info "  No defaults applied"
+  fi
+else
+  info "  No defaults applied"
+fi
+echo ""
+
+# Check backups
+echo "Backups:"
+if [[ -d "$STATE_DIR/backups" ]]; then
+  local backup_count
+  backup_count=$(find "$STATE_DIR/backups" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | wc -l | tr -d ' ')
+  if (( backup_count > 0 )); then
+    ok "  $backup_count backup(s) found"
+    info "  Location: $STATE_DIR/backups"
+    # Show most recent
+    local latest
+    latest=$(find "$STATE_DIR/backups" -mindepth 1 -maxdepth 1 -type d -print0 2>/dev/null | sort -zr | head -z -n1 | tr -d '\0')
+    if [[ -n "$latest" ]]; then
+      info "  Latest: $(basename "$latest")"
+    fi
+  else
+    info "  No backups found"
+  fi
+else
+  info "  No backups directory"
+fi
+echo ""
+
+# Check shell
+echo "Shell:"
+if command -v zsh >/dev/null 2>&1; then
+  local current_shell
+  current_shell="$(dscl . -read "/Users/$USER" UserShell 2>/dev/null | awk '{print $2}')" || current_shell="unknown"
+  local zsh_path
+  zsh_path="$(command -v zsh)"
+  if [[ "$current_shell" == "$zsh_path" ]]; then
+    ok "  Login shell: $current_shell"
+  else
+    warn "  Login shell: $current_shell (expected: $zsh_path)"
+  fi
+else
+  warn "  zsh not found"
+fi
+echo ""
+
+# Check PATH
+echo "PATH:"
+case ":$PATH:" in
+  *":$LOCAL_BIN:"*)
+    ok "  $LOCAL_BIN is on PATH"
+    ;;
+  *)
+    warn "  $LOCAL_BIN is NOT on PATH"
+    info "  Run: ./scripts/doctor --fix"
+    ;;
+esac
+echo ""
+
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+

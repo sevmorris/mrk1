@@ -5,7 +5,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-LOCAL_BIN="$HOME/.local/bin"
+INSTALL_BIN="$HOME/bin"
 STATE_DIR="$HOME/.mrk1"
 
 ok()    { printf '\033[32m✓ %s\033[0m\n' "$*"; }
@@ -18,68 +18,72 @@ echo "  mrk1 Installation Status"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 
-# Check dotfiles
-echo "Dotfiles:"
-if [[ -d "$REPO_ROOT/dotfiles" ]]; then
-  local linked=0
-  local missing=0
-  shopt -s dotglob nullglob
-  for src in "$REPO_ROOT/dotfiles"/*; do
-    [[ -e "$src" ]] || continue
-    local dst="$HOME/$(basename "$src")"
-    if [[ -L "$dst" ]] && [[ "$(readlink "$dst")" == "$src" ]]; then
-      ((linked++))
-    else
-      ((missing++))
-      if [[ -e "$dst" ]]; then
-        warn "  Not linked: $dst (file exists)"
-      else
-        info "  Not linked: $dst"
-      fi
-    fi
-  done
-  shopt -u dotglob nullglob
+# Check dotfiles (.zsh* only)
+echo "Dotfiles (.zsh*):"
+local zsh_linked=0
+local zsh_missing=0
+
+for zsh_file in "$HOME"/.zsh*; do
+  [[ -e "$zsh_file" ]] || continue
+  [[ -L "$zsh_file" ]] || continue
   
-  if (( linked > 0 )); then
-    ok "  $linked dotfile(s) linked"
+  local target
+  target="$(readlink "$zsh_file" 2>/dev/null || true)"
+  if [[ -n "$target" ]]; then
+    # Check if it points to an mrk1 dotfiles directory
+    if [[ "$target" == *"/.mrk1/repo/dotfiles/.zsh"* ]] || \
+       [[ "$target" == *"/mrk1"*"/dotfiles/.zsh"* ]] || \
+       [[ "$target" == *"/mrk1-dev"*"/dotfiles/.zsh"* ]] || \
+       [[ "$target" == *"/dotfiles/.zsh"* ]]; then
+      ((zsh_linked++))
+    fi
   fi
-  if (( missing == 0 && linked > 0 )); then
-    ok "  All dotfiles linked"
+done
+
+# Check for expected .zsh* files that should be linked
+local expected_zsh=(".zshrc" ".zshenv" ".zprofile")
+for expected in "${expected_zsh[@]}"; do
+  local file_path="$HOME/$expected"
+  local link_target
+  link_target="$(readlink "$file_path" 2>/dev/null || true)"
+  if [[ ! -L "$file_path" ]] || [[ -z "$link_target" ]] || \
+     [[ "$link_target" != *"/.mrk1/repo/dotfiles/.zsh"* ]] && \
+     [[ "$link_target" != *"/dotfiles/.zsh"* ]]; then
+    if [[ -e "$file_path" ]]; then
+      warn "  Not linked: $expected (file exists but not from mrk1)"
+    else
+      info "  Not linked: $expected"
+    fi
+    ((zsh_missing++))
   fi
-else
-  warn "  dotfiles directory not found"
+done
+
+if (( zsh_linked > 0 )); then
+  ok "  $zsh_linked .zsh* file(s) linked"
+fi
+
+if (( zsh_missing == 0 && zsh_linked > 0 )); then
+  ok "  All expected .zsh* files linked"
 fi
 echo ""
 
 # Check tools
 echo "Tools:"
-if [[ -d "$LOCAL_BIN" ]]; then
-  local linked=0
-  local broken=0
-  while IFS= read -r -d '' link; do
-    local target
-    target="$(readlink "$link" 2>/dev/null || true)"
-    if [[ -n "$target" ]] && [[ "$target" == "$REPO_ROOT"/* ]]; then
-      if [[ -e "$target" ]]; then
-        ((linked++))
-      else
-        ((broken++))
-        warn "  Broken link: $link -> $target"
-      fi
-    fi
-  done < <(find "$LOCAL_BIN" -maxdepth 1 -type l -print0 2>/dev/null || true)
+if [[ -d "$INSTALL_BIN" ]]; then
+  local tool_count=0
+  # Count tools that might be from mrk1 (heuristic: executable files)
+  while IFS= read -r -d '' tool; do
+    [[ -f "$tool" && -x "$tool" ]] && ((tool_count++))
+  done < <(find "$INSTALL_BIN" -maxdepth 1 -type f -print0 2>/dev/null || true)
   
-  if (( linked > 0 )); then
-    ok "  $linked tool(s) linked"
-  fi
-  if (( broken > 0 )); then
-    err "  $broken broken symlink(s)"
-  fi
-  if (( linked == 0 && broken == 0 )); then
-    info "  No mrk1 tools linked"
+  if (( tool_count > 0 )); then
+    ok "  $tool_count tool(s) in $INSTALL_BIN"
+    info "  (Note: Tools are copied, not symlinked)"
+  else
+    info "  No tools found in $INSTALL_BIN"
   fi
 else
-  warn "  $LOCAL_BIN not found"
+  warn "  $INSTALL_BIN not found"
 fi
 echo ""
 
@@ -142,12 +146,12 @@ echo ""
 # Check PATH
 echo "PATH:"
 case ":$PATH:" in
-  *":$LOCAL_BIN:"*)
-    ok "  $LOCAL_BIN is on PATH"
+  *":$INSTALL_BIN:"*)
+    ok "  $INSTALL_BIN is on PATH"
     ;;
   *)
-    warn "  $LOCAL_BIN is NOT on PATH"
-    info "  Run: ./scripts/doctor --fix"
+    warn "  $INSTALL_BIN is NOT on PATH"
+    info "  Add to your .zshrc: export PATH=\"\$HOME/bin:\$PATH\""
     ;;
 esac
 echo ""

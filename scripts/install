@@ -37,7 +37,7 @@ Usage: scripts/install [options]
   --only <phase>        Run a single phase: xcode|dotfiles|tools|defaults|shell
   --no-dotfiles         Skip dotfiles linking
   --no-defaults        Skip macOS defaults
-  --no-link-tools       Skip linking scripts/bin into ~/.local/bin
+  --no-link-tools       Skip copying tools to ~/bin
   --dry-run             Preview changes without applying them
   --validate            Validate configuration before installing
   --continue-on-error   Continue with remaining phases if one fails
@@ -59,18 +59,79 @@ if (( DRY_RUN )); then
   echo "=== DRY RUN MODE: No changes will be made ===" >&2
 fi
 
+# Determine if we're running from a git repo or need to clone
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-BIN_DIR="$REPO_ROOT/bin"
-SCRIPTS_DIR="$REPO_ROOT/scripts"
+
+# Check if we're in a git repo (development mode) or need to clone
+if [[ -d "$REPO_ROOT/.git" ]]; then
+  # Running from local development repo
+  INSTALL_MODE="local"
+  WORK_DIR="$REPO_ROOT"
+  CLEANUP_WORK_DIR=0
+else
+  # Need to clone the repo to a permanent location for symlinks
+  INSTALL_MODE="clone"
+  STATE_DIR="$HOME/.mrk1"
+  WORK_DIR="$STATE_DIR/repo"
+  CLEANUP_WORK_DIR=0  # Don't cleanup - we need it for symlinks
+  MRK1_REPO_URL="${MRK1_REPO_URL:-https://github.com/sevmorris/mrk1.git}"
+fi
+
+# Set up directories (STATE_DIR already set if cloning)
+if [[ "$INSTALL_MODE" != "clone" ]]; then
+  STATE_DIR="$HOME/.mrk1"
+fi
+
+BIN_DIR="$WORK_DIR/bin"
+SCRIPTS_DIR="$WORK_DIR/scripts"
+DOTFILES_DIR="$WORK_DIR/dotfiles"
 LOGFILE="$HOME/mrk1-install.log"
-LOCAL_BIN="$HOME/.local/bin"
-STATE_DIR="$HOME/.mrk1"
+INSTALL_BIN="$HOME/bin"
 BACKUP_DIR="$STATE_DIR/backups/$(date +%Y%m%d-%H%M%S)"
 ROLLBACK="$STATE_DIR/defaults-rollback.sh"
 
+# Create STATE_DIR first if cloning (needed for WORK_DIR)
+if [[ "$INSTALL_MODE" == "clone" ]]; then
+  if ! mkdir -p "$STATE_DIR"; then
+    err "Failed to create state directory: $STATE_DIR"
+    exit 1
+  fi
+fi
+
+# Clone repo if needed
+if [[ "$INSTALL_MODE" == "clone" ]]; then
+  if [[ -d "$WORK_DIR/.git" ]]; then
+    log "Repository already exists at $WORK_DIR, updating..."
+    if (( DRY_RUN )); then
+      dry "Would update repository at $WORK_DIR"
+    elif ! (cd "$WORK_DIR" && git pull --depth 1 >/dev/null 2>&1); then
+      warn "Failed to update repository, cloning fresh..."
+      rm -rf "$WORK_DIR"
+      if ! git clone --depth 1 "$MRK1_REPO_URL" "$WORK_DIR"; then
+        err "Failed to clone repository: $MRK1_REPO_URL"
+        exit 1
+      else
+        log "Repository cloned to $WORK_DIR"
+      fi
+    else
+      log "Repository updated at $WORK_DIR"
+    fi
+  else
+    log "Cloning mrk1 repository to $WORK_DIR..."
+    if (( DRY_RUN )); then
+      dry "Would clone $MRK1_REPO_URL to $WORK_DIR"
+    elif ! git clone --depth 1 "$MRK1_REPO_URL" "$WORK_DIR"; then
+      err "Failed to clone repository: $MRK1_REPO_URL"
+      exit 1
+    else
+      log "Repository cloned to $WORK_DIR"
+    fi
+  fi
+fi
+
 # Create required directories with error checking
-if ! mkdir -p "$(dirname "$LOGFILE")" "$LOCAL_BIN" "$(dirname "$BACKUP_DIR")" "$STATE_DIR"; then
+if ! mkdir -p "$(dirname "$LOGFILE")" "$INSTALL_BIN" "$(dirname "$BACKUP_DIR")" "$STATE_DIR"; then
   err "Failed to create required directories"
   exit 1
 fi
@@ -148,8 +209,8 @@ validate_setup() {
   log "Validating setup..."
   local issues=0
   
-  if [[ ! -d "$REPO_ROOT/dotfiles" ]] && (( ! NO_DOTFILES )); then
-    warn "dotfiles directory not found: $REPO_ROOT/dotfiles"
+  if [[ ! -d "$DOTFILES_DIR" ]] && (( ! NO_DOTFILES )); then
+    warn "dotfiles directory not found: $DOTFILES_DIR"
     ((issues++))
   fi
   
@@ -192,17 +253,17 @@ phase_xcode() {
 phase_link_tools() {
   if (( NO_LINK_TOOLS )); then log "Skipping link-tools (flag)"; return; fi
   
-  if [[ ! -d "$LOCAL_BIN" ]]; then
+  if [[ ! -d "$INSTALL_BIN" ]]; then
     if (( DRY_RUN )); then
-      dry "Would create directory: $LOCAL_BIN"
-    elif ! mkdir -p "$LOCAL_BIN"; then
-      err "Failed to create $LOCAL_BIN directory"
+      dry "Would create directory: $INSTALL_BIN"
+    elif ! mkdir -p "$INSTALL_BIN"; then
+      err "Failed to create $INSTALL_BIN directory"
       return 1
     fi
   fi
   
-  log "Linking scripts/* and bin/* into $LOCAL_BIN..."
-  local linked=0
+  log "Copying tools from scripts/* and bin/* to $INSTALL_BIN..."
+  local copied=0
   local failed=0
   local total=0
   
@@ -219,17 +280,22 @@ phase_link_tools() {
       local base
       base="$(basename "$f")"
       
+      # Skip certain files
+      case "$base" in
+        install|uninstall|bootstrap|syncall|generate-install-manifest|dev-test.sh) continue ;;
+      esac
+      
       if (( total > 0 )); then
-        printf "\r[%d/%d] Linking %s..." "$current" "$total" "$base" >&2
+        printf "\r[%d/%d] Copying %s..." "$current" "$total" "$base" >&2
       fi
       
       if (( DRY_RUN )); then
-        dry "Would link: $LOCAL_BIN/$base -> $f"
-        ((linked++))
-      elif ln -sf "$f" "$LOCAL_BIN/$base"; then
-        ((linked++))
+        dry "Would copy: $INSTALL_BIN/$base <- $f"
+        ((copied++))
+      elif cp "$f" "$INSTALL_BIN/$base" && chmod +x "$INSTALL_BIN/$base"; then
+        ((copied++))
       else
-        err "Failed to link: $LOCAL_BIN/$base"
+        err "Failed to copy: $INSTALL_BIN/$base"
         ((failed++))
       fi
     done < <(find "$SCRIPTS_DIR" -maxdepth 1 -type f -print0 2>/dev/null || true)
@@ -250,29 +316,29 @@ phase_link_tools() {
       base="$(basename "$f")"
       
       if (( bin_total > 0 )); then
-        printf "\r[%d/%d] Linking %s..." "$current" "$bin_total" "$base" >&2
+        printf "\r[%d/%d] Copying %s..." "$current" "$bin_total" "$base" >&2
       fi
       
       if (( DRY_RUN )); then
-        dry "Would link: $LOCAL_BIN/$base -> $f"
-        ((linked++))
-      elif ln -sf "$f" "$LOCAL_BIN/$base"; then
-        ((linked++))
+        dry "Would copy: $INSTALL_BIN/$base <- $f"
+        ((copied++))
+      elif cp "$f" "$INSTALL_BIN/$base" && chmod +x "$INSTALL_BIN/$base"; then
+        ((copied++))
       else
-        err "Failed to link: $LOCAL_BIN/$base"
+        err "Failed to copy: $INSTALL_BIN/$base"
         ((failed++))
       fi
     done < <(find "$BIN_DIR" -maxdepth 1 -type f -print0 2>/dev/null || true)
     printf "\r" >&2  # Clear progress line
   fi
   
-  if (( linked > 0 )); then
-    log "Linked $linked tool(s) into $LOCAL_BIN"
-    TOOLS_LINKED=$linked
+  if (( copied > 0 )); then
+    log "Copied $copied tool(s) to $INSTALL_BIN"
+    TOOLS_LINKED=$copied
   fi
   
   if (( failed > 0 )); then
-    warn "$failed symlink(s) failed to create"
+    warn "$failed tool(s) failed to copy"
     ((ERRORS++))
     return 1
   fi
@@ -281,8 +347,8 @@ phase_link_tools() {
 phase_dotfiles() {
   if (( NO_DOTFILES )); then log "Skipping dotfiles (flag)"; return; fi
   
-  if [[ ! -d "$REPO_ROOT/dotfiles" ]]; then
-    warn "dotfiles directory not found: $REPO_ROOT/dotfiles"
+  if [[ ! -d "$DOTFILES_DIR" ]]; then
+    warn "dotfiles directory not found: $DOTFILES_DIR"
     return 0
   fi
   
@@ -301,15 +367,16 @@ phase_dotfiles() {
   local linked=0
   local backed_up=0
   
-  # Count total for progress
+  # Only process .zsh* files
   local total=0
-  for src in "$REPO_ROOT/dotfiles"/*; do
-    [[ -e "$src" ]] && ((total++))
+  for src in "$DOTFILES_DIR"/.zsh*; do
+    [[ -e "$src" ]] && [[ -f "$src" ]] && ((total++))
   done
   
   local current=0
-  for src in "$REPO_ROOT/dotfiles"/*; do
+  for src in "$DOTFILES_DIR"/.zsh*; do
     [[ -e "$src" ]] || continue
+    [[ -f "$src" ]] || continue  # Only files, not directories
     found=1
     ((current++))
     dst="$HOME/$(basename "$src")"
@@ -350,7 +417,7 @@ phase_dotfiles() {
   shopt -u dotglob nullglob
   
   if (( linked > 0 )); then
-    log "Linked $linked dotfile(s)"
+    log "Linked $linked .zsh* file(s)"
     DOTFILES_LINKED=$linked
   fi
   
@@ -360,7 +427,7 @@ phase_dotfiles() {
   fi
   
   if (( !found )); then
-    warn "No dotfiles found in $REPO_ROOT/dotfiles"
+    warn "No .zsh* files found in $DOTFILES_DIR"
   fi
 }
 
@@ -515,6 +582,9 @@ run_phase ext      phase_ext_dotfiles
 run_phase defaults phase_defaults
 run_phase shell    phase_shell
 
+# Note: We keep the cloned repo at ~/.mrk1/repo for symlinks to work
+# It can be cleaned up manually if needed, or will be updated on next install
+
 # Installation summary
 show_summary() {
   echo ""
@@ -556,6 +626,10 @@ show_summary() {
   echo "  Log file: $LOGFILE"
   if [[ -f "$ROLLBACK" ]] && [[ -s "$ROLLBACK" ]]; then
     echo "  Rollback script: $ROLLBACK"
+  fi
+  if (( TOOLS_LINKED > 0 )); then
+    echo "  Tools location: $INSTALL_BIN"
+    echo "  Note: Add $INSTALL_BIN to your PATH if not already present"
   fi
   echo ""
   echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"

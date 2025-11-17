@@ -2,55 +2,113 @@
 set -euo pipefail
 
 # mrk1 uninstaller - conservative
-# - Unlinks ~/.local/bin symlinks pointing into this repo
+# - Removes tools copied to ~/bin
+# - Unlinks .zsh* symlinks from home directory
 # - Optionally runs ~/.mrk1/defaults-rollback.sh
-# - Does not remove user data or dotfiles
+# - Does not remove user data or other dotfiles
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-LOCAL_BIN="$HOME/.local/bin"
+INSTALL_BIN="$HOME/bin"
 
 log(){ printf "[uninstall] %s\n" "$*"; }
 warn(){ printf "[warn] %s\n" "$*"; }
 
-log "Unlinking mrk1 symlinks from $LOCAL_BIN..."
+# Remove tools from ~/bin
+log "Removing mrk1 tools from $INSTALL_BIN..."
 removed=0
 failed=0
 
-if [[ -d "$LOCAL_BIN" ]]; then
-  while IFS= read -r -d '' link; do
-    local target
-    target="$(readlink "$link" 2>/dev/null || true)"
-    if [[ -z "$target" ]]; then
-      continue
+if [[ -d "$INSTALL_BIN" ]]; then
+  # List of tools that should be removed (from scripts/ and bin/)
+  # We'll identify them by checking if they match known tool names
+  local tool_names=()
+  
+  # Get list of tools from repo structure (if available)
+  if [[ -d "$REPO_ROOT/scripts" ]]; then
+    while IFS= read -r -d '' f; do
+      [[ -f "$f" && -x "$f" ]] || continue
+      local base
+      base="$(basename "$f")"
+      case "$base" in
+        install|uninstall|bootstrap|syncall|generate-install-manifest|dev-test.sh) continue ;;
+        *) tool_names+=("$base") ;;
+      esac
+    done < <(find "$REPO_ROOT/scripts" -maxdepth 1 -type f -print0 2>/dev/null || true)
+  fi
+  
+  if [[ -d "$REPO_ROOT/bin" ]]; then
+    while IFS= read -r -d '' f; do
+      [[ -f "$f" && -x "$f" ]] || continue
+      tool_names+=("$(basename "$f")")
+    done < <(find "$REPO_ROOT/bin" -maxdepth 1 -type f -print0 2>/dev/null || true)
+  fi
+  
+  # Remove tools from ~/bin
+  for tool in "${tool_names[@]}"; do
+    local tool_path="$INSTALL_BIN/$tool"
+    if [[ -f "$tool_path" ]]; then
+      if rm -f "$tool_path"; then
+        log "Removed: $tool_path"
+        ((removed++))
+      else
+        warn "Failed to remove: $tool_path"
+        ((failed++))
+      fi
     fi
-    
-    # Check if symlink points to this repo's scripts or bin directories
-    case "$target" in
-      *"/scripts/"*|*"/bin/"*)
-        # Verify it's actually in our repo
-        if [[ "$target" == "$REPO_ROOT"/* ]]; then
-          if rm -f "$link"; then
-            log "Removed: $link -> $target"
-            ((removed++))
-          else
-            warn "Failed to remove: $link"
-            ((failed++))
-          fi
-        fi
-        ;;
-    esac
-  done < <(find "$LOCAL_BIN" -maxdepth 1 -type l -print0 2>/dev/null || true)
+  done
   
   if (( removed > 0 )); then
-    log "Removed $removed symlink(s)"
+    log "Removed $removed tool(s)"
   fi
   
   if (( failed > 0 )); then
-    warn "$failed symlink(s) failed to remove"
+    warn "$failed tool(s) failed to remove"
+  fi
+  
+  if (( removed == 0 && failed == 0 )); then
+    log "No mrk1 tools found in $INSTALL_BIN"
   fi
 else
-  warn "$LOCAL_BIN not found (nothing to unlink)"
+  warn "$INSTALL_BIN not found (nothing to remove)"
+fi
+
+# Unlink .zsh* files
+log "Unlinking .zsh* files from home directory..."
+zsh_removed=0
+zsh_failed=0
+
+for zsh_file in "$HOME"/.zsh*; do
+  [[ -e "$zsh_file" ]] || continue
+  [[ -L "$zsh_file" ]] || continue
+  
+  local target
+  target="$(readlink "$zsh_file" 2>/dev/null || true)"
+  if [[ -z "$target" ]]; then
+    continue
+  fi
+  
+  # Check if symlink points to mrk1 dotfiles (could be from cloned repo or local)
+  if [[ "$target" == *"/.mrk1/repo/dotfiles/.zsh"* ]] || \
+     [[ "$target" == *"/mrk1"*"/dotfiles/.zsh"* ]] || \
+     [[ "$target" == *"/mrk1-dev"*"/dotfiles/.zsh"* ]] || \
+     [[ "$target" == *"/dotfiles/.zsh"* ]]; then
+    if rm -f "$zsh_file"; then
+      log "Removed symlink: $zsh_file"
+      ((zsh_removed++))
+    else
+      warn "Failed to remove: $zsh_file"
+      ((zsh_failed++))
+    fi
+  fi
+done
+
+if (( zsh_removed > 0 )); then
+  log "Removed $zsh_removed .zsh* symlink(s)"
+fi
+
+if (( zsh_failed > 0 )); then
+  warn "$zsh_failed .zsh* symlink(s) failed to remove"
 fi
 
 ROLLBACK="$HOME/.mrk1/defaults-rollback.sh"
@@ -75,6 +133,25 @@ if [[ -x "$ROLLBACK" ]]; then
   fi
 else
   log "No defaults rollback script present at $ROLLBACK (nothing to do)."
+fi
+
+# Optionally remove cloned repo
+CLONED_REPO="$HOME/.mrk1/repo"
+if [[ -d "$CLONED_REPO" ]]; then
+  if [[ -t 0 ]]; then
+    read -r -p "Remove cloned repository at $CLONED_REPO? [y/N] " ans
+    if [[ "$ans" =~ ^[Yy]$ ]]; then
+      if rm -rf "$CLONED_REPO"; then
+        log "Removed cloned repository"
+      else
+        warn "Failed to remove cloned repository"
+      fi
+    else
+      log "Keeping cloned repository (you can remove it manually: rm -rf $CLONED_REPO)"
+    fi
+  else
+    log "Non-interactive mode: keeping cloned repository at $CLONED_REPO"
+  fi
 fi
 
 log "Uninstall complete."

@@ -31,3 +31,7 @@ backups/
 # Test files
 test-*
 *.test
+
+# Generated files
+.install-manifest
+MANIFEST.json

@@ -214,14 +214,20 @@ phase_link_tools() {
   
   if [[ ! -d "$SCRIPTS_DIR" ]]; then
     warn "Scripts directory not found: $SCRIPTS_DIR"
-  elif [[ -d "$SCRIPTS_DIR" ]]; then
-    # Count total first for progress
+  fi
+  
+  if [[ -d "$SCRIPTS_DIR" ]]; then
+    # Count total first for progress and collect files
+    local files=()
     while IFS= read -r -d '' f; do
-      [[ -f "$f" && -x "$f" ]] && ((total++))
+      [[ -n "$f" ]] && [[ -f "$f" && -x "$f" ]] && {
+        files+=("$f")
+        ((total++))
+      }
     done < <(find "$SCRIPTS_DIR" -maxdepth 1 -type f -print0 2>/dev/null || true)
     
     local current=0
-    while IFS= read -r -d '' f; do
+    for f in "${files[@]}"; do
       [[ -f "$f" && -x "$f" ]] || continue
       ((current++))
       local base
@@ -243,18 +249,22 @@ phase_link_tools() {
         [[ -n "$ln_error" ]] && err "  Error: $ln_error"
         ((failed++))
       fi
-    done < <(find "$SCRIPTS_DIR" -maxdepth 1 -type f -print0 2>/dev/null || true)
+    done
     printf "\r" >&2  # Clear progress line
   fi
   
   if [[ -d "$BIN_DIR" ]]; then
     local bin_total=0
+    local bin_files=()
     while IFS= read -r -d '' f; do
-      [[ -f "$f" && -x "$f" ]] && ((bin_total++))
+      [[ -n "$f" ]] && [[ -f "$f" && -x "$f" ]] && {
+        bin_files+=("$f")
+        ((bin_total++))
+      }
     done < <(find "$BIN_DIR" -maxdepth 1 -type f -print0 2>/dev/null || true)
     
     local current=0
-    while IFS= read -r -d '' f; do
+    for f in "${bin_files[@]}"; do
       [[ -f "$f" && -x "$f" ]] || continue
       ((current++))
       local base
@@ -276,7 +286,7 @@ phase_link_tools() {
         [[ -n "$ln_error" ]] && err "  Error: $ln_error"
         ((failed++))
       fi
-    done < <(find "$BIN_DIR" -maxdepth 1 -type f -print0 2>/dev/null || true)
+    done
     printf "\r" >&2  # Clear progress line
   fi
   

@@ -5,9 +5,17 @@ set -euo pipefail
 
 ROLL_DIR="$HOME/.mrk1"
 ROLLBACK="$ROLL_DIR/defaults-rollback.sh"
-mkdir -p "$ROLL_DIR"
-: > "$ROLLBACK"
-chmod +x "$ROLLBACK"
+
+# Create rollback directory and script with error checking
+if ! mkdir -p "$ROLL_DIR"; then
+  echo "Error: Failed to create rollback directory: $ROLL_DIR" >&2
+  exit 1
+fi
+
+if ! : > "$ROLLBACK" || ! chmod +x "$ROLLBACK"; then
+  echo "Error: Failed to initialize rollback script: $ROLLBACK" >&2
+  exit 1
+fi
 
 log(){ printf "[defaults] %s\n" "$*"; }
 backup_line(){ echo "$1" >> "$ROLLBACK"; }
@@ -27,26 +35,33 @@ write_default(){
     backup_line "defaults delete $domain $key >/dev/null 2>&1 || true"
   fi
   case "$type" in
-    bool)   defaults write "$domain" "$key" -bool "$value" ;;
-    int)    defaults write "$domain" "$key" -int "$value" ;;
-    float)  defaults write "$domain" "$key" -float "$value" ;;
-    string) defaults write "$domain" "$key" -string "$value" ;;
-    *) echo "Unknown type: $type" >&2; exit 2 ;;
+    bool)   defaults write "$domain" "$key" -bool "$value" || return 1 ;;
+    int)    defaults write "$domain" "$key" -int "$value" || return 1 ;;
+    float)  defaults write "$domain" "$key" -float "$value" || return 1 ;;
+    string) defaults write "$domain" "$key" -string "$value" || return 1 ;;
+    *) log "Unknown type: $type" >&2; return 1 ;;
   esac
 }
 
 log "Applying minimal defaults..."
 
+# Track failures
+failed=0
+
 # Show all filename extensions
-write_default NSGlobalDomain AppleShowAllExtensions bool true
+write_default NSGlobalDomain AppleShowAllExtensions bool true || ((failed++))
 # Key repeat speed (lower is faster)
-write_default NSGlobalDomain KeyRepeat int 2
-write_default NSGlobalDomain InitialKeyRepeat int 15
+write_default NSGlobalDomain KeyRepeat int 2 || ((failed++))
+write_default NSGlobalDomain InitialKeyRepeat int 15 || ((failed++))
 # Save to disk (not iCloud) by default
-write_default NSGlobalDomain NSDocumentSaveNewDocumentsToCloud bool false
+write_default NSGlobalDomain NSDocumentSaveNewDocumentsToCloud bool false || ((failed++))
 # Expand save panel by default
-write_default NSGlobalDomain NSNavPanelExpandedStateForSaveMode bool true
-write_default NSGlobalDomain NSNavPanelExpandedStateForSaveMode2 bool true
+write_default NSGlobalDomain NSNavPanelExpandedStateForSaveMode bool true || ((failed++))
+write_default NSGlobalDomain NSNavPanelExpandedStateForSaveMode2 bool true || ((failed++))
+
+if (( failed > 0 )); then
+  log "Warning: $failed default(s) failed to apply"
+fi
 
 log "Writing rollback helper to $ROLLBACK"
 backup_line "killall Finder >/dev/null 2>&1 || true"

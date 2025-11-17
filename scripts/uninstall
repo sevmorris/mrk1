@@ -14,31 +14,64 @@ log(){ printf "[uninstall] %s\n" "$*"; }
 warn(){ printf "[warn] %s\n" "$*"; }
 
 log "Unlinking mrk1 symlinks from $LOCAL_BIN..."
+removed=0
+failed=0
+
 if [[ -d "$LOCAL_BIN" ]]; then
-  find "$LOCAL_BIN" -type l -exec bash -c '
-    for L in "$@"; do
-      T="$(readlink "$L" 2>/dev/null || true)"
-      case "$T" in
-        *"/scripts/"*|*"/bin/"*)
-          if [[ -n "$T" && -e "$T" && "$T" == "'"$REPO_ROOT"'"* ]]; then
-            rm -f "$L" && echo "- removed $L -> $T"
+  while IFS= read -r -d '' link; do
+    local target
+    target="$(readlink "$link" 2>/dev/null || true)"
+    if [[ -z "$target" ]]; then
+      continue
+    fi
+    
+    # Check if symlink points to this repo's scripts or bin directories
+    case "$target" in
+      *"/scripts/"*|*"/bin/"*)
+        # Verify it's actually in our repo
+        if [[ "$target" == "$REPO_ROOT"/* ]]; then
+          if rm -f "$link"; then
+            log "Removed: $link -> $target"
+            ((removed++))
+          else
+            warn "Failed to remove: $link"
+            ((failed++))
           fi
-          ;;
-      esac
-    done
-  ' _ {} +
+        fi
+        ;;
+    esac
+  done < <(find "$LOCAL_BIN" -maxdepth 1 -type l -print0 2>/dev/null || true)
+  
+  if (( removed > 0 )); then
+    log "Removed $removed symlink(s)"
+  fi
+  
+  if (( failed > 0 )); then
+    warn "$failed symlink(s) failed to remove"
+  fi
 else
-  warn "$LOCAL_BIN not found"
+  warn "$LOCAL_BIN not found (nothing to unlink)"
 fi
 
 ROLLBACK="$HOME/.mrk1/defaults-rollback.sh"
 if [[ -x "$ROLLBACK" ]]; then
-  read -r -p "Run macOS defaults rollback now? [y/N] " ans
-  if [[ "$ans" =~ ^[Yy]$ ]]; then
-    log "Running $ROLLBACK..."
-    "$ROLLBACK" || warn "rollback returned non-zero"
+  if [[ -t 0 ]]; then
+    # Interactive mode
+    read -r -p "Run macOS defaults rollback now? [y/N] " ans
+    if [[ "$ans" =~ ^[Yy]$ ]]; then
+      log "Running $ROLLBACK..."
+      if "$ROLLBACK"; then
+        log "Rollback completed successfully"
+      else
+        warn "Rollback returned non-zero exit code"
+      fi
+    else
+      log "Skipped defaults rollback (you can run it later: $ROLLBACK)."
+    fi
   else
-    log "Skipped defaults rollback (you can run it later)."
+    # Non-interactive mode - skip rollback
+    log "Non-interactive mode: skipping defaults rollback"
+    log "You can run it manually: $ROLLBACK"
   fi
 else
   log "No defaults rollback script present at $ROLLBACK (nothing to do)."

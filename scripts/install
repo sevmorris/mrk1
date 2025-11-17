@@ -53,8 +53,17 @@ STATE_DIR="$HOME/.mrk1"
 BACKUP_DIR="$STATE_DIR/backups/$(date +%Y%m%d-%H%M%S)"
 ROLLBACK="$STATE_DIR/defaults-rollback.sh"
 
-mkdir -p "$(dirname "$LOGFILE")" "$LOCAL_BIN" "$(dirname "$BACKUP_DIR")" "$STATE_DIR"
-: > "$ROLLBACK"; chmod +x "$ROLLBACK"
+# Create required directories with error checking
+if ! mkdir -p "$(dirname "$LOGFILE")" "$LOCAL_BIN" "$(dirname "$BACKUP_DIR")" "$STATE_DIR"; then
+  err "Failed to create required directories"
+  exit 1
+fi
+
+# Initialize rollback script
+if ! : > "$ROLLBACK" || ! chmod +x "$ROLLBACK"; then
+  err "Failed to initialize rollback script: $ROLLBACK"
+  exit 1
+fi
 
 log()  { printf "[mrk1] %s\n" "$*"; }
 warn() { printf "[warn] %s\n" "$*"; }
@@ -70,9 +79,25 @@ elif [[ -f "$HOME/.Brewfile" ]]; then
   BREWFILE="$HOME/.Brewfile"
 fi
 
+# Validate phase name
+valid_phases="xcode brew tools dotfiles ext defaults shell"
+validate_phase() {
+  local phase="$1"
+  case " $valid_phases " in
+    *" $phase "*) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
 run_phase() {
   local name="$1"; shift
-  if [[ -n "$ONLY" && "$ONLY" != "$name" ]]; then return 0; fi
+  if [[ -n "$ONLY" ]]; then
+    if ! validate_phase "$ONLY"; then
+      err "Invalid phase: $ONLY (valid: $valid_phases)"
+      exit 2
+    fi
+    if [[ "$ONLY" != "$name" ]]; then return 0; fi
+  fi
   "$@"
 }
 
@@ -107,54 +132,145 @@ phase_brew() {
 
 phase_link_tools() {
   if (( NO_LINK_TOOLS )); then log "Skipping link-tools (flag)"; return; fi
-  log "Linking scripts/* and bin/* into $LOCAL_BIN..."
-  if [[ -d "$SCRIPTS_DIR" ]]; then
-    find "$SCRIPTS_DIR" -maxdepth 1 -type f -perm -u+x -exec bash -c '
-      LOCAL_BIN="$1"; shift
-      for f in "$@"; do
-        base="$(basename "$f")"
-        ln -sf "$f" "$LOCAL_BIN/$base"
-      done
-    ' _ "$LOCAL_BIN" {} +
+  
+  if [[ ! -d "$LOCAL_BIN" ]]; then
+    if ! mkdir -p "$LOCAL_BIN"; then
+      err "Failed to create $LOCAL_BIN directory"
+      return 1
+    fi
   fi
+  
+  log "Linking scripts/* and bin/* into $LOCAL_BIN..."
+  local linked=0
+  local failed=0
+  
+  if [[ -d "$SCRIPTS_DIR" ]]; then
+    while IFS= read -r -d '' f; do
+      [[ -f "$f" && -x "$f" ]] || continue
+      local base
+      base="$(basename "$f")"
+      if ln -sf "$f" "$LOCAL_BIN/$base"; then
+        ((linked++))
+      else
+        err "Failed to link: $LOCAL_BIN/$base"
+        ((failed++))
+      fi
+    done < <(find "$SCRIPTS_DIR" -maxdepth 1 -type f -print0 2>/dev/null || true)
+  fi
+  
   if [[ -d "$BIN_DIR" ]]; then
-    find "$BIN_DIR" -maxdepth 1 -type f -perm -u+x -exec bash -c '
-      LOCAL_BIN="$1"; shift
-      for f in "$@"; do
-        base="$(basename "$f")"
-        ln -sf "$f" "$LOCAL_BIN/$base"
-      done
-    ' _ "$LOCAL_BIN" {} +
+    while IFS= read -r -d '' f; do
+      [[ -f "$f" && -x "$f" ]] || continue
+      local base
+      base="$(basename "$f")"
+      if ln -sf "$f" "$LOCAL_BIN/$base"; then
+        ((linked++))
+      else
+        err "Failed to link: $LOCAL_BIN/$base"
+        ((failed++))
+      fi
+    done < <(find "$BIN_DIR" -maxdepth 1 -type f -print0 2>/dev/null || true)
+  fi
+  
+  if (( linked > 0 )); then
+    log "Linked $linked tool(s) into $LOCAL_BIN"
+  fi
+  
+  if (( failed > 0 )); then
+    warn "$failed symlink(s) failed to create"
+    return 1
   fi
 }
 
 phase_dotfiles() {
   if (( NO_DOTFILES )); then log "Skipping dotfiles (flag)"; return; fi
+  
+  if [[ ! -d "$REPO_ROOT/dotfiles" ]]; then
+    warn "dotfiles directory not found: $REPO_ROOT/dotfiles"
+    return 0
+  fi
+  
   local src dst
-  mkdir -p "$BACKUP_DIR"
+  if ! mkdir -p "$BACKUP_DIR"; then
+    err "Failed to create backup directory: $BACKUP_DIR"
+    return 1
+  fi
+  
   shopt -s dotglob nullglob
+  local found=0
   for src in "$REPO_ROOT/dotfiles"/*; do
+    [[ -e "$src" ]] || continue
+    found=1
     dst="$HOME/$(basename "$src")"
     if [[ -e "$dst" && ! -L "$dst" ]]; then
       log "Backing up: $dst -> $BACKUP_DIR/$(basename "$dst")"
-      mv "$dst" "$BACKUP_DIR/" || warn "could not backup $dst"
+      if ! mv "$dst" "$BACKUP_DIR/"; then
+        err "Failed to backup $dst - aborting dotfile linking"
+        shopt -u dotglob nullglob
+        return 1
+      fi
     fi
-    ln -sfn "$src" "$dst"
+    if ! ln -sfn "$src" "$dst"; then
+      err "Failed to create symlink: $dst -> $src"
+      shopt -u dotglob nullglob
+      return 1
+    fi
   done
   shopt -u dotglob nullglob
+  
+  if (( !found )); then
+    warn "No dotfiles found in $REPO_ROOT/dotfiles"
+  fi
+}
+
+# Validate git URL format (basic check)
+is_valid_git_url() {
+  local url="$1"
+  # Allow http://, https://, git@, or file:// URLs
+  if [[ "$url" =~ ^(https?://|git@|file://|ssh://).+\.git$ ]] || \
+     [[ "$url" =~ ^(https?://|git@|file://|ssh://)[^[:space:]]+$ ]]; then
+    return 0
+  fi
+  return 1
 }
 
 phase_ext_dotfiles() {
-  if [[ -n "${MRK1_DOTFILES_REPO:-}" ]]; then
-    local DOTDIR="$HOME/.dotfiles"
-    if [[ ! -d "$DOTDIR/.git" ]]; then
-      log "Cloning external dotfiles repo: $MRK1_DOTFILES_REPO"
-      git clone --depth 1 "$MRK1_DOTFILES_REPO" "$DOTDIR"
-    else
-      log "External dotfiles repo present at $DOTDIR"
+  if [[ -z "${MRK1_DOTFILES_REPO:-}" ]]; then
+    return 0
+  fi
+  
+  local DOTDIR="$HOME/.dotfiles"
+  
+  # Validate URL format
+  if ! is_valid_git_url "$MRK1_DOTFILES_REPO"; then
+    err "Invalid git URL format: $MRK1_DOTFILES_REPO"
+    warn "URL should be in format: https://github.com/user/repo.git or git@github.com:user/repo.git"
+    return 1
+  fi
+  
+  if [[ ! -d "$DOTDIR/.git" ]]; then
+    log "Cloning external dotfiles repo: $MRK1_DOTFILES_REPO"
+    if ! git clone --depth 1 "$MRK1_DOTFILES_REPO" "$DOTDIR"; then
+      err "Failed to clone dotfiles repo"
+      return 1
     fi
-    [[ -x "$DOTDIR/script/setup" ]] && "$DOTDIR/script/setup"
-    [[ -x "$DOTDIR/script/strap-after-setup" ]] && "$DOTDIR/script/strap-after-setup"
+  else
+    log "External dotfiles repo present at $DOTDIR"
+  fi
+  
+  # Execute external scripts with explicit confirmation
+  if [[ -x "$DOTDIR/script/setup" ]]; then
+    log "Running external setup script: $DOTDIR/script/setup"
+    if ! "$DOTDIR/script/setup"; then
+      warn "External setup script returned non-zero"
+    fi
+  fi
+  
+  if [[ -x "$DOTDIR/script/strap-after-setup" ]]; then
+    log "Running external strap-after-setup script: $DOTDIR/script/strap-after-setup"
+    if ! "$DOTDIR/script/strap-after-setup"; then
+      warn "External strap-after-setup script returned non-zero"
+    fi
   fi
 }
 
@@ -169,8 +285,17 @@ phase_defaults() {
   if [[ -n "${MRK1_LOGIN_MSG:-}" ]]; then
     if command -v sudo >/dev/null 2>&1; then
       log "Setting login window message"
-      sudo defaults write /Library/Preferences/com.apple.loginwindow LoginwindowText "$MRK1_LOGIN_MSG"
-      echo "sudo defaults delete /Library/Preferences/com.apple.loginwindow LoginwindowText" >> "$ROLLBACK"
+      # Note: defaults write handles string escaping, but we validate the message isn't empty
+      if [[ -z "$MRK1_LOGIN_MSG" ]]; then
+        warn "MRK1_LOGIN_MSG is empty, skipping"
+        return 0
+      fi
+      if sudo defaults write /Library/Preferences/com.apple.loginwindow LoginwindowText "$MRK1_LOGIN_MSG"; then
+        echo "sudo defaults delete /Library/Preferences/com.apple.loginwindow LoginwindowText" >> "$ROLLBACK"
+      else
+        err "Failed to set login window message"
+        return 1
+      fi
     else
       warn "sudo not available; cannot set login window message"
     fi

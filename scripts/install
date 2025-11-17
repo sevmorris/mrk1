@@ -4,36 +4,27 @@ set -euo pipefail
 # mrk1 installer — idempotent bootstrap for macOS (with Strap-inspired improvements)
 
 ONLY=""
-NO_BREW=0
 NO_DOTFILES=0
 NO_DEFAULTS=0
 NO_LINK_TOOLS=0
 DEBUG=0
-CASKS_YES=0
-CASKS_NO=0
 
 while (("$#")); do
   case "$1" in
     --only) shift; ONLY="${1:-}" ;;
-    --no-brew) NO_BREW=1 ;;
     --no-dotfiles) NO_DOTFILES=1 ;;
     --no-defaults) NO_DEFAULTS=1 ;;
     --no-link-tools) NO_LINK_TOOLS=1 ;;
-    --yes-casks) CASKS_YES=1 ;;
-    --no-casks) CASKS_NO=1 ;;
     --debug) DEBUG=1 ;;
     -h|--help)
       cat <<'USAGE'
 mrk1 installer
 
 Usage: scripts/install [options]
-  --only <phase>     Run a single phase: brew|dotfiles|tools|defaults|shell
-  --no-brew          Skip Homebrew install/bundle
+  --only <phase>     Run a single phase: xcode|dotfiles|tools|defaults|shell
   --no-dotfiles      Skip dotfiles linking
   --no-defaults      Skip macOS defaults
   --no-link-tools    Skip linking scripts/bin into ~/.local/bin
-  --yes-casks        Install all casks without prompting
-  --no-casks         Skip all casks without prompting
   --debug            Enable bash tracing (set -x)
 Env:
   MRK1_DOTFILES_REPO   If set, clones repo to ~/.dotfiles and runs script/setup and script/strap-after-setup if present
@@ -50,7 +41,6 @@ done
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-ASSETS="$REPO_ROOT/assets"
 BIN_DIR="$REPO_ROOT/bin"
 SCRIPTS_DIR="$REPO_ROOT/scripts"
 LOGFILE="$HOME/mrk1-install.log"
@@ -78,15 +68,8 @@ err()  { printf "[err ] %s\n" "$*"; }
 exec > >(tee -a "$LOGFILE") 2>&1
 log "Starting install... (log: $LOGFILE)"
 
-BREWFILE="$ASSETS/Brewfile"
-if [[ -f "$REPO_ROOT/Brewfile" ]]; then
-  BREWFILE="$REPO_ROOT/Brewfile"
-elif [[ -f "$HOME/.Brewfile" ]]; then
-  BREWFILE="$HOME/.Brewfile"
-fi
-
 # Validate phase name
-valid_phases="xcode brew tools dotfiles ext defaults shell"
+valid_phases="xcode tools dotfiles ext defaults shell"
 validate_phase() {
   local phase="$1"
   case " $valid_phases " in
@@ -114,87 +97,6 @@ phase_xcode() {
   fi
   if [[ -d "/Applications/Xcode.app" ]]; then
     sudo xcodebuild -license accept >/dev/null 2>&1 || true
-  fi
-}
-
-phase_brew() {
-  if (( NO_BREW )); then log "Skipping brew (flag)"; return; fi
-  if ! command -v brew >/dev/null 2>&1; then
-    log "Installing Homebrew..."
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    echo 'eval "$($(brew --prefix)/bin/brew shellenv)"' >> "$HOME/.zprofile"
-    eval "$($(brew --prefix)/bin/brew shellenv)"
-  else
-    log "Homebrew present."
-  fi
-
-  if [[ ! -f "$BREWFILE" ]]; then
-    warn "No Brewfile found; skipping bundle"
-    return 0
-  fi
-
-  # Use interactive bundle script if available, otherwise fall back to plain brew bundle
-  local bundle_script="$SCRIPTS_DIR/bundle-interactive"
-  if [[ -x "$bundle_script" ]]; then
-    # Check if we should use interactive mode
-    if (( CASKS_YES )); then
-      log "Running brew bundle (installing all casks)..."
-    elif (( CASKS_NO )); then
-      log "Running brew bundle (skipping all casks)..."
-    else
-      log "Running interactive brew bundle (casks will be prompted)..."
-    fi
-    
-    local bundle_args=("$BREWFILE")
-    
-    # Pass flags to bundle-interactive
-    if (( CASKS_YES )); then
-      bundle_args+=(--yes)
-    elif (( CASKS_NO )); then
-      bundle_args+=(--no)
-    fi
-    
-    # Run bundle-interactive with stdin explicitly connected to terminal
-    # This ensures interactive prompts work even when output is redirected
-    # Only redirect stdin if we're in interactive mode (not --yes-casks or --no-casks)
-    if (( CASKS_YES )) || (( CASKS_NO )); then
-      # Non-interactive mode - don't redirect stdin
-      if "$bundle_script" "${bundle_args[@]}"; then
-        log "Brew bundle completed"
-      else
-        local exit_code=$?
-        if (( exit_code == 1 )); then
-          warn "Brew bundle had some failures (check output above)"
-        else
-          warn "Brew bundle returned non-zero: $exit_code"
-        fi
-      fi
-    else
-      # Interactive mode - ensure stdin comes from terminal
-      if [[ -t 0 ]] && [[ -c /dev/tty ]]; then
-        if "$bundle_script" "${bundle_args[@]}" < /dev/tty; then
-          log "Brew bundle completed"
-        else
-          local exit_code=$?
-          if (( exit_code == 1 )); then
-            warn "Brew bundle had some failures (check output above)"
-          else
-            warn "Brew bundle returned non-zero: $exit_code"
-          fi
-        fi
-      else
-        # Fallback if /dev/tty is not available
-        if "$bundle_script" "${bundle_args[@]}"; then
-          log "Brew bundle completed"
-        else
-          warn "Brew bundle returned non-zero"
-        fi
-      fi
-    fi
-  else
-    log "Running brew bundle using $BREWFILE (non-interactive)..."
-    log "Note: Install scripts/bundle-interactive for interactive cask installation"
-    brew bundle --file="$BREWFILE" || warn "brew bundle returned non-zero"
   fi
 }
 
@@ -384,7 +286,6 @@ phase_shell() {
 }
 
 run_phase xcode    phase_xcode
-run_phase brew     phase_brew
 run_phase tools    phase_link_tools
 run_phase dotfiles phase_dotfiles
 run_phase ext      phase_ext_dotfiles

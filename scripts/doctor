@@ -9,15 +9,6 @@ err() { printf '\033[31m✗ %s\033[0m\n' "$*" >&2; }
 MODE="${1:-check}" # check | --fix | fix
 STATUS=0
 
-check_brew() {
-  if command -v brew >/dev/null 2>&1; then
-    ok "Homebrew present: $(brew --version | head -n1)"
-  else
-    warn "Homebrew not installed"
-    STATUS=1
-  fi
-}
-
 check_localbin() {
   case ":$PATH:" in
     *":$HOME/.local/bin:"*) ok "${HOME}/.local/bin is on PATH" ;;
@@ -43,12 +34,10 @@ fix_localbin() {
 
 case "$MODE" in
   check)
-    check_brew
     check_localbin
     exit "${STATUS}"
     ;;
   --fix | fix)
-    check_brew || true
     fix_localbin
     ok "Fixes applied"
     exit 0

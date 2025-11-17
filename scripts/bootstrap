@@ -13,7 +13,6 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 DOTFILES_DIR="${REPO_ROOT}/dotfiles"
 SCRIPTS_DIR="${REPO_ROOT}/scripts"
-BREWFILE="${REPO_ROOT}/assets/Brewfile"
 
 run() {
   printf "+ "
@@ -25,23 +24,8 @@ run() {
 usage() {
   cat <<'USAGE'
 mrk1 bootstrap
-Usage: bootstrap [bootstrap|brew|dotfiles|tools|defaults|doctor|help]
+Usage: bootstrap [bootstrap|dotfiles|tools|defaults|doctor|help]
 USAGE
-}
-
-run_brew_bundle() {
-  if [[ -f "$BREWFILE" ]]; then
-    ok "Using Brewfile: $BREWFILE"
-    if [[ "${DRY_RUN:-0}" == "1" ]]; then
-      run brew bundle --file "$BREWFILE"
-    else
-      local log
-      log="$(mktemp -t mrk1-brew.XXXXXX)"
-      brew bundle --file "$BREWFILE" > >(tee -a "$log") 2>&1 || true
-    fi
-  else
-    warn "No Brewfile found at $BREWFILE"
-  fi
 }
 
 link_dotfiles() {
@@ -133,13 +117,11 @@ run_doctor() {
 cmd="${1:-help}"
 case "$cmd" in
   bootstrap)
-    run_brew_bundle
     link_dotfiles
     link_tools
     run_defaults
     run_doctor
     ;;
-  brew)      run_brew_bundle ;;
   dotfiles)  link_dotfiles ;;
   tools)     link_tools ;;
   defaults)  run_defaults ;;

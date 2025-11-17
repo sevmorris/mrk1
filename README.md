@@ -1,9 +1,9 @@
 # mrk1 — macOS bootstrap & dotfiles
 
-A clean, idempotent way to spin up a new Mac with all your (my) favorite tools: Homebrew, Zsh, dotfiles, and a few sane defaults. Easy to read, easy to trust.
+A clean, idempotent way to spin up a new Mac with Zsh, dotfiles, and a few sane defaults. Easy to read, easy to trust.
 
 - **Safe by default.** Any conflicting dotfiles get backed up. Defaults come with a rollback script.
-- **Idempotent.** Run it again anytime — it won’t wreck your setup.
+- **Idempotent.** Run it again anytime — it won't wreck your setup.
 
 ---
 
@@ -22,46 +22,10 @@ make fix-exec && make install
 
 ## What it sets up
 
-- **Homebrew + Bundle** via `assets/Brewfile` (falls back to root `Brewfile` if needed)
-- **Zsh** as your login shell (Homebrew version preferred)
+- **Zsh** as your login shell
 - **Dotfiles** safely linked into `$HOME` with timestamped backups
 - **Scripts & tools** from both `scripts/` and `bin/` linked into `~/.local/bin`
 - **macOS defaults** applied by `scripts/defaults.sh`, with an automatic rollback script
-
----
-
-## Interactive Cask & MAS App Installation
-
-By default, **Casks and Mac App Store (MAS) apps are optional and interactive**. The installer will:
-
-1. **Automatically install** all formulas and taps from your Brewfile
-2. **Prompt you** for each MAS app individually
-3. **Prompt you** for each cask individually
-
-This allows you to choose which applications to install, keeping your system lean.
-
-### Cask Installation Options
-
-```bash
-# Interactive mode (default) - prompts for each cask
-./scripts/install
-
-# Install all casks without prompting
-./scripts/install --yes-casks
-
-# Skip all casks
-./scripts/install --no-casks
-
-# Use the interactive bundle script directly
-./scripts/bundle-interactive assets/Brewfile
-```
-
-The interactive installer shows:
-- A summary of total, already-installed, and pending items for both MAS apps and casks
-- Progress counter for each item (`[1/25] Install MAS app 'Keynote'? [Y/n]` or `[1/25] Install cask 'iterm2'? [Y/n]`)
-- Final summary of installed, skipped, and failed items for both MAS apps and casks
-
-**Note:** In non-interactive mode (no TTY), both MAS apps and casks are skipped by default. Use `--yes-casks` to install all automatically.
 
 ---
 
@@ -69,11 +33,10 @@ The interactive installer shows:
 
 ```text
 make fix-exec     # ensure scripts/* and bin/* are executable
-make install      # full bootstrap (brew → dotfiles → tools → defaults)
-make tools        # install/update Brewfile packages (interactive for casks)
+make install      # full bootstrap (dotfiles → tools → defaults)
+make tools        # link scripts/bin into ~/.local/bin
 make dotfiles     # link dotfiles with backups
 make defaults     # apply defaults + write rollback script
-make brew-clean   # brew cleanup && autoremove
 make uninstall    # unlink scripts and optionally roll back defaults
 ```
 
@@ -81,15 +44,12 @@ make uninstall    # unlink scripts and optionally roll back defaults
 
 ```bash
 # Run specific phase only
-./scripts/install --only brew
 ./scripts/install --only dotfiles
-
-# Control cask installation
-./scripts/install --yes-casks    # install all casks
-./scripts/install --no-casks      # skip all casks
+./scripts/install --only tools
+./scripts/install --only defaults
 
 # Skip specific phases
-./scripts/install --no-brew --no-defaults
+./scripts/install --no-dotfiles --no-defaults
 
 # See all options
 ./scripts/install --help
@@ -126,8 +86,6 @@ It only records keys changed by mrk1, so you can safely undo tweaks later.
 ## Repo layout
 
 ```
-assets/
-  Brewfile            # main Homebrew bundle
 bin/                  # small user-facing tools
 scripts/
   install             # main installer
@@ -139,7 +97,7 @@ README.md
 ```
 
 > Both `scripts/` and `bin/` are linked into `~/.local/bin`.  
-> Keep “end-user” commands in `bin/`, bootstrap helpers in `scripts/`.
+> Keep "end-user" commands in `bin/`, bootstrap helpers in `scripts/`.
 
 ---
 

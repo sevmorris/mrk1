@@ -81,9 +81,9 @@ if ! : > "$ROLLBACK" || ! chmod +x "$ROLLBACK"; then
   exit 1
 fi
 
-log()  { printf "[mrk1] %s\n" "$*"; }
-warn() { printf "[warn] %s\n" "$*"; }
-err()  { printf "[err ] %s\n" "$*"; }
+log()  { printf "[mrk1] %s\n" "$*" >&2; }
+warn() { printf "[warn] %s\n" "$*" >&2; }
+err()  { printf "[err ] %s\n" "$*" >&2; }
 dry()  { if (( DRY_RUN )); then printf "[dry] %s\n" "$*"; else log "$@"; fi; }
 
 # Setup logging with rotation
@@ -201,12 +201,20 @@ phase_link_tools() {
     fi
   fi
   
+  # Verify directory is writable
+  if [[ ! -w "$LOCAL_BIN" ]]; then
+    err "Directory $LOCAL_BIN is not writable"
+    return 1
+  fi
+  
   log "Linking scripts/* and bin/* into $LOCAL_BIN..."
   local linked=0
   local failed=0
   local total=0
   
-  if [[ -d "$SCRIPTS_DIR" ]]; then
+  if [[ ! -d "$SCRIPTS_DIR" ]]; then
+    warn "Scripts directory not found: $SCRIPTS_DIR"
+  elif [[ -d "$SCRIPTS_DIR" ]]; then
     # Count total first for progress
     while IFS= read -r -d '' f; do
       [[ -f "$f" && -x "$f" ]] && ((total++))
@@ -226,10 +234,13 @@ phase_link_tools() {
       if (( DRY_RUN )); then
         dry "Would link: $LOCAL_BIN/$base -> $f"
         ((linked++))
-      elif ln -sf "$f" "$LOCAL_BIN/$base"; then
+      elif ln -sf "$f" "$LOCAL_BIN/$base" 2>/dev/null; then
         ((linked++))
       else
-        err "Failed to link: $LOCAL_BIN/$base"
+        local ln_error
+        ln_error="$(ln -sf "$f" "$LOCAL_BIN/$base" 2>&1 || true)"
+        err "Failed to link: $LOCAL_BIN/$base -> $f"
+        [[ -n "$ln_error" ]] && err "  Error: $ln_error"
         ((failed++))
       fi
     done < <(find "$SCRIPTS_DIR" -maxdepth 1 -type f -print0 2>/dev/null || true)
@@ -256,10 +267,13 @@ phase_link_tools() {
       if (( DRY_RUN )); then
         dry "Would link: $LOCAL_BIN/$base -> $f"
         ((linked++))
-      elif ln -sf "$f" "$LOCAL_BIN/$base"; then
+      elif ln -sf "$f" "$LOCAL_BIN/$base" 2>/dev/null; then
         ((linked++))
       else
-        err "Failed to link: $LOCAL_BIN/$base"
+        local ln_error
+        ln_error="$(ln -sf "$f" "$LOCAL_BIN/$base" 2>&1 || true)"
+        err "Failed to link: $LOCAL_BIN/$base -> $f"
+        [[ -n "$ln_error" ]] && err "  Error: $ln_error"
         ((failed++))
       fi
     done < <(find "$BIN_DIR" -maxdepth 1 -type f -print0 2>/dev/null || true)
@@ -271,8 +285,17 @@ phase_link_tools() {
     TOOLS_LINKED=$linked
   fi
   
+  if (( total == 0 && linked == 0 && failed == 0 )); then
+    warn "No executable tools found to link"
+    if [[ ! -d "$SCRIPTS_DIR" ]] && [[ ! -d "$BIN_DIR" ]]; then
+      err "Neither $SCRIPTS_DIR nor $BIN_DIR exist"
+      return 1
+    fi
+  fi
+  
   if (( failed > 0 )); then
-    warn "$failed symlink(s) failed to create"
+    err "$failed symlink(s) failed to create"
+    err "Check permissions for $LOCAL_BIN and ensure it exists"
     ((ERRORS++))
     return 1
   fi

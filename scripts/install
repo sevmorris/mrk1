@@ -136,7 +136,15 @@ phase_brew() {
   # Use interactive bundle script if available, otherwise fall back to plain brew bundle
   local bundle_script="$SCRIPTS_DIR/bundle-interactive"
   if [[ -x "$bundle_script" ]]; then
-    log "Running interactive brew bundle (casks will be prompted)..."
+    # Check if we should use interactive mode
+    if (( CASKS_YES )); then
+      log "Running brew bundle (installing all casks)..."
+    elif (( CASKS_NO )); then
+      log "Running brew bundle (skipping all casks)..."
+    else
+      log "Running interactive brew bundle (casks will be prompted)..."
+    fi
+    
     local bundle_args=("$BREWFILE")
     
     # Pass flags to bundle-interactive
@@ -146,10 +154,42 @@ phase_brew() {
       bundle_args+=(--no)
     fi
     
-    if "$bundle_script" "${bundle_args[@]}"; then
-      log "Brew bundle completed"
+    # Run bundle-interactive with stdin explicitly connected to terminal
+    # This ensures interactive prompts work even when output is redirected
+    # Only redirect stdin if we're in interactive mode (not --yes-casks or --no-casks)
+    if (( CASKS_YES )) || (( CASKS_NO )); then
+      # Non-interactive mode - don't redirect stdin
+      if "$bundle_script" "${bundle_args[@]}"; then
+        log "Brew bundle completed"
+      else
+        local exit_code=$?
+        if (( exit_code == 1 )); then
+          warn "Brew bundle had some failures (check output above)"
+        else
+          warn "Brew bundle returned non-zero: $exit_code"
+        fi
+      fi
     else
-      warn "Brew bundle returned non-zero"
+      # Interactive mode - ensure stdin comes from terminal
+      if [[ -t 0 ]] && [[ -c /dev/tty ]]; then
+        if "$bundle_script" "${bundle_args[@]}" < /dev/tty; then
+          log "Brew bundle completed"
+        else
+          local exit_code=$?
+          if (( exit_code == 1 )); then
+            warn "Brew bundle had some failures (check output above)"
+          else
+            warn "Brew bundle returned non-zero: $exit_code"
+          fi
+        fi
+      else
+        # Fallback if /dev/tty is not available
+        if "$bundle_script" "${bundle_args[@]}"; then
+          log "Brew bundle completed"
+        else
+          warn "Brew bundle returned non-zero"
+        fi
+      fi
     fi
   else
     log "Running brew bundle using $BREWFILE (non-interactive)..."

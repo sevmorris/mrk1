@@ -167,21 +167,40 @@ while IFS= read -r cask; do
   # Only count pending casks for progress
   ((current++))
 
-  choice="y"
+  # Determine choice based on flags or interactive prompt
+  choice=""
   if (( NO )); then
     choice="n"
   elif (( YES )); then
     choice="y"
   else
-    # Interactive prompt
-    echo -n "[$current/$pending_casks] Install cask '$cask'? [Y/n] "
-    read -r ans
-    ans="${ans:-Y}"
-    case "$ans" in
-      [Yy]*) choice="y" ;;
-      [Nn]*) choice="n" ;;
-      *)     choice="y" ;;
-    esac
+    # Interactive prompt - check if we have a TTY for input
+    # Use /dev/tty if available, otherwise check stdin
+    if [[ -c /dev/tty ]] && [[ -r /dev/tty ]]; then
+      # We have a terminal - prompt interactively
+      echo -n "[$current/$pending_casks] Install cask '$cask'? [Y/n] " >&2
+      read -r ans < /dev/tty
+      ans="${ans:-Y}"
+      case "$ans" in
+        [Yy]*) choice="y" ;;
+        [Nn]*) choice="n" ;;
+        *)     choice="y" ;;
+      esac
+    elif [[ -t 0 ]]; then
+      # stdin is a TTY - use it directly
+      echo -n "[$current/$pending_casks] Install cask '$cask'? [Y/n] " >&2
+      read -r ans
+      ans="${ans:-Y}"
+      case "$ans" in
+        [Yy]*) choice="y" ;;
+        [Nn]*) choice="n" ;;
+        *)     choice="y" ;;
+      esac
+    else
+      # No TTY available - skip by default in non-interactive mode
+      (( QUIET )) || echo "[$current/$pending_casks] ↷ Skipping '$cask' (non-interactive, use --yes-casks to install all)" >&2
+      choice="n"
+    fi
   fi
 
   if [[ "$choice" = "y" ]]; then

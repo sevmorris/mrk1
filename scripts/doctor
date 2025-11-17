@@ -9,36 +9,36 @@ err() { printf '\033[31m✗ %s\033[0m\n' "$*" >&2; }
 MODE="${1:-check}" # check | --fix | fix
 STATUS=0
 
-check_bin() {
+check_localbin() {
   case ":$PATH:" in
-    *":$HOME/bin:"*) ok "${HOME}/bin is on PATH" ;;
+    *":$HOME/.local/bin:"*) ok "${HOME}/.local/bin is on PATH" ;;
     *)
-      warn "${HOME}/bin is NOT on PATH"
+      warn "${HOME}/.local/bin is NOT on PATH"
       STATUS=1
       ;;
   esac
 }
 
-fix_bin() {
-  mkdir -p "$HOME/bin"
-  if ! grep -q '\$HOME/bin' "${HOME}/.zshrc" 2>/dev/null; then
+fix_localbin() {
+  mkdir -p "$HOME/.local/bin"
+  if ! grep -q ".local/bin" "${HOME}/.zshrc" 2>/dev/null; then
     # shellcheck disable=SC2016
     {
       echo ''
       echo '# Added by mrk1 doctor'
-      echo '[ -d "$HOME/bin" ] && case ":$PATH:" in *":$HOME/bin:"*) ;; *) export PATH="$HOME/bin:$PATH";; esac'
+      echo '[ -d "$HOME/.local/bin" ] && case ":$PATH:" in *":$HOME/.local/bin:"*) ;; *) export PATH="$HOME/.local/bin:$PATH";; esac'
     } >>"${HOME}/.zshrc"
-    ok "Added ~/bin to PATH in .zshrc"
+    ok "Added ~/.local/bin to PATH in .zshrc"
   fi
 }
 
 case "$MODE" in
   check)
-    check_bin
+    check_localbin
     exit "${STATUS}"
     ;;
   --fix | fix)
-    fix_bin
+    fix_localbin
     ok "Fixes applied"
     exit 0
     ;;

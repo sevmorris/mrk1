@@ -10,51 +10,36 @@ A clean, idempotent way to spin up a new Mac with Zsh, dotfiles, and a few sane 
 ## Quick start
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/sevmorris/mrk1/main/scripts/install | bash
+git clone https://github.com/sevmorris/mrk1.git ~/mrk1
+cd ~/mrk1
+make fix-exec && make install
 ```
 
-Or download and run manually:
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/sevmorris/mrk1/main/scripts/install -o /tmp/mrk1-install
-chmod +x /tmp/mrk1-install
-/tmp/mrk1-install
-```
-
-The installer will:
-1. Clone the repository to `~/.mrk1/repo` (or update if already exists)
-2. Copy tools to `~/bin`
-3. Symlink `.zsh*` files to your home directory (pointing to `~/.mrk1/repo/dotfiles/`)
-4. Apply macOS defaults
-5. Keep the clone for symlinks to work (can be updated on next install)
+> `make fix-exec` just makes sure all scripts are executable before install.  
+> You can also run `./scripts/install` directly.
 
 ---
 
 ## What it sets up
 
 - **Zsh** as your login shell
-- **`.zsh*` files** safely symlinked into `$HOME` with timestamped backups
-- **Tools** from `scripts/` and `bin/` copied to `~/bin`
+- **Dotfiles** safely linked into `$HOME` with timestamped backups
+- **Scripts & tools** from both `scripts/` and `bin/` linked into `~/.local/bin`
 - **macOS defaults** applied by `scripts/defaults.sh`, with an automatic rollback script
-
-> **Note:** Only `.zsh*` files are symlinked. Other files in `dotfiles/` are not installed.
-> Tools are **copied** (not symlinked) to `~/bin` so they work independently.
 
 ---
 
 ## Common make targets
 
 ```text
-make install      # full bootstrap (tools → dotfiles → defaults)
-make tools        # copy tools to ~/bin
-make dotfiles     # link .zsh* files with backups
+make fix-exec     # ensure scripts/* and bin/* are executable
+make install      # full bootstrap (dotfiles → tools → defaults)
+make tools        # link scripts/bin into ~/.local/bin
+make dotfiles     # link dotfiles with backups
 make defaults     # apply defaults + write rollback script
 make status       # check installation status
-make uninstall    # remove tools and unlink .zsh* files
+make uninstall    # unlink scripts and optionally roll back defaults
 ```
-
-> **Note:** When running from a cloned repo, `make install` works directly.  
-> For end users, the installer automatically clones the repo temporarily.
 
 ### Installer Options
 
@@ -99,10 +84,9 @@ make status
 
 What it does:
 
-- Removes tools copied to `~/bin`  
-- Unlinks `.zsh*` symlinks from home directory
+- Removes symlinks created in `~/.local/bin`  
 - Optionally runs `~/.mrk1/defaults-rollback.sh`  
-- Leaves your personal files and other dotfiles alone
+- Leaves your personal files and dotfiles alone
 
 ---
 
@@ -131,8 +115,7 @@ Makefile
 README.md
 ```
 
-> Tools from `scripts/` and `bin/` are **copied** to `~/bin` (not symlinked).  
-> Only `.zsh*` files from `dotfiles/` are symlinked to home directory.  
+> Both `scripts/` and `bin/` are linked into `~/.local/bin`.  
 > Keep "end-user" commands in `bin/`, bootstrap helpers in `scripts/`.
 
 ---

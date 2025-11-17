@@ -24,7 +24,7 @@ make fix-exec && make install
 
 - **Zsh** as your login shell
 - **Dotfiles** safely linked into `$HOME` with timestamped backups
-- **Scripts & tools** from both `scripts/` and `bin/` linked into `~/.local/bin`
+- **Scripts & tools** from both `scripts/` and `bin/` linked into `~/bin`
 - **macOS defaults** applied by `scripts/defaults.sh`, with an automatic rollback script
 
 ---
@@ -34,7 +34,7 @@ make fix-exec && make install
 ```text
 make fix-exec     # ensure scripts/* and bin/* are executable
 make install      # full bootstrap (dotfiles → tools → defaults)
-make tools        # link scripts/bin into ~/.local/bin
+make tools        # link scripts/bin into ~/bin
 make dotfiles     # link dotfiles with backups
 make defaults     # apply defaults + write rollback script
 make status       # check installation status
@@ -84,7 +84,7 @@ make status
 
 What it does:
 
-- Removes symlinks created in `~/.local/bin`  
+- Removes symlinks created in `~/bin`  
 - Optionally runs `~/.mrk1/defaults-rollback.sh`  
 - Leaves your personal files and dotfiles alone
 
@@ -115,7 +115,7 @@ Makefile
 README.md
 ```
 
-> Both `scripts/` and `bin/` are linked into `~/.local/bin`.  
+> Both `scripts/` and `bin/` are linked into `~/bin`.  
 > Keep "end-user" commands in `bin/`, bootstrap helpers in `scripts/`.
 
 ---

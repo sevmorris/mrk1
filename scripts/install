@@ -37,7 +37,7 @@ Usage: scripts/install [options]
   --only <phase>        Run a single phase: xcode|dotfiles|tools|defaults|shell
   --no-dotfiles         Skip dotfiles linking
   --no-defaults        Skip macOS defaults
-  --no-link-tools       Skip linking scripts/bin into ~/.local/bin
+  --no-link-tools       Skip linking scripts/bin into ~/bin
   --dry-run             Preview changes without applying them
   --validate            Validate configuration before installing
   --continue-on-error   Continue with remaining phases if one fails
@@ -64,13 +64,13 @@ REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 BIN_DIR="$REPO_ROOT/bin"
 SCRIPTS_DIR="$REPO_ROOT/scripts"
 LOGFILE="$HOME/mrk1-install.log"
-LOCAL_BIN="$HOME/.local/bin"
+INSTALL_BIN="$HOME/bin"
 STATE_DIR="$HOME/.mrk1"
 BACKUP_DIR="$STATE_DIR/backups/$(date +%Y%m%d-%H%M%S)"
 ROLLBACK="$STATE_DIR/defaults-rollback.sh"
 
 # Create required directories with error checking
-if ! mkdir -p "$(dirname "$LOGFILE")" "$LOCAL_BIN" "$(dirname "$BACKUP_DIR")" "$STATE_DIR"; then
+if ! mkdir -p "$(dirname "$LOGFILE")" "$INSTALL_BIN" "$(dirname "$BACKUP_DIR")" "$STATE_DIR"; then
   err "Failed to create required directories"
   exit 1
 fi
@@ -192,22 +192,22 @@ phase_xcode() {
 phase_link_tools() {
   if (( NO_LINK_TOOLS )); then log "Skipping link-tools (flag)"; return; fi
   
-  if [[ ! -d "$LOCAL_BIN" ]]; then
+  if [[ ! -d "$INSTALL_BIN" ]]; then
     if (( DRY_RUN )); then
-      dry "Would create directory: $LOCAL_BIN"
-    elif ! mkdir -p "$LOCAL_BIN"; then
-      err "Failed to create $LOCAL_BIN directory"
+      dry "Would create directory: $INSTALL_BIN"
+    elif ! mkdir -p "$INSTALL_BIN"; then
+      err "Failed to create $INSTALL_BIN directory"
       return 1
     fi
   fi
   
   # Verify directory is writable
-  if [[ ! -w "$LOCAL_BIN" ]]; then
-    err "Directory $LOCAL_BIN is not writable"
+  if [[ ! -w "$INSTALL_BIN" ]]; then
+    err "Directory $INSTALL_BIN is not writable"
     return 1
   fi
   
-  log "Linking scripts/* and bin/* into $LOCAL_BIN..."
+  log "Linking scripts/* and bin/* into $INSTALL_BIN..."
   local linked=0
   local failed=0
   local total=0
@@ -238,14 +238,14 @@ phase_link_tools() {
       fi
       
       if (( DRY_RUN )); then
-        dry "Would link: $LOCAL_BIN/$base -> $f"
+        dry "Would link: $INSTALL_BIN/$base -> $f"
         ((linked++))
-      elif ln -sf "$f" "$LOCAL_BIN/$base" 2>/dev/null; then
+      elif ln -sf "$f" "$INSTALL_BIN/$base" 2>/dev/null; then
         ((linked++))
       else
         local ln_error
-        ln_error="$(ln -sf "$f" "$LOCAL_BIN/$base" 2>&1 || true)"
-        err "Failed to link: $LOCAL_BIN/$base -> $f"
+        ln_error="$(ln -sf "$f" "$INSTALL_BIN/$base" 2>&1 || true)"
+        err "Failed to link: $INSTALL_BIN/$base -> $f"
         [[ -n "$ln_error" ]] && err "  Error: $ln_error"
         ((failed++))
       fi
@@ -275,14 +275,14 @@ phase_link_tools() {
       fi
       
       if (( DRY_RUN )); then
-        dry "Would link: $LOCAL_BIN/$base -> $f"
+        dry "Would link: $INSTALL_BIN/$base -> $f"
         ((linked++))
-      elif ln -sf "$f" "$LOCAL_BIN/$base" 2>/dev/null; then
+      elif ln -sf "$f" "$INSTALL_BIN/$base" 2>/dev/null; then
         ((linked++))
       else
         local ln_error
-        ln_error="$(ln -sf "$f" "$LOCAL_BIN/$base" 2>&1 || true)"
-        err "Failed to link: $LOCAL_BIN/$base -> $f"
+        ln_error="$(ln -sf "$f" "$INSTALL_BIN/$base" 2>&1 || true)"
+        err "Failed to link: $INSTALL_BIN/$base -> $f"
         [[ -n "$ln_error" ]] && err "  Error: $ln_error"
         ((failed++))
       fi
@@ -291,7 +291,7 @@ phase_link_tools() {
   fi
   
   if (( linked > 0 )); then
-    log "Linked $linked tool(s) into $LOCAL_BIN"
+    log "Linked $linked tool(s) into $INSTALL_BIN"
     TOOLS_LINKED=$linked
   fi
   
@@ -305,7 +305,7 @@ phase_link_tools() {
   
   if (( failed > 0 )); then
     err "$failed symlink(s) failed to create"
-    err "Check permissions for $LOCAL_BIN and ensure it exists"
+    err "Check permissions for $INSTALL_BIN and ensure it exists"
     ((ERRORS++))
     return 1
   fi

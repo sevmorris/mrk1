@@ -2,22 +2,22 @@
 set -euo pipefail
 
 # mrk1 uninstaller - conservative
-# - Unlinks ~/.local/bin symlinks pointing into this repo
+# - Unlinks ~/bin symlinks pointing into this repo
 # - Optionally runs ~/.mrk1/defaults-rollback.sh
 # - Does not remove user data or dotfiles
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-LOCAL_BIN="$HOME/.local/bin"
+INSTALL_BIN="$HOME/bin"
 
 log(){ printf "[uninstall] %s\n" "$*"; }
 warn(){ printf "[warn] %s\n" "$*"; }
 
-log "Unlinking mrk1 symlinks from $LOCAL_BIN..."
+log "Unlinking mrk1 symlinks from $INSTALL_BIN..."
 removed=0
 failed=0
 
-if [[ -d "$LOCAL_BIN" ]]; then
+if [[ -d "$INSTALL_BIN" ]]; then
   while IFS= read -r -d '' link; do
     local target
     target="$(readlink "$link" 2>/dev/null || true)"
@@ -40,7 +40,7 @@ if [[ -d "$LOCAL_BIN" ]]; then
         fi
         ;;
     esac
-  done < <(find "$LOCAL_BIN" -maxdepth 1 -type l -print0 2>/dev/null || true)
+  done < <(find "$INSTALL_BIN" -maxdepth 1 -type l -print0 2>/dev/null || true)
   
   if (( removed > 0 )); then
     log "Removed $removed symlink(s)"
@@ -50,7 +50,7 @@ if [[ -d "$LOCAL_BIN" ]]; then
     warn "$failed symlink(s) failed to remove"
   fi
 else
-  warn "$LOCAL_BIN not found (nothing to unlink)"
+  warn "$INSTALL_BIN not found (nothing to unlink)"
 fi
 
 ROLLBACK="$HOME/.mrk1/defaults-rollback.sh"

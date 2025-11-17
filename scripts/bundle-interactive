@@ -92,11 +92,17 @@ if [[ -s "$MAS_LIST" ]]; then
     {
       # remove leading stuff up to mas
       sub(/^[[:space:]]*mas[[:space:]]*/, "", $0)
-      # get quoted name and id
-      if (match($0, /"([^"]+)"/, name_match)) {
-        name = name_match[1]
-        if (match($0, /id:[[:space:]]*([0-9]+)/, id_match)) {
-          id = id_match[1]
+      # get quoted name - find first quoted string
+      if (match($0, /"[^"]+"/)) {
+        name_start = RSTART + 1
+        name_len = RLENGTH - 2
+        name = substr($0, name_start, name_len)
+        # get id - find id: followed by number
+        if (match($0, /id:[[:space:]]*[0-9]+/)) {
+          id_str = substr($0, RSTART, RLENGTH)
+          # extract just the number
+          gsub(/^id:[[:space:]]*/, "", id_str)
+          id = id_str
           print name "|" id
         }
       }

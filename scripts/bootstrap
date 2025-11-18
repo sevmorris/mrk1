@@ -74,7 +74,7 @@ link_tools() {
     fi
   fi
 
-  local dest_dir="$HOME/.local/bin"
+  local dest_dir="$HOME/bin"
   mkdir -p "$dest_dir"
 
   find "$src_dir" -maxdepth 1 -type f -print0 | xargs -0 chmod +x 2>/dev/null || true
@@ -111,7 +111,7 @@ run_defaults() {
 }
 
 run_doctor() {
-  PATH="$HOME/.local/bin:$PATH" bash "${SCRIPTS_DIR}/doctor"
+  PATH="$HOME/bin:$PATH" bash "${SCRIPTS_DIR}/doctor"
 }
 
 cmd="${1:-help}"

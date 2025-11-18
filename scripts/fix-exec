@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# fix-exec — set executable bits on repo scripts and ~/.local/bin (idempotent)
+# fix-exec — set executable bits on repo scripts and ~/bin (idempotent)
 
 set -e
 
@@ -9,7 +9,7 @@ PROJECT_ROOT="$(dirname "$BASE_DIR")"
 
 TARGETS=(
   "$PROJECT_ROOT/scripts"
-  "$HOME/.local/bin"
+  "$HOME/bin"
 )
 
 echo "🔧 Ensuring executable bits on mrk1 scripts…"

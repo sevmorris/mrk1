@@ -17,7 +17,13 @@ log "Unlinking mrk1 symlinks from $INSTALL_BIN..."
 removed=0
 failed=0
 
-if [[ -d "$INSTALL_BIN" ]]; then
+# Function to remove symlinks from a directory
+remove_symlinks_from() {
+  local dir="$1"
+  if [[ ! -d "$dir" ]]; then
+    return 0
+  fi
+  
   while IFS= read -r -d '' link; do
     local target
     target="$(readlink "$link" 2>/dev/null || true)"
@@ -32,25 +38,39 @@ if [[ -d "$INSTALL_BIN" ]]; then
         if [[ "$target" == "$REPO_ROOT"/* ]]; then
           if rm -f "$link"; then
             log "Removed: $link -> $target"
-            ((removed++))
+            ((removed++)) || true
           else
             warn "Failed to remove: $link"
-            ((failed++))
+            ((failed++)) || true
           fi
         fi
         ;;
     esac
-  done < <(find "$INSTALL_BIN" -maxdepth 1 -type l -print0 2>/dev/null || true)
-  
-  if (( removed > 0 )); then
-    log "Removed $removed symlink(s)"
+  done < <(find "$dir" -maxdepth 1 -type l -print0 2>/dev/null || true)
+}
+
+# Remove from current location (~/bin)
+remove_symlinks_from "$INSTALL_BIN"
+
+# Also clean up old ~/.local/bin links from previous installations
+LEGACY_BIN="$HOME/.local/bin"
+if [[ -d "$LEGACY_BIN" ]]; then
+  log "Cleaning up old symlinks from $LEGACY_BIN..."
+  remove_symlinks_from "$LEGACY_BIN"
+fi
+
+if (( removed > 0 )); then
+  log "Removed $removed symlink(s)"
+fi
+
+if (( failed > 0 )); then
+  warn "$failed symlink(s) failed to remove"
+fi
+
+if (( removed == 0 && failed == 0 )); then
+  if [[ ! -d "$INSTALL_BIN" ]] && [[ ! -d "$LEGACY_BIN" ]]; then
+    warn "Neither $INSTALL_BIN nor $LEGACY_BIN found (nothing to unlink)"
   fi
-  
-  if (( failed > 0 )); then
-    warn "$failed symlink(s) failed to remove"
-  fi
-else
-  warn "$INSTALL_BIN not found (nothing to unlink)"
 fi
 
 ROLLBACK="$HOME/.mrk1/defaults-rollback.sh"

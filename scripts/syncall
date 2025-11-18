@@ -9,10 +9,6 @@ set -euo pipefail
 : "${SYNCALL_EXCLUDES:="$HOME/Library:$HOME/.Trash:$HOME/.venvs:$HOME/.cache:$HOME/.cargo:$HOME/.npm:_build:node_modules:.git/modules"}"
 : "${SYNCALL_DEFAULT_REMOTE:=origin}" # fallback remote if no upstream is set
 : "${SYNCALL_SKIP_PATHS:="$HOME/mrk1"}" # colon-separated folders to skip entirely
-: "${SYNCALL_LINK_TOOLS:=1}"           # 1 = link this repo’s scripts into ~/.local/bin
-
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 # Colors
 if command -v tput >/dev/null 2>&1 && [[ -t 1 ]]; then
@@ -67,30 +63,6 @@ push_repo() {
   fi
 }
 
-# Link THIS repo’s scripts into ~/.local/bin
-link_tools_for_repo() {
-  local src_dir="$REPO_ROOT/scripts" dest_dir="$HOME/.local/bin"
-  [[ -d "$src_dir" ]] || { warn "scripts/ missing; skip linking"; return 0; }
-  mkdir -p "$dest_dir"
-  local linked=0
-  while IFS= read -r -d '' src; do
-    head -n1 "$src" | grep -q '^#!' || continue
-    chmod +x "$src" || true
-    local base dest legacy
-    base="$(basename "$src")"
-    dest="$dest_dir/$base"
-    ln -sfn "$src" "$dest"
-    good "linked: $dest -> $src"
-    ((linked++)) || true
-    legacy="${dest}.sh"
-    if [[ -L "$legacy" && "$(readlink "$legacy")" == "$src" ]]; then
-      rm -f "$legacy"
-      warn "removed legacy link: $legacy"
-    fi
-  done < <(find "$src_dir" -maxdepth 1 -type f -print0)
-  [[ "$linked" -gt 0 ]] && good "Linked $linked tool(s) into $dest_dir" || warn "No tools linked"
-}
-
 # Build a find(1) prune expression from SYNCALL_EXCLUDES and SYNCALL_SKIP_PATHS
 build_prune_expr() {
   local IFS=':'; read -r -a excl <<<"$SYNCALL_EXCLUDES"
@@ -141,11 +113,6 @@ discover_repos() {
 # --- main ------------------------------------------------------------------
 
 main() {
-  # Ensure tools from THIS repo are linked (unless disabled)
-  if [[ "${SYNCALL_LINK_TOOLS}" == "1" ]]; then
-    link_tools_for_repo
-  fi
-
   log "${bold}Syncing repos under ${SYNCALL_ROOT}${reset}"
   repos=()
   while IFS= read -r r; do repos+=("$r"); done < <(discover_repos)

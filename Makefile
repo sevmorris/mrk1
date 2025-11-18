@@ -5,7 +5,7 @@ REPO_ROOT := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 SCRIPTS   := $(REPO_ROOT)/scripts
 BIN_DIR   := $(REPO_ROOT)/bin
 
-.PHONY: all bootstrap install fix-exec tools dotfiles defaults uninstall updates harden status
+.PHONY: all bootstrap install fix-exec tools dotfiles defaults uninstall update updates harden status
 
 all: install
 bootstrap: install
@@ -32,6 +32,12 @@ defaults:
 
 uninstall:
 	@"$(SCRIPTS)/uninstall"
+
+update:
+	@echo "Updating mrk1..."
+	@git pull || { echo "Error: Failed to pull latest changes. Are you in a git repository?"; exit 1; }
+	@make fix-exec
+	@make install
 
 updates:
 	@softwareupdate -ia || true

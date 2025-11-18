@@ -34,6 +34,7 @@ make fix-exec && make install
 ```text
 make fix-exec     # ensure scripts/* and bin/* are executable
 make install      # full bootstrap (dotfiles → tools → defaults)
+make update       # pull latest changes and reinstall
 make tools        # link scripts/bin into ~/bin
 make dotfiles     # link dotfiles with backups
 make defaults     # apply defaults + write rollback script

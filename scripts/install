@@ -219,75 +219,75 @@ phase_link_tools() {
   if [[ -d "$SCRIPTS_DIR" ]]; then
     # Count total first for progress and collect files
     local files=()
-    while IFS= read -r -d '' f; do
+    while IFS= read -r -d '' f || [[ -n "$f" ]]; do
       [[ -n "$f" ]] && [[ -f "$f" && -x "$f" ]] && {
         files+=("$f")
-        ((total++))
+        ((total++)) || true
       }
     done < <(find "$SCRIPTS_DIR" -maxdepth 1 -type f -print0 2>/dev/null || true)
     
     local current=0
     for f in "${files[@]}"; do
       [[ -f "$f" && -x "$f" ]] || continue
-      ((current++))
+      ((current++)) || true
       local base
       base="$(basename "$f")"
       
       if (( total > 0 )); then
-        printf "\r[%d/%d] Linking %s..." "$current" "$total" "$base" >&2
+        printf "\r[%d/%d] Linking %s..." "$current" "$total" "$base" >&2 || true
       fi
       
       if (( DRY_RUN )); then
         dry "Would link: $INSTALL_BIN/$base -> $f"
-        ((linked++))
+        ((linked++)) || true
       elif ln -sf "$f" "$INSTALL_BIN/$base" 2>/dev/null; then
-        ((linked++))
+        ((linked++)) || true
       else
         local ln_error
         ln_error="$(ln -sf "$f" "$INSTALL_BIN/$base" 2>&1 || true)"
         err "Failed to link: $INSTALL_BIN/$base -> $f"
         [[ -n "$ln_error" ]] && err "  Error: $ln_error"
-        ((failed++))
+        ((failed++)) || true
       fi
     done
-    printf "\r" >&2  # Clear progress line
+    printf "\r" >&2 || true  # Clear progress line
   fi
   
   if [[ -d "$BIN_DIR" ]]; then
     local bin_total=0
     local bin_files=()
-    while IFS= read -r -d '' f; do
+    while IFS= read -r -d '' f || [[ -n "$f" ]]; do
       [[ -n "$f" ]] && [[ -f "$f" && -x "$f" ]] && {
         bin_files+=("$f")
-        ((bin_total++))
+        ((bin_total++)) || true
       }
     done < <(find "$BIN_DIR" -maxdepth 1 -type f -print0 2>/dev/null || true)
     
     local current=0
     for f in "${bin_files[@]}"; do
       [[ -f "$f" && -x "$f" ]] || continue
-      ((current++))
+      ((current++)) || true
       local base
       base="$(basename "$f")"
       
       if (( bin_total > 0 )); then
-        printf "\r[%d/%d] Linking %s..." "$current" "$bin_total" "$base" >&2
+        printf "\r[%d/%d] Linking %s..." "$current" "$bin_total" "$base" >&2 || true
       fi
       
       if (( DRY_RUN )); then
         dry "Would link: $INSTALL_BIN/$base -> $f"
-        ((linked++))
+        ((linked++)) || true
       elif ln -sf "$f" "$INSTALL_BIN/$base" 2>/dev/null; then
-        ((linked++))
+        ((linked++)) || true
       else
         local ln_error
         ln_error="$(ln -sf "$f" "$INSTALL_BIN/$base" 2>&1 || true)"
         err "Failed to link: $INSTALL_BIN/$base -> $f"
         [[ -n "$ln_error" ]] && err "  Error: $ln_error"
-        ((failed++))
+        ((failed++)) || true
       fi
     done
-    printf "\r" >&2  # Clear progress line
+    printf "\r" >&2 || true  # Clear progress line
   fi
   
   if (( linked > 0 )); then
@@ -341,7 +341,7 @@ phase_dotfiles() {
     # Skip .example files and README files
     case "$(basename "$src")" in
       *.example|README*|*.md) continue ;;
-      *) ((total++)) ;;
+      *) ((total++)) || true ;;
     esac
   done
   
@@ -355,42 +355,42 @@ phase_dotfiles() {
     esac
     
     found=1
-    ((current++))
+    ((current++)) || true
     dst="$HOME/$(basename "$src")"
     
     if (( total > 0 )); then
-      printf "\r[%d/%d] Processing %s..." "$current" "$total" "$(basename "$src")" >&2
+      printf "\r[%d/%d] Processing %s..." "$current" "$total" "$(basename "$src")" >&2 || true
     fi
     
     if [[ -e "$dst" && ! -L "$dst" ]]; then
       if (( DRY_RUN )); then
         dry "Would backup: $dst -> $BACKUP_DIR/$(basename "$dst")"
-        ((backed_up++))
+        ((backed_up++)) || true
       else
         log "Backing up: $dst -> $BACKUP_DIR/$(basename "$dst")"
         if ! mv "$dst" "$BACKUP_DIR/"; then
           err "Failed to backup $dst - aborting dotfile linking"
           shopt -u dotglob nullglob
-          printf "\r" >&2
+          printf "\r" >&2 || true
           return 1
         fi
-        ((backed_up++))
+        ((backed_up++)) || true
       fi
     fi
     
     if (( DRY_RUN )); then
       dry "Would link: $dst -> $src"
-      ((linked++))
+      ((linked++)) || true
     elif ! ln -sfn "$src" "$dst"; then
       err "Failed to create symlink: $dst -> $src"
       shopt -u dotglob nullglob
-      printf "\r" >&2
+      printf "\r" >&2 || true
       return 1
     else
-      ((linked++))
+      ((linked++)) || true
     fi
   done
-  printf "\r" >&2  # Clear progress line
+  printf "\r" >&2 || true  # Clear progress line
   shopt -u dotglob nullglob
   
   if (( linked > 0 )); then
@@ -613,4 +613,11 @@ else
   echo ""
   log "Dry run complete. No changes were made."
   echo "Run without --dry-run to apply changes."
+fi
+
+# Exit with appropriate code
+if (( ERRORS > 0 )); then
+  exit 1
+else
+  exit 0
 fi

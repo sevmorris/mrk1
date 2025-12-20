@@ -3,7 +3,7 @@
 **Phase 1** of macOS setup. A clean, idempotent way to spin up a new Mac with Zsh, dotfiles, and a few sane defaults. Easy to read, easy to trust.
 
 - **Safe by default.** Any conflicting dotfiles get backed up. Defaults come with a rollback script.
-- **Idempotent.** Run it again anytime — it won't wreck your setup.
+- **Idempotent.** Run it again anytime.
 
 ---
 

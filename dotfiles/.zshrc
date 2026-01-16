@@ -47,13 +47,6 @@ elif [ -x /usr/local/bin/brew ]; then
   eval "$(/usr/local/bin/brew shellenv)"
 fi
 
-# --- PATH Enforcement (mrk1 convention) ---
-[ -d "$HOME/.local/bin" ] && case ":$PATH:" in
-  *":$HOME/.local/bin:"*) ;;
-  *) export PATH="$HOME/.local/bin:$PATH";;
-esac
-export PATH="$HOME/bin:$HOME/.local/bin:$PATH"
-
 # --- NVM (lazy load, prefers Homebrew) ---
 export NVM_DIR="$HOME/.nvm"
 
@@ -89,15 +82,3 @@ fi
 
 # --- Shell Welcome ---
 fastfetch
-
-# >>> mrk1 PATH >>>
-[ -d "$HOME/.local/bin" ] && case ":$PATH:" in *":$HOME/.local/bin:"*) ;; *) export PATH="$HOME/.local/bin:$PATH";; esac
-# <<< mrk1 PATH <<<
-
-# --- mrk1: ensure ~/.local/bin is on PATH (idempotent) ---
-if [ -d "$HOME/.local/bin" ]; then
-  case ":$PATH:" in
-    *":$HOME/.local/bin:"*) ;;
-    *) export PATH="$HOME/.local/bin:$PATH" ;;
-  esac
-fi

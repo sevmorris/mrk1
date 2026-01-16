@@ -33,16 +33,18 @@ if $have_sudo; then
     if sudo cp /etc/pam.d/sudo /etc/pam.d/sudo.backup.mrk1 2>/dev/null; then
       rollback "sudo mv /etc/pam.d/sudo.backup.mrk1 /etc/pam.d/sudo"
       tmpfile="$(mktemp)"
+      # Ensure temp file is cleaned up on any exit
+      trap 'rm -f "$tmpfile"' EXIT
       { echo 'auth       sufficient     pam_tid.so'; cat /etc/pam.d/sudo; } > "$tmpfile"
       if sudo cp "$tmpfile" /etc/pam.d/sudo 2>/dev/null; then
-        rm -f "$tmpfile"
         log "Touch ID for sudo enabled"
       else
         warn "Failed to write new sudo PAM config (may require password)"
-        rm -f "$tmpfile"
         # Restore backup
         sudo mv /etc/pam.d/sudo.backup.mrk1 /etc/pam.d/sudo 2>/dev/null || true
       fi
+      rm -f "$tmpfile"
+      trap - EXIT
     else
       warn "Failed to backup sudo PAM config (may require password)"
     fi

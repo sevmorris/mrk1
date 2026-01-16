@@ -40,7 +40,9 @@ has_stash()  { git -C "$1" rev-parse -q --verify refs/stash >/dev/null 2>&1; }
 
 # Always stage & commit whatever changed (respects .gitignore)
 auto_commit() {
-  local dir="$1" msg="syncall: auto-commit $(date +%Y-%m-%dT%H:%M:%S)"
+  local dir="$1"
+  local msg
+  msg="syncall: auto-commit $(date +%Y-%m-%dT%H:%M:%S)"
   git -C "$dir" add -A
   # If nothing to commit, this exits non-zero; that's fine.
   git -C "$dir" commit -m "$msg" >/dev/null 2>&1 || true

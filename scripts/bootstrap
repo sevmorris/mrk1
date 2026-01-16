@@ -95,7 +95,11 @@ link_tools() {
     fi
   done < <(find "$src_dir" -maxdepth 1 -type f -print0)
 
-  [[ "$linked" -gt 0 ]] && ok "Linked $linked tool(s) into $dest_dir" || warn "No tools linked"
+  if [[ "$linked" -gt 0 ]]; then
+    ok "Linked $linked tool(s) into $dest_dir"
+  else
+    warn "No tools linked"
+  fi
 }
 
 run_defaults() {

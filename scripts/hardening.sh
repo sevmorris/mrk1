@@ -18,6 +18,7 @@ if ! : > "$ROLL" || ! chmod +x "$ROLL"; then
 fi
 
 log(){ printf "[hardening] %s\n" "$*"; }
+warn(){ printf "[hardening] warning: %s\n" "$*" >&2; }
 rollback(){ echo "$*" >> "$ROLL"; }
 
 have_sudo=false

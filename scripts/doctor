@@ -21,6 +21,7 @@ check_bin() {
 
 fix_bin() {
   mkdir -p "$HOME/bin"
+  # shellcheck disable=SC2016  # Intentionally looking for literal $HOME
   if ! grep -q '\$HOME/bin' "${HOME}/.zshrc" 2>/dev/null; then
     # shellcheck disable=SC2016
     {

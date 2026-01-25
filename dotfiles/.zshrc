@@ -72,5 +72,8 @@ if ! typeset -f nvm >/dev/null; then
   npx()  { _nvm_lazy_load npx "$@"; }
 fi
 
+# --- mrk1 Update Check (weekly) ---
+[[ -x "$HOME/bin/check-updates" ]] && "$HOME/bin/check-updates"
+
 # --- Shell Welcome ---
 command -v fastfetch >/dev/null 2>&1 && fastfetch

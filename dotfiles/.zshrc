@@ -39,14 +39,6 @@ typeset -U path
 # --- Source Personal Aliases ---
 [[ -f "$HOME/.aliases" ]] && source "$HOME/.aliases"
 
-# --- Homebrew Environment (mrk1 convention) ---
-# Ensure Homebrew is on PATH (Apple Silicon first, then Intel)
-if [ -x /opt/homebrew/bin/brew ]; then
-  eval "$(/opt/homebrew/bin/brew shellenv)"
-elif [ -x /usr/local/bin/brew ]; then
-  eval "$(/usr/local/bin/brew shellenv)"
-fi
-
 # --- NVM (lazy load, prefers Homebrew) ---
 export NVM_DIR="$HOME/.nvm"
 
@@ -81,4 +73,4 @@ if ! typeset -f nvm >/dev/null; then
 fi
 
 # --- Shell Welcome ---
-fastfetch
+command -v fastfetch >/dev/null 2>&1 && fastfetch

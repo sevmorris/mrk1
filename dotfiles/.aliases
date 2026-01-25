@@ -62,7 +62,7 @@ alias decrypt='gpg --decrypt ' # Trailing space enables filename completion.
 #  File & Directory Management
 # ==============================================================================
 
-alias dempty='~/.local/bin/remove_empty_dirs.sh '  # Trailing space enables path completion
+# Use 'se' (showempties) or 'ce' (cleanempties) functions defined below
 
 # Clean .DS_Store files only on your local internal volume (no network/external),
 # skipping ~/Library and ~/Desktop (to preserve Desktop layout), with a quiet spinner + count.
@@ -84,7 +84,11 @@ clean-ds() {
   [[ ${#SAFE_DIRS[@]} -eq 0 ]] && { echo "ℹ️ No eligible local folders."; return 0; }
 
   # Launch the cleanup in the BACKGROUND quietly, then disown it (no job-control messages).
+  # Save and restore job control state to prevent leaks on early exit
+  local old_monitor
+  old_monitor=$(set +o | grep monitor)
   set +m  # temporarily silence job control output
+  trap '$old_monitor' RETURN  # restore on function exit
   (
     for d in "${SAFE_DIRS[@]}"; do
       find "$d" -xdev -type f -name ".DS_Store" \
@@ -95,7 +99,6 @@ clean-ds() {
   ) >/dev/null 2>&1 &
   local FINDPID=$!
   disown -h "$FINDPID" 2>/dev/null || disown %+
-  set -m  # restore shell job control
 
   # Foreground spinner that watches the background PID without generating job messages
   {
@@ -121,7 +124,8 @@ clean-ds() {
 # ==============================================================================
 
 alias brewses='brew uses --installed'
-alias dump='brew bundle dump --force --file=~/mrk1/assets/Brewfile && cp -fv ~/mrk1/assets/Brewfile ~/'
+# Dump Brewfile to home directory
+alias dump='brew bundle dump --force --file=~/Brewfile'
 
 # Safer Homebrew permission fixer
 fixbrewperms() {
@@ -198,8 +202,6 @@ pushit() {
   fi
 }
 
-# --- mrk1 maintenance passthrough ---
-maint() { command scripts/clean-mac.sh "$@"; }
 
 # --- Empty Directory Utilities (loops until fully pruned) ---
 
@@ -277,7 +279,6 @@ cleanempties() {
 
 # Push WaxOn and WaxOff repos to GitHub
 waxup() {
-  local here=$PWD
   if [[ -d "$HOME/WaxOn/.git" ]]; then
     echo "WaxOn → pushing to GitHub..."
     (cd "$HOME/WaxOn" && git add . && git commit -m "Update WaxOn" --allow-empty && git push origin main)
@@ -294,8 +295,6 @@ waxup() {
     echo "WaxOff repo not found at \$HOME/WaxOff"
   fi
 
-  cd "$here" >/dev/null || true
-  echo
   echo "WaxOn + WaxOff push completed."
 }
 

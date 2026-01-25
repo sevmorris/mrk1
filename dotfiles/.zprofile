@@ -1,11 +1,16 @@
-# Add Homebrew to your PATH
-eval "$(/opt/homebrew/bin/brew shellenv)"
+# ==============================================================================
+#  .zprofile — Sourced for LOGIN shells (before .zshrc)
+#  Maintainer: Seven Morris
+# ==============================================================================
 
-# >>> mrk1 PATH >>>
-[ -d "$HOME/.local/bin" ] && case ":$PATH:" in *":$HOME/.local/bin:"*) ;; *) export PATH="$HOME/.local/bin:$PATH";; esac
-# <<< mrk1 PATH <<<
+# --- Homebrew Environment (Apple Silicon first, then Intel) ---
+if [ -x /opt/homebrew/bin/brew ]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+elif [ -x /usr/local/bin/brew ]; then
+  eval "$(/usr/local/bin/brew shellenv)"
+fi
 
-# --- mrk1: ensure ~/.local/bin is on PATH (idempotent) ---
+# --- Ensure ~/.local/bin is on PATH (idempotent) ---
 if [ -d "$HOME/.local/bin" ]; then
   case ":$PATH:" in
     *":$HOME/.local/bin:"*) ;;

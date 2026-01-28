@@ -129,9 +129,11 @@ alias dump='brew bundle dump --force --file=~/Brewfile'
 
 # Safer Homebrew permission fixer
 fixbrewperms() {
-  echo "Fixing Homebrew permissions..."
-  sudo chown -R "$(whoami)":admin /opt/homebrew
-  sudo chmod -R g+rwx /opt/homebrew
+  local prefix
+  prefix="$(brew --prefix 2>/dev/null)" || { echo "Homebrew not found."; return 1; }
+  echo "Fixing Homebrew permissions at $prefix..."
+  sudo chown -R "$(whoami)":admin "$prefix"
+  sudo chmod -R g+rwx "$prefix"
   brew doctor
 }
 

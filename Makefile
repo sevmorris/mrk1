@@ -5,7 +5,7 @@ REPO_ROOT := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 SCRIPTS   := $(REPO_ROOT)/scripts
 BIN_DIR   := $(REPO_ROOT)/bin
 
-.PHONY: all bootstrap install fix-exec tools dotfiles defaults uninstall update updates harden status
+.PHONY: all bootstrap install fix-exec tools dotfiles defaults trackpad uninstall update updates harden status
 
 all: install
 bootstrap: install
@@ -29,6 +29,10 @@ dotfiles:
 # Apply macOS defaults and generate a rollback script under ~/.mrk1
 defaults:
 	@"$(SCRIPTS)/defaults.sh"
+
+# Apply defaults including trackpad gesture settings
+trackpad:
+	@"$(SCRIPTS)/defaults.sh" --with-trackpad
 
 uninstall:
 	@"$(SCRIPTS)/uninstall"

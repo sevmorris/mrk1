@@ -28,9 +28,9 @@ if [[ -d "$REPO_ROOT/dotfiles" ]]; then
     [[ -e "$src" ]] || continue
     dst="$HOME/$(basename "$src")"
     if [[ -L "$dst" ]] && [[ "$(readlink "$dst")" == "$src" ]]; then
-      ((linked++))
+      ((linked++)) || true
     else
-      ((missing++))
+      ((missing++)) || true
       if [[ -e "$dst" ]]; then
         warn "  Not linked: $dst (file exists)"
       else
@@ -60,9 +60,9 @@ if [[ -d "$INSTALL_BIN" ]]; then
     target="$(readlink "$link" 2>/dev/null || true)"
     if [[ -n "$target" ]] && [[ "$target" == "$REPO_ROOT"/* ]]; then
       if [[ -e "$target" ]]; then
-        ((linked++))
+        ((linked++)) || true
       else
-        ((broken++))
+        ((broken++)) || true
         warn "  Broken link: $link -> $target"
       fi
     fi
@@ -106,7 +106,7 @@ if [[ -d "$STATE_DIR/backups" ]]; then
     ok "  $backup_count backup(s) found"
     info "  Location: $STATE_DIR/backups"
     # Show most recent
-    latest=$(find "$STATE_DIR/backups" -mindepth 1 -maxdepth 1 -type d -print0 2>/dev/null | sort -zr | head -z -n1 | tr -d '\0')
+    latest=$(find "$STATE_DIR/backups" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | sort -r | head -n1)
     if [[ -n "$latest" ]]; then
       info "  Latest: $(basename "$latest")"
     fi

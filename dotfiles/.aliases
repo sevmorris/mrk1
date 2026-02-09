@@ -123,9 +123,11 @@ clean-ds() {
 #  Homebrew & Development Aliases / Functions
 # ==============================================================================
 
-alias brewses='brew uses --installed'
-# Dump Brewfile to home directory
-alias dump='brew bundle dump --force --file=~/Brewfile'
+if command -v brew >/dev/null 2>&1; then
+  alias brewses='brew uses --installed'
+  # Dump Brewfile to home directory
+  alias dump='brew bundle dump --force --file=~/Brewfile'
+fi
 
 # Safer Homebrew permission fixer
 fixbrewperms() {
@@ -137,7 +139,7 @@ fixbrewperms() {
   brew doctor
 }
 
-alias update='topgrade'
+command -v topgrade >/dev/null 2>&1 && alias update='topgrade'
 
 # ==============================================================================
 #  Utility Functions

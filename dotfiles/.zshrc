@@ -61,9 +61,11 @@ if ! typeset -f nvm >/dev/null; then
     # Load NVM once
     . "$_nvm_source"
     # Optional: completions (Homebrew path)
-    local _nvm_comp
-    _nvm_comp="$(brew --prefix 2>/dev/null)/opt/nvm/etc/bash_completion.d/nvm"
-    [ -s "$_nvm_comp" ] && . "$_nvm_comp"
+    if command -v brew >/dev/null 2>&1; then
+      local _nvm_comp
+      _nvm_comp="$(brew --prefix)/opt/nvm/etc/bash_completion.d/nvm"
+      [ -s "$_nvm_comp" ] && . "$_nvm_comp"
+    fi
     unset -f nvm node npm npx _nvm_lazy_load
     "$@"
   }

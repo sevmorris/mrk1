@@ -154,9 +154,8 @@ write_default com.apple.screencapture disable-shadow bool true || ((failed++))
 write_default com.apple.screencapture show-thumbnail bool false || ((failed++))
 # Don't include date in screenshot filename
 write_default com.apple.screencapture include-date bool false || ((failed++))
-# Save screenshots to ~/Pictures/Screenshots
-mkdir -p "$HOME/Pictures/Screenshots"
-write_default com.apple.screencapture location string "$HOME/Pictures/Screenshots" || ((failed++))
+# Save screenshots to ~/Desktop
+write_default com.apple.screencapture location string "$HOME/Desktop" || ((failed++))
 
 ###############################################################################
 # Desktop Services                                                            #

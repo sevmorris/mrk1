@@ -64,6 +64,22 @@ log()  { printf "[mrk1] %s\n" "$*" >&2; }
 warn() { printf "[warn] %s\n" "$*" >&2; }
 err()  { printf "[err ] %s\n" "$*" >&2; }
 dry()  { if (( DRY_RUN )); then printf "[dry] %s\n" "$*"; else log "$@"; fi; }
+logskip() { printf "[skip] %s (%s)\n" "$1" "$2" >&2; }
+
+# Refresh sudo timestamp to prevent timeout during long-running installs.
+# Uses -n (non-interactive) so it never prompts — only extends an active session.
+sudo_refresh() { sudo -n -v 2>/dev/null || true; }
+
+# Track current phase for error reporting on unexpected exit
+CURRENT_STEP=""
+MRK1_SUCCESS=""
+cleanup() {
+  if [[ -z "$MRK1_SUCCESS" ]]; then
+    err "!!! ${CURRENT_STEP:-unknown step} FAILED"
+    err "See $HOME/mrk1-install.log for details"
+  fi
+}
+trap "cleanup" EXIT
 
 # Configuration
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -113,6 +129,8 @@ DEFAULTS_APPLIED=0
 BACKUPS_CREATED=0
 ERRORS=0
 WARNINGS=0
+DOTFILES_SKIPPED=0
+TOOLS_SKIPPED=0
 
 # Validate phase name
 valid_phases="xcode tools dotfiles ext defaults shell"
@@ -134,6 +152,8 @@ run_phase() {
     if [[ "$ONLY" != "$name" ]]; then return 0; fi
   fi
   
+  CURRENT_STEP="$name"
+  sudo_refresh
   log "Running phase: $name"
   if (( CONTINUE_ON_ERROR )); then
     if ! "$@"; then
@@ -187,14 +207,18 @@ phase_xcode() {
   if ! xcode-select -p >/dev/null 2>&1; then
     log "Xcode Command Line Tools not found. Triggering install (GUI). Re-run after completion."
     xcode-select --install || true
+  else
+    logskip "Xcode Command Line Tools" "already installed"
   fi
   if [[ -d "/Applications/Xcode.app" ]]; then
     sudo xcodebuild -license accept >/dev/null 2>&1 || true
+  else
+    logskip "Xcode license" "Xcode.app not found"
   fi
 }
 
 phase_link_tools() {
-  if (( NO_LINK_TOOLS )); then log "Skipping link-tools (flag)"; return; fi
+  if (( NO_LINK_TOOLS )); then logskip "link-tools" "disabled by flag"; return; fi
   
   if [[ ! -d "$INSTALL_BIN" ]]; then
     if (( DRY_RUN )); then
@@ -213,6 +237,7 @@ phase_link_tools() {
   
   log "Linking scripts/* and bin/* into $INSTALL_BIN..."
   local linked=0
+  local skipped=0
   local failed=0
   local total=0
   
@@ -241,6 +266,12 @@ phase_link_tools() {
         printf "\r[%d/%d] Linking %s..." "$current" "$total" "$base" >&2 || true
       fi
       
+      # Skip if symlink already points to correct target
+      if [[ -L "$INSTALL_BIN/$base" ]] && [[ "$(readlink "$INSTALL_BIN/$base")" == "$f" ]]; then
+        ((skipped++)) || true
+        continue
+      fi
+
       if (( DRY_RUN )); then
         dry "Would link: $INSTALL_BIN/$base -> $f"
         ((linked++)) || true
@@ -278,6 +309,12 @@ phase_link_tools() {
         printf "\r[%d/%d] Linking %s..." "$current" "$bin_total" "$base" >&2 || true
       fi
       
+      # Skip if symlink already points to correct target
+      if [[ -L "$INSTALL_BIN/$base" ]] && [[ "$(readlink "$INSTALL_BIN/$base")" == "$f" ]]; then
+        ((skipped++)) || true
+        continue
+      fi
+
       if (( DRY_RUN )); then
         dry "Would link: $INSTALL_BIN/$base -> $f"
         ((linked++)) || true
@@ -298,8 +335,13 @@ phase_link_tools() {
     log "Linked $linked tool(s) into $INSTALL_BIN"
     TOOLS_LINKED=$linked
   fi
-  
-  if (( total == 0 && linked == 0 && failed == 0 )); then
+
+  if (( skipped > 0 )); then
+    logskip "$skipped tool(s)" "already linked"
+    TOOLS_SKIPPED=$skipped
+  fi
+
+  if (( total == 0 && linked == 0 && skipped == 0 && failed == 0 )); then
     warn "No executable tools found to link"
     if [[ ! -d "$SCRIPTS_DIR" ]] && [[ ! -d "$BIN_DIR" ]]; then
       err "Neither $SCRIPTS_DIR nor $BIN_DIR exist"
@@ -316,7 +358,7 @@ phase_link_tools() {
 }
 
 phase_dotfiles() {
-  if (( NO_DOTFILES )); then log "Skipping dotfiles (flag)"; return; fi
+  if (( NO_DOTFILES )); then logskip "dotfiles" "disabled by flag"; return; fi
   
   if [[ ! -d "$REPO_ROOT/dotfiles" ]]; then
     warn "dotfiles directory not found: $REPO_ROOT/dotfiles"
@@ -336,6 +378,7 @@ phase_dotfiles() {
   shopt -s dotglob nullglob
   local found=0
   local linked=0
+  local skipped=0
   local backed_up=0
   
   # Count total for progress (excluding example and documentation files)
@@ -366,6 +409,12 @@ phase_dotfiles() {
       printf "\r[%d/%d] Processing %s..." "$current" "$total" "$(basename "$src")" >&2 || true
     fi
     
+    # Skip if symlink already points to correct target
+    if [[ -L "$dst" ]] && [[ "$(readlink "$dst")" == "$src" ]]; then
+      ((skipped++)) || true
+      continue
+    fi
+
     if [[ -e "$dst" && ! -L "$dst" ]]; then
       if (( DRY_RUN )); then
         dry "Would backup: $dst -> $BACKUP_DIR/$(basename "$dst")"
@@ -402,11 +451,16 @@ phase_dotfiles() {
     DOTFILES_LINKED=$linked
   fi
   
+  if (( skipped > 0 )); then
+    logskip "$skipped dotfile(s)" "already linked"
+    DOTFILES_SKIPPED=$skipped
+  fi
+
   if (( backed_up > 0 )); then
     log "Created $backed_up backup(s) in $BACKUP_DIR"
     BACKUPS_CREATED=$backed_up
   fi
-  
+
   if (( !found )); then
     warn "No dotfiles found in $REPO_ROOT/dotfiles"
   fi
@@ -493,7 +547,7 @@ phase_ext_dotfiles() {
 }
 
 phase_defaults() {
-  if (( NO_DEFAULTS )); then log "Skipping defaults (flag)"; return; fi
+  if (( NO_DEFAULTS )); then logskip "defaults" "disabled by flag"; return; fi
   
   if (( DRY_RUN )); then
     dry "Would apply macOS defaults"
@@ -542,7 +596,7 @@ phase_shell() {
       log "Setting login shell to $target_shell"
       chsh -s "$target_shell" || warn "chsh failed"
     else
-      log "Login shell already $target_shell"
+      logskip "login shell" "already $target_shell"
     fi
   fi
 }
@@ -578,9 +632,15 @@ show_summary() {
   if (( DOTFILES_LINKED > 0 )); then
     echo "  ✓ Dotfiles linked: $DOTFILES_LINKED"
   fi
-  
+  if (( DOTFILES_SKIPPED > 0 )); then
+    echo "  · Dotfiles unchanged: $DOTFILES_SKIPPED (already linked)"
+  fi
+
   if (( TOOLS_LINKED > 0 )); then
     echo "  ✓ Tools linked: $TOOLS_LINKED"
+  fi
+  if (( TOOLS_SKIPPED > 0 )); then
+    echo "  · Tools unchanged: $TOOLS_SKIPPED (already linked)"
   fi
   
   if (( DEFAULTS_APPLIED > 0 )); then
@@ -618,6 +678,9 @@ else
   log "Dry run complete. No changes were made."
   echo "Run without --dry-run to apply changes."
 fi
+
+# Mark success so the EXIT trap knows we completed normally
+MRK1_SUCCESS=1
 
 # Exit with appropriate code
 if (( ERRORS > 0 )); then

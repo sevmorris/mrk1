@@ -28,6 +28,9 @@ backups/
 # State directories (user-specific)
 .mrk1/
 
+# Claude Code runtime data
+dotfiles/.claude/
+
 # Test files
 test-*
 *.test

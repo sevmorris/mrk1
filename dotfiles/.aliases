@@ -153,17 +153,17 @@ c() {
 
 # Run the Minecraft server with Aikar's flags.
 mc() {
-  echo "Starting Minecraft 1.21.5 server..."
+  echo "Starting Minecraft 1.21.6 server..."
   if ! command -v java >/dev/null 2>&1; then
     echo "Java not found. Please install Java before running the Minecraft server."
     return 1
   fi
-  if [[ ! -d "$HOME/mcservers/1.21.5" ]]; then
+  if [[ ! -d "$HOME/mcservers/1.21.6" ]]; then
     echo "Server directory $HOME/mcservers/1.21.5 not found."
     return 1
   fi
   (
-    cd "$HOME/mcservers/1.21.5" && \
+    cd "$HOME/mcservers/1.21.6" && \
     java -Xms10G -Xmx10G \
       -XX:+UseG1GC \
       -XX:+ParallelRefProcEnabled \

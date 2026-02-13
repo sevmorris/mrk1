@@ -28,8 +28,9 @@ backups/
 # State directories (user-specific)
 .mrk1/
 
-# Claude Code runtime data
-dotfiles/.claude/
+# Claude Code runtime data — only allow settings.local.json
+dotfiles/.claude/*
+!dotfiles/.claude/settings.local.json
 
 # Test files
 test-*

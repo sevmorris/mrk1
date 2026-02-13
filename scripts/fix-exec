@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # fix-exec — set executable bits on repo scripts and ~/bin (idempotent)
 
-set -e
+set -euo pipefail
 
 # Resolve repo paths (works from mrk1 or mrk1-dev)
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

@@ -12,7 +12,7 @@ if ! mkdir -p "$ROLL_DIR"; then
   exit 1
 fi
 
-if ! : > "$ROLL" || ! chmod +x "$ROLL"; then
+if ! printf '#!/usr/bin/env bash\n' > "$ROLL" || ! chmod +x "$ROLL"; then
   echo "Error: Failed to initialize rollback script: $ROLL" >&2
   exit 1
 fi

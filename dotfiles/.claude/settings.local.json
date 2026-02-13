@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(wc:*)",
+      "Bash(shellcheck:*)",
+      "Bash(ls:*)",
+      "Bash(zsh:*)",
+      "Bash(bash:*)",
+      "Bash(xargs:*)",
+      "Bash(chmod:*)"
+    ]
+  }
+}
